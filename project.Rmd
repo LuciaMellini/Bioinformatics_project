@@ -1,0 +1,42 @@
+---
+title: "Bioinformatics project year 2023/2024"
+author: "Lucia Anna Mellini"
+date:
+#bibliography: references.bib
+output: 
+    html_notebook:
+        toc: true
+        number_sections: true
+        toc_float: true
+        theme: cerulean
+        fig_caption: true
+---
+
+
+```{r}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("curatedTCGAData");
+BiocManager::install("TCGAutils");
+BiocManager::install("TCGAbiolinks");
+```
+
+```{r message=FALSE, warning=FALSE}
+library("curatedTCGAData");
+library("TCGAbiolinks");
+library("TCGAutils");
+```
+#1.Download Prostate adenocarcinoma dataset#
+```{r}
+
+assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray");
+mo <- curatedTCGAData(diseaseCode = "PRAD", 
+                        assays = assays,
+                        version = "2.1.1", dry.run=FALSE);
+```
+
+```{r message=TRUE}
+mo
+```
+
