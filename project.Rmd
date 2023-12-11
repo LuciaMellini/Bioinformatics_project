@@ -28,6 +28,9 @@ library("TCGAbiolinks");
 library("TCGAutils");
 ```
 #1.Download Prostate adenocarcinoma dataset#
+#miRNASeqGene              Gene-level log2 RPM miRNA expression values
+#RNASeq2Gene               RSEM TPM gene expression values
+#RPPAArray                 Reverse Phase Protein Array normalized protein expression values
 ```{r}
 
 assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray");
@@ -38,5 +41,9 @@ mo <- curatedTCGAData(diseaseCode = "PRAD",
 
 ```{r message=TRUE}
 mo
+```
+
+```{r}
+sessionInfo()
 ```
 
