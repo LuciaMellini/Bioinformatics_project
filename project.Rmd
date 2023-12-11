@@ -13,7 +13,7 @@ output:
 ---
 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
@@ -27,10 +27,10 @@ library("curatedTCGAData");
 library("TCGAbiolinks");
 library("TCGAutils");
 ```
-#1.Download Prostate adenocarcinoma dataset#
-#miRNASeqGene              Gene-level log2 RPM miRNA expression values
-#RNASeq2Gene               RSEM TPM gene expression values
-#RPPAArray                 Reverse Phase Protein Array normalized protein expression values
+# Download Prostate adenocarcinoma dataset#
+<!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
+<>RNASeq2Gene               RSEM TPM gene expression values
+<>RPPAArray                 Reverse Phase Protein Array normalized protein expression values -->
 ```{r}
 
 assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray");
@@ -42,6 +42,89 @@ mo <- curatedTCGAData(diseaseCode = "PRAD",
 ```{r message=TRUE}
 mo
 ```
+# Data pre-processing
+Consider only primary solid tumors
+Analyte information missing from PRAD_RPPAArray (20th position) that causes inconsistent barcode lengths in MultiArrayExperiment object ```mo```.
+```{r message=FALSE, warning=FALSE}
+primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01"));
+mo <- mo[,primary,]
+```
+Check for replicates for same patient (first 12 characters)
+No replicates present in ```mo```.
+```{r}
+check_rep <- anyReplicated(mo);
+print(check_rep)
+```
+Remove FFPE samples (frozen tissue is better preseved)
+```{r}
+no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no");
+as.data.frame(colData(mo))
+mo <- mo[, no_ffpe, ];
+```
+Consider samples having all considered omics data
+```{r}
+complete <- intersectColumns(mo);
+```
+ExpressionList → simple list of matrices
+```{r}
+complete <- assays(complete)
+print(dim(complete[[1]]))
+```
+Transpose all three matrices, obtaining samples $\times$ features
+```{r}
+complete <- lapply(complete,FUN=t)
+```
+Remove features having missing values (no missing values in the current dataset)
+```{r}
+for (i in 1:length(complete)){
+  #print(dim(complete[[i]]))
+  complete[[i]] <- complete[[i]][,colSums(is.na(complete[[i]]))==0]
+  #print(dim(complete[[i]]))
+}
+```
+Select features having more variance across samples because they bring more information.
+```{r}
+nf <- 100;
+for(i in 1:length(complete)){
+    
+    idx <- caret::nearZeroVar(complete[[i]])
+    message(paste("Removed ", length(idx), "features from", names(complete)[i]));
+    if(length(idx) != 0){
+        complete[[i]] <- complete[[i]][, -idx];
+    }
+
+    if(ncol(complete[[i]]) <= nf) next
+    
+    vars <- apply(complete[[i]], 2, var);
+    idx <- sort(vars, index.return=TRUE, decreasing = TRUE)$ix;
+    
+    complete[[i]] <- complete[[i]][, idx[1:nf]];
+    
+}
+```
+Standardize features with z-score
+```{r}
+zscore <- function(data){
+    
+    zscore_vec <- function(x) { return ((x - mean(x)) / sd(x))}
+    data <- apply(data, 2, zscore_vec)
+    
+    
+    return(data)
+}
+
+complete <- lapply(complete, zscore);
+```
+Clean barcodes retaining only "Project-TSS-Participant" (first 12 characters)
+```{r}
+for(v in 1:length(complete)){
+    rownames(complete[[v]]) <- substr(rownames(complete[[v]]), 1, 12);
+}
+```
+
+
+
+
 
 ```{r}
 sessionInfo()

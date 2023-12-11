@@ -2885,13 +2885,31 @@ border-radius: 0px;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKCFyZXF1aXJlKFwiQmlvY01hbmFnZXJcIiwgcXVpZXRseSA9IFRSVUUpKVxuICAgIGluc3RhbGwucGFja2FnZXMoXCJCaW9jTWFuYWdlclwiKVxuXG5CaW9jTWFuYWdlcjo6aW5zdGFsbChcImN1cmF0ZWRUQ0dBRGF0YVwiKTtcbkJpb2NNYW5hZ2VyOjppbnN0YWxsKFwiVENHQXV0aWxzXCIpO1xuQmlvY01hbmFnZXI6Omluc3RhbGwoXCJUQ0dBYmlvbGlua3NcIik7XG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaWYgKCFyZXF1aXJlKFwiQmlvY01hbmFnZXJcIiwgcXVpZXRseSA9IFRSVUUpKVxuICAgIGluc3RhbGwucGFja2FnZXMoXCJCaW9jTWFuYWdlclwiKVxuXG5CaW9jTWFuYWdlcjo6aW5zdGFsbChcImN1cmF0ZWRUQ0dBRGF0YVwiKTtcbmBgYCJ9 -->
 <pre class="r"><code>if (!require(&quot;BiocManager&quot;, quietly = TRUE))
     install.packages(&quot;BiocManager&quot;)
 
-BiocManager::install(&quot;curatedTCGAData&quot;);
-BiocManager::install(&quot;TCGAutils&quot;);
+BiocManager::install(&quot;curatedTCGAData&quot;);</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiVXBkYXRlIGFsbC9zb21lL25vbmU/IFthL3Mvbl06IFxuIn0= -->
+<pre><code>Update all/some/none? [a/s/n]: </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxublxuQmlvY01hbmFnZXI6Omluc3RhbGwoXCJUQ0dBdXRpbHNcIik7XG5gYGAifQ== -->
+<pre class="r"><code>n
+BiocManager::install(&quot;TCGAutils&quot;);</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiVXBkYXRlIGFsbC9zb21lL25vbmU/IFthL3Mvbl06IFxuIn0= -->
+<pre><code>Update all/some/none? [a/s/n]: </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxublxuQmlvY01hbmFnZXI6Omluc3RhbGwoXCJUQ0dBYmlvbGlua3NcIik7XG5gYGAifQ== -->
+<pre class="r"><code>n
 BiocManager::install(&quot;TCGAbiolinks&quot;);</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiVXBkYXRlIGFsbC9zb21lL25vbmU/IFthL3Mvbl06IFxuIn0= -->
+<pre><code>Update all/some/none? [a/s/n]: </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxublxuYGBgIn0= -->
+<pre class="r"><code>n</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2904,10 +2922,12 @@ library(&quot;TCGAutils&quot;);</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>#1.Download Prostate adenocarcinoma dataset# #miRNASeqGene Gene-level
-log2 RPM miRNA expression values #RNASeq2Gene RSEM TPM gene expression
-values #RPPAArray Reverse Phase Protein Array normalized protein
-expression values</p>
+<div id="download-prostate-adenocarcinoma-dataset" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Download Prostate
+adenocarcinoma dataset</h1>
+<!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
+<>RNASeq2Gene               RSEM TPM gene expression values
+<>RPPAArray                 Reverse Phase Protein Array normalized protein expression values -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5hc3NheXMgPC0gYyhcIm1pUk5BU2VxR2VuZVwiLCBcIlJOQVNlcTJHZW5lXCIsIFwiUlBQQUFycmF5XCIpO1xubW8gPC0gY3VyYXRlZFRDR0FEYXRhKGRpc2Vhc2VDb2RlID0gXCJQUkFEXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgYXNzYXlzID0gYXNzYXlzLFxuICAgICAgICAgICAgICAgICAgICAgICAgdmVyc2lvbiA9IFwiMi4xLjFcIiwgZHJ5LnJ1bj1GQUxTRSk7XG5gYGAifQ== -->
@@ -2917,12 +2937,365 @@ mo &lt;- curatedTCGAData(diseaseCode = &quot;PRAD&quot;,
                         assays = assays,
                         version = &quot;2.1.1&quot;, dry.run=FALSE);</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoic25hcHNob3REYXRlKCk6IDIwMjMtMTAtMjRcbldvcmtpbmcgb246IFBSQURfUk5BU2VxMkdlbmUtMjAxNjAxMjhcbnNlZSA/Y3VyYXRlZFRDR0FEYXRhIGFuZCBicm93c2VWaWduZXR0ZXMoJ2N1cmF0ZWRUQ0dBRGF0YScpIGZvciBkb2N1bWVudGF0aW9uXG5sb2FkaW5nIGZyb20gY2FjaGVcbldvcmtpbmcgb246IFBSQURfUlBQQUFycmF5LTIwMTYwMTI4XG5zZWUgP2N1cmF0ZWRUQ0dBRGF0YSBhbmQgYnJvd3NlVmlnbmV0dGVzKCdjdXJhdGVkVENHQURhdGEnKSBmb3IgZG9jdW1lbnRhdGlvblxubG9hZGluZyBmcm9tIGNhY2hlXG5Xb3JraW5nIG9uOiBQUkFEX21pUk5BU2VxR2VuZS0yMDE2MDEyOFxuc2VlID9jdXJhdGVkVENHQURhdGEgYW5kIGJyb3dzZVZpZ25ldHRlcygnY3VyYXRlZFRDR0FEYXRhJykgZm9yIGRvY3VtZW50YXRpb25cbmxvYWRpbmcgZnJvbSBjYWNoZVxuV29ya2luZyBvbjogUFJBRF9jb2xEYXRhLTIwMTYwMTI4XG5zZWUgP2N1cmF0ZWRUQ0dBRGF0YSBhbmQgYnJvd3NlVmlnbmV0dGVzKCdjdXJhdGVkVENHQURhdGEnKSBmb3IgZG9jdW1lbnRhdGlvblxubG9hZGluZyBmcm9tIGNhY2hlXG5Xb3JraW5nIG9uOiBQUkFEX3NhbXBsZU1hcC0yMDE2MDEyOFxuc2VlID9jdXJhdGVkVENHQURhdGEgYW5kIGJyb3dzZVZpZ25ldHRlcygnY3VyYXRlZFRDR0FEYXRhJykgZm9yIGRvY3VtZW50YXRpb25cbmxvYWRpbmcgZnJvbSBjYWNoZVxuV29ya2luZyBvbjogUFJBRF9tZXRhZGF0YS0yMDE2MDEyOFxuc2VlID9jdXJhdGVkVENHQURhdGEgYW5kIGJyb3dzZVZpZ25ldHRlcygnY3VyYXRlZFRDR0FEYXRhJykgZm9yIGRvY3VtZW50YXRpb25cbmxvYWRpbmcgZnJvbSBjYWNoZVxuaGFybW9uaXppbmcgaW5wdXQ6XG4gIHJlbW92aW5nIDUxODkgc2FtcGxlTWFwIHJvd3Mgbm90IGluIG5hbWVzKGV4cGVyaW1lbnRzKVxuIn0= -->
+<pre><code>snapshotDate(): 2023-10-24
+Working on: PRAD_RNASeq2Gene-20160128
+see ?curatedTCGAData and browseVignettes(&#39;curatedTCGAData&#39;) for documentation
+loading from cache
+Working on: PRAD_RPPAArray-20160128
+see ?curatedTCGAData and browseVignettes(&#39;curatedTCGAData&#39;) for documentation
+loading from cache
+Working on: PRAD_miRNASeqGene-20160128
+see ?curatedTCGAData and browseVignettes(&#39;curatedTCGAData&#39;) for documentation
+loading from cache
+Working on: PRAD_colData-20160128
+see ?curatedTCGAData and browseVignettes(&#39;curatedTCGAData&#39;) for documentation
+loading from cache
+Working on: PRAD_sampleMap-20160128
+see ?curatedTCGAData and browseVignettes(&#39;curatedTCGAData&#39;) for documentation
+loading from cache
+Working on: PRAD_metadata-20160128
+see ?curatedTCGAData and browseVignettes(&#39;curatedTCGAData&#39;) for documentation
+loading from cache
+harmonizing input:
+  removing 5189 sampleMap rows not in names(experiments)</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9cbmBgYCJ9 -->
 <pre class="r"><code>mo</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQSBNdWx0aUFzc2F5RXhwZXJpbWVudCBvYmplY3Qgb2YgMyBsaXN0ZWRcbiBleHBlcmltZW50cyB3aXRoIHVzZXItZGVmaW5lZCBuYW1lcyBhbmQgcmVzcGVjdGl2ZSBjbGFzc2VzLlxuIENvbnRhaW5pbmcgYW4gRXhwZXJpbWVudExpc3QgY2xhc3Mgb2JqZWN0IG9mIGxlbmd0aCAzOlxuIFsxXSBQUkFEX1JOQVNlcTJHZW5lLTIwMTYwMTI4OiBTdW1tYXJpemVkRXhwZXJpbWVudCB3aXRoIDIwNTAxIHJvd3MgYW5kIDU1MCBjb2x1bW5zXG4gWzJdIFBSQURfUlBQQUFycmF5LTIwMTYwMTI4OiBTdW1tYXJpemVkRXhwZXJpbWVudCB3aXRoIDE5NSByb3dzIGFuZCAzNTIgY29sdW1uc1xuIFszXSBQUkFEX21pUk5BU2VxR2VuZS0yMDE2MDEyODogU3VtbWFyaXplZEV4cGVyaW1lbnQgd2l0aCAxMDQ2IHJvd3MgYW5kIDU0NyBjb2x1bW5zXG5GdW5jdGlvbmFsaXR5OlxuIGV4cGVyaW1lbnRzKCkgLSBvYnRhaW4gdGhlIEV4cGVyaW1lbnRMaXN0IGluc3RhbmNlXG4gY29sRGF0YSgpIC0gdGhlIHByaW1hcnkvcGhlbm90eXBlIERhdGFGcmFtZVxuIHNhbXBsZU1hcCgpIC0gdGhlIHNhbXBsZSBjb29yZGluYXRpb24gRGF0YUZyYW1lXG4gYCRgLCBgW2AsIGBbW2AgLSBleHRyYWN0IGNvbERhdGEgY29sdW1ucywgc3Vic2V0LCBvciBleHBlcmltZW50XG4gKkZvcm1hdCgpIC0gY29udmVydCBpbnRvIGEgbG9uZyBvciB3aWRlIERhdGFGcmFtZVxuIGFzc2F5cygpIC0gY29udmVydCBFeHBlcmltZW50TGlzdCB0byBhIFNpbXBsZUxpc3Qgb2YgbWF0cmljZXNcbiBleHBvcnRDbGFzcygpIC0gc2F2ZSBkYXRhIHRvIGZsYXQgZmlsZXNcbiJ9 -->
+<pre><code>A MultiAssayExperiment object of 3 listed
+ experiments with user-defined names and respective classes.
+ Containing an ExperimentList class object of length 3:
+ [1] PRAD_RNASeq2Gene-20160128: SummarizedExperiment with 20501 rows and 550 columns
+ [2] PRAD_RPPAArray-20160128: SummarizedExperiment with 195 rows and 352 columns
+ [3] PRAD_miRNASeqGene-20160128: SummarizedExperiment with 1046 rows and 547 columns
+Functionality:
+ experiments() - obtain the ExperimentList instance
+ colData() - the primary/phenotype DataFrame
+ sampleMap() - the sample coordination DataFrame
+ `$`, `[`, `[[` - extract colData columns, subset, or experiment
+ *Format() - convert into a long or wide DataFrame
+ assays() - convert ExperimentList to a SimpleList of matrices
+ exportClass() - save data to flat files</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="data-pre-processing" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Data
+pre-processing</h1>
+<p>Consider only primary solid tumors Analyte information missing from
+PRAD_RPPAArray (20th position) that causes inconsistent barcode lengths
+in MultiArrayExperiment object <code>mo</code>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbWFyeSA8LSBUQ0dBdXRpbHM6OlRDR0FzYW1wbGVTZWxlY3QoY29sbmFtZXMobW8pLCBjKFwiMDFcIikpO1xubW8gPC0gbW9bLHByaW1hcnksXVxuYGBgIn0= -->
+<pre class="r"><code>primary &lt;- TCGAutils::TCGAsampleSelect(colnames(mo), c(&quot;01&quot;));
+mo &lt;- mo[,primary,]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Check for replicates for same patient (first 12 characters) No
+replicates present in <code>mo</code>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hlY2tfcmVwIDwtIGFueVJlcGxpY2F0ZWQobW8pO1xucHJpbnQoY2hlY2tfcmVwKVxuYGBgIn0= -->
+<pre class="r"><code>check_rep &lt;- anyReplicated(mo);
+print(check_rep)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFBSQURfUk5BU2VxMkdlbmUtMjAxNjAxMjggICAgUFJBRF9SUFBBQXJyYXktMjAxNjAxMjggXG4gICAgICAgICAgICAgICAgICAgICBGQUxTRSAgICAgICAgICAgICAgICAgICAgICBGQUxTRSBcblBSQURfbWlSTkFTZXFHZW5lLTIwMTYwMTI4IFxuICAgICAgICAgICAgICAgICAgICAgRkFMU0UgXG4ifQ== -->
+<pre><code> PRAD_RNASeq2Gene-20160128    PRAD_RPPAArray-20160128 
+                     FALSE                      FALSE 
+PRAD_miRNASeqGene-20160128 
+                     FALSE </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Remove FFPE samples (frozen tissue is better preseved)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubm9fZmZwZSA8LSB3aGljaChhcy5kYXRhLmZyYW1lKGNvbERhdGEobW8pKSRwYXRpZW50LnNhbXBsZXMuc2FtcGxlLmlzX2ZmcGUgPT0gXCJub1wiKTtcbmFzLmRhdGEuZnJhbWUoY29sRGF0YShtbykpXG5tbyA8LSBtb1ssIG5vX2ZmcGUsIF07XG5gYGAifQ== -->
+<pre class="r"><code>no_ffpe &lt;- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == &quot;no&quot;);
+as.data.frame(colData(mo))
+mo &lt;- mo[, no_ffpe, ];</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Consider samples having all considered omics data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGxldGUgPC0gaW50ZXJzZWN0Q29sdW1ucyhtbyk7XG5gYGAifQ== -->
+<pre class="r"><code>complete &lt;- intersectColumns(mo);</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>ExpressionList → simple list of matrices</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGxldGUgPC0gYXNzYXlzKGNvbXBsZXRlKVxucHJpbnQoZGltKGNvbXBsZXRlW1sxXV0pKVxuYGBgIn0= -->
+<pre class="r"><code>complete &lt;- assays(complete)
+print(dim(complete[[1]]))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDIwNTAxICAgMzQ4XG4ifQ== -->
+<pre><code>[1] 20501   348</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Transpose all three matrices, obtaining samples <span class="math inline">\(\times\)</span> features</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29tcGxldGUgPC0gbGFwcGx5KGNvbXBsZXRlLEZVTj10KVxuYGBgIn0= -->
+<pre class="r"><code>complete &lt;- lapply(complete,FUN=t)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Remove features having missing values (no missing values in the
+current dataset)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZm9yIChpIGluIDE6bGVuZ3RoKGNvbXBsZXRlKSl7XG4gICNwcmludChkaW0oY29tcGxldGVbW2ldXSkpXG4gIGNvbXBsZXRlW1tpXV0gPC0gY29tcGxldGVbW2ldXVssY29sU3Vtcyhpcy5uYShjb21wbGV0ZVtbaV1dKSk9PTBdXG4gICNwcmludChkaW0oY29tcGxldGVbW2ldXSkpXG59XG5gYGAifQ== -->
+<pre class="r"><code>for (i in 1:length(complete)){
+  #print(dim(complete[[i]]))
+  complete[[i]] &lt;- complete[[i]][,colSums(is.na(complete[[i]]))==0]
+  #print(dim(complete[[i]]))
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Select features having more variance across samples because they
+bring more information.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmYgPC0gMTAwO1xuZm9yKGkgaW4gMTpsZW5ndGgoY29tcGxldGUpKXtcbiAgICBcbiAgICBpZHggPC0gY2FyZXQ6Om5lYXJaZXJvVmFyKGNvbXBsZXRlW1tpXV0pXG4gICAgbWVzc2FnZShwYXN0ZShcIlJlbW92ZWQgXCIsIGxlbmd0aChpZHgpLCBcImZlYXR1cmVzIGZyb21cIiwgbmFtZXMoY29tcGxldGUpW2ldKSk7XG4gICAgaWYobGVuZ3RoKGlkeCkgIT0gMCl7XG4gICAgICAgIGNvbXBsZXRlW1tpXV0gPC0gY29tcGxldGVbW2ldXVssIC1pZHhdO1xuICAgIH1cblxuICAgIGlmKG5jb2woY29tcGxldGVbW2ldXSkgPD0gbmYpIG5leHRcbiAgICBcbiAgICB2YXJzIDwtIGFwcGx5KGNvbXBsZXRlW1tpXV0sIDIsIHZhcik7XG4gICAgaWR4IDwtIHNvcnQodmFycywgaW5kZXgucmV0dXJuPVRSVUUsIGRlY3JlYXNpbmcgPSBUUlVFKSRpeDtcbiAgICBcbiAgICBjb21wbGV0ZVtbaV1dIDwtIGNvbXBsZXRlW1tpXV1bLCBpZHhbMTpuZl1dO1xuICAgIFxufVxuYGBgIn0= -->
+<pre class="r"><code>nf &lt;- 100;
+for(i in 1:length(complete)){
+    
+    idx &lt;- caret::nearZeroVar(complete[[i]])
+    message(paste(&quot;Removed &quot;, length(idx), &quot;features from&quot;, names(complete)[i]));
+    if(length(idx) != 0){
+        complete[[i]] &lt;- complete[[i]][, -idx];
+    }
+
+    if(ncol(complete[[i]]) &lt;= nf) next
+    
+    vars &lt;- apply(complete[[i]], 2, var);
+    idx &lt;- sort(vars, index.return=TRUE, decreasing = TRUE)$ix;
+    
+    complete[[i]] &lt;- complete[[i]][, idx[1:nf]];
+    
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Standardize features with z-score</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuenNjb3JlIDwtIGZ1bmN0aW9uKGRhdGEpe1xuICAgIFxuICAgIHpzY29yZV92ZWMgPC0gZnVuY3Rpb24oeCkgeyByZXR1cm4gKCh4IC0gbWVhbih4KSkgLyBzZCh4KSl9XG4gICAgZGF0YSA8LSBhcHBseShkYXRhLCAyLCB6c2NvcmVfdmVjKVxuICAgIFxuICAgIFxuICAgIHJldHVybihkYXRhKVxufVxuXG5jb21wbGV0ZSA8LSBsYXBwbHkoY29tcGxldGUsIHpzY29yZSk7XG5gYGAifQ== -->
+<pre class="r"><code>zscore &lt;- function(data){
+    
+    zscore_vec &lt;- function(x) { return ((x - mean(x)) / sd(x))}
+    data &lt;- apply(data, 2, zscore_vec)
+    
+    
+    return(data)
+}
+
+complete &lt;- lapply(complete, zscore);</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Clean barcodes retaining only “Project-TSS-Participant” (first 12
+characters)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm93bmFtZXMoY29tcGxldGVbWzFdXSlcbmBgYCJ9 -->
+<pre class="r"><code>rownames(complete[[1]])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICBbMV0gXCJUQ0dBLTJBLUE4VkxcIiBcIlRDR0EtMkEtQThWT1wiXG4gIFszXSBcIlRDR0EtMkEtQThWVFwiIFwiVENHQS0yQS1BOFZWXCJcbiAgWzVdIFwiVENHQS0yQS1BOFcxXCIgXCJUQ0dBLTJBLUE4VzNcIlxuICBbN10gXCJUQ0dBLUNILTU3MzdcIiBcIlRDR0EtQ0gtNTczOFwiXG4gIFs5XSBcIlRDR0EtQ0gtNTczOVwiIFwiVENHQS1DSC01NzQwXCJcbiBbMTFdIFwiVENHQS1DSC01NzQxXCIgXCJUQ0dBLUNILTU3NDNcIlxuIFsxM10gXCJUQ0dBLUNILTU3NDRcIiBcIlRDR0EtQ0gtNTc0OFwiXG4gWzE1XSBcIlRDR0EtQ0gtNTc1MFwiIFwiVENHQS1DSC01NzUyXCJcbiBbMTddIFwiVENHQS1DSC01NzUzXCIgXCJUQ0dBLUNILTU3NTRcIlxuIFsxOV0gXCJUQ0dBLUNILTU3NjFcIiBcIlRDR0EtQ0gtNTc2MlwiXG4gWzIxXSBcIlRDR0EtQ0gtNTc2M1wiIFwiVENHQS1DSC01NzY0XCJcbiBbMjNdIFwiVENHQS1DSC01NzY1XCIgXCJUQ0dBLUNILTU3NjZcIlxuIFsyNV0gXCJUQ0dBLUNILTU3NjdcIiBcIlRDR0EtQ0gtNTc2OFwiXG4gWzI3XSBcIlRDR0EtQ0gtNTc2OVwiIFwiVENHQS1DSC01NzcxXCJcbiBbMjldIFwiVENHQS1DSC01NzcyXCIgXCJUQ0dBLUNILTU3ODhcIlxuIFszMV0gXCJUQ0dBLUNILTU3ODlcIiBcIlRDR0EtQ0gtNTc5MFwiXG4gWzMzXSBcIlRDR0EtQ0gtNTc5MVwiIFwiVENHQS1DSC01NzkyXCJcbiBbMzVdIFwiVENHQS1DSC01Nzk0XCIgXCJUQ0dBLUVKLTU0OTRcIlxuIFszN10gXCJUQ0dBLUVKLTU0OTVcIiBcIlRDR0EtRUotNTQ5NlwiXG4gWzM5XSBcIlRDR0EtRUotNTQ5N1wiIFwiVENHQS1FSi01NDk4XCJcbiBbNDFdIFwiVENHQS1FSi01NDk5XCIgXCJUQ0dBLUVKLTU1MDFcIlxuIFs0M10gXCJUQ0dBLUVKLTU1MDJcIiBcIlRDR0EtRUotNTUwM1wiXG4gWzQ1XSBcIlRDR0EtRUotNTUwNFwiIFwiVENHQS1FSi01NTA1XCJcbiBbNDddIFwiVENHQS1FSi01NTA2XCIgXCJUQ0dBLUVKLTU1MDdcIlxuIFs0OV0gXCJUQ0dBLUVKLTU1MDhcIiBcIlRDR0EtRUotNTUwOVwiXG4gWzUxXSBcIlRDR0EtRUotNTUxMFwiIFwiVENHQS1FSi01NTExXCJcbiBbNTNdIFwiVENHQS1FSi01NTEyXCIgXCJUQ0dBLUVKLTU1MTRcIlxuIFs1NV0gXCJUQ0dBLUVKLTU1MTVcIiBcIlRDR0EtRUotNTUxNlwiXG4gWzU3XSBcIlRDR0EtRUotNTUxN1wiIFwiVENHQS1FSi01NTE4XCJcbiBbNTldIFwiVENHQS1FSi01NTE5XCIgXCJUQ0dBLUVKLTU1MjFcIlxuIFs2MV0gXCJUQ0dBLUVKLTU1MjJcIiBcIlRDR0EtRUotNTUyNFwiXG4gWzYzXSBcIlRDR0EtRUotNTUyNVwiIFwiVENHQS1FSi01NTI2XCJcbiBbNjVdIFwiVENHQS1FSi01NTI3XCIgXCJUQ0dBLUVKLTU1MzBcIlxuIFs2N10gXCJUQ0dBLUVKLTU1MzFcIiBcIlRDR0EtRUotNTUzMlwiXG4gWzY5XSBcIlRDR0EtRUotNTU0MlwiIFwiVENHQS1FSi03MTE1XCJcbiBbNzFdIFwiVENHQS1FSi03MTI1XCIgXCJUQ0dBLUVKLTcyMThcIlxuIFs3M10gXCJUQ0dBLUVKLTczMTRcIiBcIlRDR0EtRUotNzMxNVwiXG4gWzc1XSBcIlRDR0EtRUotNzMxN1wiIFwiVENHQS1FSi03MzE4XCJcbiBbNzddIFwiVENHQS1FSi03MzIxXCIgXCJUQ0dBLUVKLTczMjhcIlxuIFs3OV0gXCJUQ0dBLUVKLTczMzBcIiBcIlRDR0EtRUotNzMzMVwiXG4gWzgxXSBcIlRDR0EtRUotNzc4MVwiIFwiVENHQS1FSi03NzgyXCJcbiBbODNdIFwiVENHQS1FSi03NzgzXCIgXCJUQ0dBLUVKLTc3ODRcIlxuIFs4NV0gXCJUQ0dBLUVKLTc3ODVcIiBcIlRDR0EtRUotNzc4NlwiXG4gWzg3XSBcIlRDR0EtRUotNzc4OFwiIFwiVENHQS1FSi03Nzg5XCJcbiBbODldIFwiVENHQS1FSi03NzkxXCIgXCJUQ0dBLUVKLTc3OTJcIlxuIFs5MV0gXCJUQ0dBLUVKLTc3OTNcIiBcIlRDR0EtRUotNzc5NFwiXG4gWzkzXSBcIlRDR0EtRUotNzc5N1wiIFwiVENHQS1FSi04NDY4XCJcbiBbOTVdIFwiVENHQS1FSi04NDY5XCIgXCJUQ0dBLUVKLTg0NzBcIlxuIFs5N10gXCJUQ0dBLUVKLTg0NzRcIiBcIlRDR0EtRUotQTQ2RFwiXG4gWzk5XSBcIlRDR0EtRUotQTQ2R1wiIFwiVENHQS1FSi1BNjVFXCJcblsxMDFdIFwiVENHQS1FSi1BNjVGXCIgXCJUQ0dBLUVKLUE2NUpcIlxuWzEwM10gXCJUQ0dBLUVKLUE2UkFcIiBcIlRDR0EtRUotQTZSQ1wiXG5bMTA1XSBcIlRDR0EtRUotQTdORlwiIFwiVENHQS1FSi1BN05HXCJcblsxMDddIFwiVENHQS1FSi1BN05IXCIgXCJUQ0dBLUVKLUE3TkpcIlxuWzEwOV0gXCJUQ0dBLUVKLUE3TktcIiBcIlRDR0EtRUotQTdOTVwiXG5bMTExXSBcIlRDR0EtRUotQThGTlwiIFwiVENHQS1FSi1BOEZTXCJcblsxMTNdIFwiVENHQS1FSi1BOEZVXCIgXCJUQ0dBLUZDLTc3MDhcIlxuWzExNV0gXCJUQ0dBLUZDLTc5NjFcIiBcIlRDR0EtRkMtQTRKSVwiXG5bMTE3XSBcIlRDR0EtRkMtQTVPQlwiIFwiVENHQS1GQy1BOE8wXCJcblsxMTldIFwiVENHQS1HOS02MzI5XCIgXCJUQ0dBLUc5LTYzNDJcIlxuWzEyMV0gXCJUQ0dBLUc5LTYzNTFcIiBcIlRDR0EtRzktNjM1M1wiXG5bMTIzXSBcIlRDR0EtRzktNjM1NlwiIFwiVENHQS1HOS02MzYxXCJcblsxMjVdIFwiVENHQS1HOS02MzYzXCIgXCJUQ0dBLUc5LTYzNjRcIlxuWzEyN10gXCJUQ0dBLUc5LTYzNjVcIiBcIlRDR0EtRzktNjM2NlwiXG5bMTI5XSBcIlRDR0EtRzktNjM2N1wiIFwiVENHQS1HOS02MzcwXCJcblsxMzFdIFwiVENHQS1HOS02MzcxXCIgXCJUQ0dBLUc5LTYzNzdcIlxuWzEzM10gXCJUQ0dBLUc5LTYzNzhcIiBcIlRDR0EtRzktNjM4NFwiXG5bMTM1XSBcIlRDR0EtRzktNjQ5NFwiIFwiVENHQS1HOS02NDk5XCJcblsxMzddIFwiVENHQS1HOS03NTEwXCIgXCJUQ0dBLUc5LTc1MjFcIlxuWzEzOV0gXCJUQ0dBLUc5LTc1MjJcIiBcIlRDR0EtRzktNzUyM1wiXG5bMTQxXSBcIlRDR0EtSDktNzc3NVwiIFwiVENHQS1IQy03MDc3XCJcblsxNDNdIFwiVENHQS1IQy03MDc5XCIgXCJUQ0dBLUhDLTcwODFcIlxuWzE0NV0gXCJUQ0dBLUhDLTcyMTBcIiBcIlRDR0EtSEMtNzIxMVwiXG5bMTQ3XSBcIlRDR0EtSEMtNzIxMlwiIFwiVENHQS1IQy03MjEzXCJcblsxNDldIFwiVENHQS1IQy03MjMyXCIgXCJUQ0dBLUhDLTcyMzNcIlxuWzE1MV0gXCJUQ0dBLUhDLTc3MzZcIiBcIlRDR0EtSEMtNzc0MFwiXG5bMTUzXSBcIlRDR0EtSEMtNzc0NFwiIFwiVENHQS1IQy03NzQ4XCJcblsxNTVdIFwiVENHQS1IQy04MjY0XCIgXCJUQ0dBLUhDLUE3NlhcIlxuWzE1N10gXCJUQ0dBLUhJLTcxNjhcIiBcIlRDR0EtSEktNzE3MFwiXG5bMTU5XSBcIlRDR0EtSEktNzE3MVwiIFwiVENHQS1KNC04MTk4XCJcblsxNjFdIFwiVENHQS1KNC04MjAwXCIgXCJUQ0dBLUo0LUE2N1RcIlxuWzE2M10gXCJUQ0dBLUo0LUE2TTdcIiBcIlRDR0EtSjQtQTgzSVwiXG5bMTY1XSBcIlRDR0EtSjQtQTgzTlwiIFwiVENHQS1KOS1BOENLXCJcblsxNjddIFwiVENHQS1KOS1BOENNXCIgXCJUQ0dBLUo5LUE4Q05cIlxuWzE2OV0gXCJUQ0dBLUo5LUE4Q1BcIiBcIlRDR0EtS0MtQTRCTFwiXG5bMTcxXSBcIlRDR0EtS0MtQTRCTlwiIFwiVENHQS1LQy1BNEJSXCJcblsxNzNdIFwiVENHQS1LQy1BNEJWXCIgXCJUQ0dBLUtDLUE3RjNcIlxuWzE3NV0gXCJUQ0dBLUtDLUE3RjZcIiBcIlRDR0EtS0MtQTdGQVwiXG5bMTc3XSBcIlRDR0EtS0MtQTdGRFwiIFwiVENHQS1LQy1BN0ZFXCJcblsxNzldIFwiVENHQS1LSy1BNTlYXCIgXCJUQ0dBLUtLLUE1OVlcIlxuWzE4MV0gXCJUQ0dBLUtLLUE1OVpcIiBcIlRDR0EtS0stQTZFMFwiXG5bMTgzXSBcIlRDR0EtS0stQTZFMVwiIFwiVENHQS1LSy1BNkUyXCJcblsxODVdIFwiVENHQS1LSy1BN0FQXCIgXCJUQ0dBLUtLLUE3QVVcIlxuWzE4N10gXCJUQ0dBLUtLLUE3QjFcIiBcIlRDR0EtS0stQTdCM1wiXG5bMTg5XSBcIlRDR0EtS0stQTdCNFwiIFwiVENHQS1LSy1BOEk0XCJcblsxOTFdIFwiVENHQS1LSy1BOEk1XCIgXCJUQ0dBLUtLLUE4STZcIlxuWzE5M10gXCJUQ0dBLUtLLUE4SThcIiBcIlRDR0EtS0stQThJQVwiXG5bMTk1XSBcIlRDR0EtS0stQThJQlwiIFwiVENHQS1LSy1BOElDXCJcblsxOTddIFwiVENHQS1LSy1BOElEXCIgXCJUQ0dBLUtLLUE4SUZcIlxuWzE5OV0gXCJUQ0dBLUtLLUE4SUhcIiBcIlRDR0EtS0stQThJSVwiXG5bMjAxXSBcIlRDR0EtS0stQThJSlwiIFwiVENHQS1NNy1BNzIwXCJcblsyMDNdIFwiVENHQS1NNy1BNzIxXCIgXCJUQ0dBLU03LUE3MjVcIlxuWzIwNV0gXCJUQ0dBLVFVLUE2SVBcIiBcIlRDR0EtU1UtQTdFN1wiXG5bMjA3XSBcIlRDR0EtVEstQThPS1wiIFwiVENHQS1WMS1BOE1GXCJcblsyMDldIFwiVENHQS1WMS1BOE1KXCIgXCJUQ0dBLVYxLUE4TVVcIlxuWzIxMV0gXCJUQ0dBLVYxLUE4V0xcIiBcIlRDR0EtVjEtQThYM1wiXG5bMjEzXSBcIlRDR0EtVk4tQTg4SVwiIFwiVENHQS1WTi1BODhLXCJcblsyMTVdIFwiVENHQS1WTi1BODhMXCIgXCJUQ0dBLVZOLUE4OFBcIlxuWzIxN10gXCJUQ0dBLVZQLUE4NzVcIiBcIlRDR0EtVlAtQTg3OFwiXG5bMjE5XSBcIlRDR0EtVlAtQTg3RVwiIFwiVENHQS1WUC1BODdKXCJcblsyMjFdIFwiVENHQS1WUC1BODdLXCIgXCJUQ0dBLVdXLUE4WklcIlxuWzIyM10gXCJUQ0dBLVhBLUE4SlJcIiBcIlRDR0EtWTYtQThUTFwiXG5bMjI1XSBcIlRDR0EtWUotQThTV1wiIFwiVENHQS1ZTC1BOEhKXCJcblsyMjddIFwiVENHQS1ZTC1BOEhLXCIgXCJUQ0dBLVlMLUE4SExcIlxuWzIyOV0gXCJUQ0dBLVlMLUE4SE1cIiBcIlRDR0EtWUwtQThIT1wiXG5bMjMxXSBcIlRDR0EtWUwtQThTOFwiIFwiVENHQS1ZTC1BOFM5XCJcblsyMzNdIFwiVENHQS1ZTC1BOFNBXCIgXCJUQ0dBLVlMLUE4U0NcIlxuWzIzNV0gXCJUQ0dBLVlMLUE4U0ZcIiBcIlRDR0EtWUwtQThTSFwiXG5bMjM3XSBcIlRDR0EtWUwtQThTSlwiIFwiVENHQS1ZTC1BOFNLXCJcblsyMzldIFwiVENHQS1ZTC1BOFNMXCIgXCJUQ0dBLVlMLUE4U1BcIlxuWzI0MV0gXCJUQ0dBLVlMLUE4U1FcIiBcIlRDR0EtWUwtQThTUlwiXG5bMjQzXSBcIlRDR0EtWUwtQTlXSVwiIFwiVENHQS1ZTC1BOVdKXCJcblsyNDVdIFwiVENHQS1aRy1BOFFXXCIgXCJUQ0dBLVpHLUE4UVhcIlxuWzI0N10gXCJUQ0dBLVpHLUE4UVlcIiBcIlRDR0EtWkctQThRWlwiXG5bMjQ5XSBcIlRDR0EtWkctQTlMNVwiIFwiVENHQS1FSi1BNjVNXCJcblsyNTFdIFwiVENHQS0yQS1BOFZYXCIgXCJUQ0dBLTJBLUFBWUZcIlxuWzI1M10gXCJUQ0dBLTJBLUFBWU9cIiBcIlRDR0EtMkEtQUFZVVwiXG5bMjU1XSBcIlRDR0EtNEwtQUExRlwiIFwiVENHQS1FSi1BN05OXCJcblsyNTddIFwiVENHQS1aRy1BOU4zXCIgXCJUQ0dBLUVKLUE4Rk9cIlxuWzI1OV0gXCJUQ0dBLVpHLUE5TklcIiBcIlRDR0EtRUotQUIyMFwiXG5bMjYxXSBcIlRDR0EtQ0gtNTc0NVwiIFwiVENHQS1KNC1BNjdLXCJcblsyNjNdIFwiVENHQS1GQy1BNjZWXCIgXCJUQ0dBLUZDLUE2SERcIlxuWzI2NV0gXCJUQ0dBLUo0LUE2N05cIiBcIlRDR0EtSjQtQTY3T1wiXG5bMjY3XSBcIlRDR0EtSjQtQTY3UlwiIFwiVENHQS1HOS02MzM4XCJcblsyNjldIFwiVENHQS1HOS02MzM5XCIgXCJUQ0dBLVYxLUE5WkdcIlxuWzI3MV0gXCJUQ0dBLUc5LTYzNDNcIiBcIlRDR0EtRzktNjM0N1wiXG5bMjczXSBcIlRDR0EtSjQtQTgzSlwiIFwiVENHQS1HOS02MzYyXCJcblsyNzVdIFwiVENHQS1KOS1BNTJDXCIgXCJUQ0dBLUo5LUE1MkVcIlxuWzI3N10gXCJUQ0dBLUc5LTYzNzNcIiBcIlRDR0EtWkctQTlNQ1wiXG5bMjc5XSBcIlRDR0EtRzktNjM3OVwiIFwiVENHQS1HOS1BOVM3XCJcblsyODFdIFwiVENHQS1HOS02NDk2XCIgXCJUQ0dBLUc5LTY0OThcIlxuWzI4M10gXCJUQ0dBLUtLLUE1OVZcIiBcIlRDR0EtRzktNzUyNVwiXG5bMjg1XSBcIlRDR0EtRzktQTlTMFwiIFwiVENHQS1HOS1BOVM0XCJcblsyODddIFwiVENHQS1IOS1BNkJYXCIgXCJUQ0dBLUg5LUE2QllcIlxuWzI4OV0gXCJUQ0dBLUtLLUE2RTRcIiBcIlRDR0EtS0stQTZFOFwiXG5bMjkxXSBcIlRDR0EtRUotNzMxMlwiIFwiVENHQS1ZTC1BOVdLXCJcblsyOTNdIFwiVENHQS1LSy1BN0IwXCIgXCJUQ0dBLUVKLTczMjVcIlxuWzI5NV0gXCJUQ0dBLUtLLUE3QjJcIiBcIlRDR0EtWkctQTlMVVwiXG5bMjk3XSBcIlRDR0EtWkctQTlMWVwiIFwiVENHQS1aRy1BOU00XCJcblsyOTldIFwiVENHQS1LSy1BOEk3XCIgXCJUQ0dBLVpHLUE5TDRcIlxuWzMwMV0gXCJUQ0dBLU03LUE3MVpcIiBcIlRDR0EtWUwtQThTSVwiXG5bMzAzXSBcIlRDR0EtSEktNzE2OVwiIFwiVENHQS1FSi1BQjI3XCJcblszMDVdIFwiVENHQS1IQy03ODE3XCIgXCJUQ0dBLVg0LUE4S1FcIlxuWzMwN10gXCJUQ0dBLUo0LUE2N01cIiBcIlRDR0EtVjEtQTlPUVwiXG5bMzA5XSBcIlRDR0EtWkctQTlMNlwiIFwiVENHQS1FSi1BNDZCXCJcblszMTFdIFwiVENHQS1FSi1BNDZFXCIgXCJUQ0dBLUVKLUE0NkZcIlxuWzMxM10gXCJUQ0dBLU03LUE3MjRcIiBcIlRDR0EtVjEtQTlaSVwiXG5bMzE1XSBcIlRDR0EtVjEtQTlaUlwiIFwiVENHQS1FSi1BNjVCXCJcblszMTddIFwiVENHQS1FSi1BNjVEXCIgXCJUQ0dBLVFVLUE2SU5cIlxuWzMxOV0gXCJUQ0dBLVYxLUE5T1RcIiBcIlRDR0EtSjQtQTY3UVwiXG5bMzIxXSBcIlRDR0EtVjEtQTlPWVwiIFwiVENHQS1UUC1BOFRUXCJcblszMjNdIFwiVENHQS1aRy1BOUxTXCIgXCJUQ0dBLVpHLUE5TE1cIlxuWzMyNV0gXCJUQ0dBLVpHLUE5TFpcIiBcIlRDR0EtVjEtQTlPSFwiXG5bMzI3XSBcIlRDR0EtVjEtQTlPTFwiIFwiVENHQS1aRy1BOUwxXCJcblszMjldIFwiVENHQS1WMS1BOVo3XCIgXCJUQ0dBLVYxLUE5WjhcIlxuWzMzMV0gXCJUQ0dBLUtDLUE3RjVcIiBcIlRDR0EtVjEtQTlPNVwiXG5bMzMzXSBcIlRDR0EtVlAtQUExTlwiIFwiVENHQS1NNy1BNzIzXCJcblszMzVdIFwiVENHQS1aRy1BOUwwXCIgXCJUQ0dBLVYxLUE5WjlcIlxuWzMzN10gXCJUQ0dBLUtLLUE1QTFcIiBcIlRDR0EtWTYtQTlYSVwiXG5bMzM5XSBcIlRDR0EtS0stQTZFM1wiIFwiVENHQS1NNy1BNzIyXCJcblszNDFdIFwiVENHQS1ZTC1BOVdMXCIgXCJUQ0dBLVpHLUE5S1lcIlxuWzM0M10gXCJUQ0dBLVlMLUE5V1lcIiBcIlRDR0EtWkctQTlMQlwiXG5bMzQ1XSBcIlRDR0EtVFAtQThUVlwiIFwiVENHQS1WMS1BOU9YXCJcblszNDddIFwiVENHQS1ZTC1BOVdYXCIgXCJUQ0dBLVpHLUE5TDlcIlxuIn0= -->
+<pre><code>  [1] &quot;TCGA-2A-A8VL&quot; &quot;TCGA-2A-A8VO&quot;
+  [3] &quot;TCGA-2A-A8VT&quot; &quot;TCGA-2A-A8VV&quot;
+  [5] &quot;TCGA-2A-A8W1&quot; &quot;TCGA-2A-A8W3&quot;
+  [7] &quot;TCGA-CH-5737&quot; &quot;TCGA-CH-5738&quot;
+  [9] &quot;TCGA-CH-5739&quot; &quot;TCGA-CH-5740&quot;
+ [11] &quot;TCGA-CH-5741&quot; &quot;TCGA-CH-5743&quot;
+ [13] &quot;TCGA-CH-5744&quot; &quot;TCGA-CH-5748&quot;
+ [15] &quot;TCGA-CH-5750&quot; &quot;TCGA-CH-5752&quot;
+ [17] &quot;TCGA-CH-5753&quot; &quot;TCGA-CH-5754&quot;
+ [19] &quot;TCGA-CH-5761&quot; &quot;TCGA-CH-5762&quot;
+ [21] &quot;TCGA-CH-5763&quot; &quot;TCGA-CH-5764&quot;
+ [23] &quot;TCGA-CH-5765&quot; &quot;TCGA-CH-5766&quot;
+ [25] &quot;TCGA-CH-5767&quot; &quot;TCGA-CH-5768&quot;
+ [27] &quot;TCGA-CH-5769&quot; &quot;TCGA-CH-5771&quot;
+ [29] &quot;TCGA-CH-5772&quot; &quot;TCGA-CH-5788&quot;
+ [31] &quot;TCGA-CH-5789&quot; &quot;TCGA-CH-5790&quot;
+ [33] &quot;TCGA-CH-5791&quot; &quot;TCGA-CH-5792&quot;
+ [35] &quot;TCGA-CH-5794&quot; &quot;TCGA-EJ-5494&quot;
+ [37] &quot;TCGA-EJ-5495&quot; &quot;TCGA-EJ-5496&quot;
+ [39] &quot;TCGA-EJ-5497&quot; &quot;TCGA-EJ-5498&quot;
+ [41] &quot;TCGA-EJ-5499&quot; &quot;TCGA-EJ-5501&quot;
+ [43] &quot;TCGA-EJ-5502&quot; &quot;TCGA-EJ-5503&quot;
+ [45] &quot;TCGA-EJ-5504&quot; &quot;TCGA-EJ-5505&quot;
+ [47] &quot;TCGA-EJ-5506&quot; &quot;TCGA-EJ-5507&quot;
+ [49] &quot;TCGA-EJ-5508&quot; &quot;TCGA-EJ-5509&quot;
+ [51] &quot;TCGA-EJ-5510&quot; &quot;TCGA-EJ-5511&quot;
+ [53] &quot;TCGA-EJ-5512&quot; &quot;TCGA-EJ-5514&quot;
+ [55] &quot;TCGA-EJ-5515&quot; &quot;TCGA-EJ-5516&quot;
+ [57] &quot;TCGA-EJ-5517&quot; &quot;TCGA-EJ-5518&quot;
+ [59] &quot;TCGA-EJ-5519&quot; &quot;TCGA-EJ-5521&quot;
+ [61] &quot;TCGA-EJ-5522&quot; &quot;TCGA-EJ-5524&quot;
+ [63] &quot;TCGA-EJ-5525&quot; &quot;TCGA-EJ-5526&quot;
+ [65] &quot;TCGA-EJ-5527&quot; &quot;TCGA-EJ-5530&quot;
+ [67] &quot;TCGA-EJ-5531&quot; &quot;TCGA-EJ-5532&quot;
+ [69] &quot;TCGA-EJ-5542&quot; &quot;TCGA-EJ-7115&quot;
+ [71] &quot;TCGA-EJ-7125&quot; &quot;TCGA-EJ-7218&quot;
+ [73] &quot;TCGA-EJ-7314&quot; &quot;TCGA-EJ-7315&quot;
+ [75] &quot;TCGA-EJ-7317&quot; &quot;TCGA-EJ-7318&quot;
+ [77] &quot;TCGA-EJ-7321&quot; &quot;TCGA-EJ-7328&quot;
+ [79] &quot;TCGA-EJ-7330&quot; &quot;TCGA-EJ-7331&quot;
+ [81] &quot;TCGA-EJ-7781&quot; &quot;TCGA-EJ-7782&quot;
+ [83] &quot;TCGA-EJ-7783&quot; &quot;TCGA-EJ-7784&quot;
+ [85] &quot;TCGA-EJ-7785&quot; &quot;TCGA-EJ-7786&quot;
+ [87] &quot;TCGA-EJ-7788&quot; &quot;TCGA-EJ-7789&quot;
+ [89] &quot;TCGA-EJ-7791&quot; &quot;TCGA-EJ-7792&quot;
+ [91] &quot;TCGA-EJ-7793&quot; &quot;TCGA-EJ-7794&quot;
+ [93] &quot;TCGA-EJ-7797&quot; &quot;TCGA-EJ-8468&quot;
+ [95] &quot;TCGA-EJ-8469&quot; &quot;TCGA-EJ-8470&quot;
+ [97] &quot;TCGA-EJ-8474&quot; &quot;TCGA-EJ-A46D&quot;
+ [99] &quot;TCGA-EJ-A46G&quot; &quot;TCGA-EJ-A65E&quot;
+[101] &quot;TCGA-EJ-A65F&quot; &quot;TCGA-EJ-A65J&quot;
+[103] &quot;TCGA-EJ-A6RA&quot; &quot;TCGA-EJ-A6RC&quot;
+[105] &quot;TCGA-EJ-A7NF&quot; &quot;TCGA-EJ-A7NG&quot;
+[107] &quot;TCGA-EJ-A7NH&quot; &quot;TCGA-EJ-A7NJ&quot;
+[109] &quot;TCGA-EJ-A7NK&quot; &quot;TCGA-EJ-A7NM&quot;
+[111] &quot;TCGA-EJ-A8FN&quot; &quot;TCGA-EJ-A8FS&quot;
+[113] &quot;TCGA-EJ-A8FU&quot; &quot;TCGA-FC-7708&quot;
+[115] &quot;TCGA-FC-7961&quot; &quot;TCGA-FC-A4JI&quot;
+[117] &quot;TCGA-FC-A5OB&quot; &quot;TCGA-FC-A8O0&quot;
+[119] &quot;TCGA-G9-6329&quot; &quot;TCGA-G9-6342&quot;
+[121] &quot;TCGA-G9-6351&quot; &quot;TCGA-G9-6353&quot;
+[123] &quot;TCGA-G9-6356&quot; &quot;TCGA-G9-6361&quot;
+[125] &quot;TCGA-G9-6363&quot; &quot;TCGA-G9-6364&quot;
+[127] &quot;TCGA-G9-6365&quot; &quot;TCGA-G9-6366&quot;
+[129] &quot;TCGA-G9-6367&quot; &quot;TCGA-G9-6370&quot;
+[131] &quot;TCGA-G9-6371&quot; &quot;TCGA-G9-6377&quot;
+[133] &quot;TCGA-G9-6378&quot; &quot;TCGA-G9-6384&quot;
+[135] &quot;TCGA-G9-6494&quot; &quot;TCGA-G9-6499&quot;
+[137] &quot;TCGA-G9-7510&quot; &quot;TCGA-G9-7521&quot;
+[139] &quot;TCGA-G9-7522&quot; &quot;TCGA-G9-7523&quot;
+[141] &quot;TCGA-H9-7775&quot; &quot;TCGA-HC-7077&quot;
+[143] &quot;TCGA-HC-7079&quot; &quot;TCGA-HC-7081&quot;
+[145] &quot;TCGA-HC-7210&quot; &quot;TCGA-HC-7211&quot;
+[147] &quot;TCGA-HC-7212&quot; &quot;TCGA-HC-7213&quot;
+[149] &quot;TCGA-HC-7232&quot; &quot;TCGA-HC-7233&quot;
+[151] &quot;TCGA-HC-7736&quot; &quot;TCGA-HC-7740&quot;
+[153] &quot;TCGA-HC-7744&quot; &quot;TCGA-HC-7748&quot;
+[155] &quot;TCGA-HC-8264&quot; &quot;TCGA-HC-A76X&quot;
+[157] &quot;TCGA-HI-7168&quot; &quot;TCGA-HI-7170&quot;
+[159] &quot;TCGA-HI-7171&quot; &quot;TCGA-J4-8198&quot;
+[161] &quot;TCGA-J4-8200&quot; &quot;TCGA-J4-A67T&quot;
+[163] &quot;TCGA-J4-A6M7&quot; &quot;TCGA-J4-A83I&quot;
+[165] &quot;TCGA-J4-A83N&quot; &quot;TCGA-J9-A8CK&quot;
+[167] &quot;TCGA-J9-A8CM&quot; &quot;TCGA-J9-A8CN&quot;
+[169] &quot;TCGA-J9-A8CP&quot; &quot;TCGA-KC-A4BL&quot;
+[171] &quot;TCGA-KC-A4BN&quot; &quot;TCGA-KC-A4BR&quot;
+[173] &quot;TCGA-KC-A4BV&quot; &quot;TCGA-KC-A7F3&quot;
+[175] &quot;TCGA-KC-A7F6&quot; &quot;TCGA-KC-A7FA&quot;
+[177] &quot;TCGA-KC-A7FD&quot; &quot;TCGA-KC-A7FE&quot;
+[179] &quot;TCGA-KK-A59X&quot; &quot;TCGA-KK-A59Y&quot;
+[181] &quot;TCGA-KK-A59Z&quot; &quot;TCGA-KK-A6E0&quot;
+[183] &quot;TCGA-KK-A6E1&quot; &quot;TCGA-KK-A6E2&quot;
+[185] &quot;TCGA-KK-A7AP&quot; &quot;TCGA-KK-A7AU&quot;
+[187] &quot;TCGA-KK-A7B1&quot; &quot;TCGA-KK-A7B3&quot;
+[189] &quot;TCGA-KK-A7B4&quot; &quot;TCGA-KK-A8I4&quot;
+[191] &quot;TCGA-KK-A8I5&quot; &quot;TCGA-KK-A8I6&quot;
+[193] &quot;TCGA-KK-A8I8&quot; &quot;TCGA-KK-A8IA&quot;
+[195] &quot;TCGA-KK-A8IB&quot; &quot;TCGA-KK-A8IC&quot;
+[197] &quot;TCGA-KK-A8ID&quot; &quot;TCGA-KK-A8IF&quot;
+[199] &quot;TCGA-KK-A8IH&quot; &quot;TCGA-KK-A8II&quot;
+[201] &quot;TCGA-KK-A8IJ&quot; &quot;TCGA-M7-A720&quot;
+[203] &quot;TCGA-M7-A721&quot; &quot;TCGA-M7-A725&quot;
+[205] &quot;TCGA-QU-A6IP&quot; &quot;TCGA-SU-A7E7&quot;
+[207] &quot;TCGA-TK-A8OK&quot; &quot;TCGA-V1-A8MF&quot;
+[209] &quot;TCGA-V1-A8MJ&quot; &quot;TCGA-V1-A8MU&quot;
+[211] &quot;TCGA-V1-A8WL&quot; &quot;TCGA-V1-A8X3&quot;
+[213] &quot;TCGA-VN-A88I&quot; &quot;TCGA-VN-A88K&quot;
+[215] &quot;TCGA-VN-A88L&quot; &quot;TCGA-VN-A88P&quot;
+[217] &quot;TCGA-VP-A875&quot; &quot;TCGA-VP-A878&quot;
+[219] &quot;TCGA-VP-A87E&quot; &quot;TCGA-VP-A87J&quot;
+[221] &quot;TCGA-VP-A87K&quot; &quot;TCGA-WW-A8ZI&quot;
+[223] &quot;TCGA-XA-A8JR&quot; &quot;TCGA-Y6-A8TL&quot;
+[225] &quot;TCGA-YJ-A8SW&quot; &quot;TCGA-YL-A8HJ&quot;
+[227] &quot;TCGA-YL-A8HK&quot; &quot;TCGA-YL-A8HL&quot;
+[229] &quot;TCGA-YL-A8HM&quot; &quot;TCGA-YL-A8HO&quot;
+[231] &quot;TCGA-YL-A8S8&quot; &quot;TCGA-YL-A8S9&quot;
+[233] &quot;TCGA-YL-A8SA&quot; &quot;TCGA-YL-A8SC&quot;
+[235] &quot;TCGA-YL-A8SF&quot; &quot;TCGA-YL-A8SH&quot;
+[237] &quot;TCGA-YL-A8SJ&quot; &quot;TCGA-YL-A8SK&quot;
+[239] &quot;TCGA-YL-A8SL&quot; &quot;TCGA-YL-A8SP&quot;
+[241] &quot;TCGA-YL-A8SQ&quot; &quot;TCGA-YL-A8SR&quot;
+[243] &quot;TCGA-YL-A9WI&quot; &quot;TCGA-YL-A9WJ&quot;
+[245] &quot;TCGA-ZG-A8QW&quot; &quot;TCGA-ZG-A8QX&quot;
+[247] &quot;TCGA-ZG-A8QY&quot; &quot;TCGA-ZG-A8QZ&quot;
+[249] &quot;TCGA-ZG-A9L5&quot; &quot;TCGA-EJ-A65M&quot;
+[251] &quot;TCGA-2A-A8VX&quot; &quot;TCGA-2A-AAYF&quot;
+[253] &quot;TCGA-2A-AAYO&quot; &quot;TCGA-2A-AAYU&quot;
+[255] &quot;TCGA-4L-AA1F&quot; &quot;TCGA-EJ-A7NN&quot;
+[257] &quot;TCGA-ZG-A9N3&quot; &quot;TCGA-EJ-A8FO&quot;
+[259] &quot;TCGA-ZG-A9NI&quot; &quot;TCGA-EJ-AB20&quot;
+[261] &quot;TCGA-CH-5745&quot; &quot;TCGA-J4-A67K&quot;
+[263] &quot;TCGA-FC-A66V&quot; &quot;TCGA-FC-A6HD&quot;
+[265] &quot;TCGA-J4-A67N&quot; &quot;TCGA-J4-A67O&quot;
+[267] &quot;TCGA-J4-A67R&quot; &quot;TCGA-G9-6338&quot;
+[269] &quot;TCGA-G9-6339&quot; &quot;TCGA-V1-A9ZG&quot;
+[271] &quot;TCGA-G9-6343&quot; &quot;TCGA-G9-6347&quot;
+[273] &quot;TCGA-J4-A83J&quot; &quot;TCGA-G9-6362&quot;
+[275] &quot;TCGA-J9-A52C&quot; &quot;TCGA-J9-A52E&quot;
+[277] &quot;TCGA-G9-6373&quot; &quot;TCGA-ZG-A9MC&quot;
+[279] &quot;TCGA-G9-6379&quot; &quot;TCGA-G9-A9S7&quot;
+[281] &quot;TCGA-G9-6496&quot; &quot;TCGA-G9-6498&quot;
+[283] &quot;TCGA-KK-A59V&quot; &quot;TCGA-G9-7525&quot;
+[285] &quot;TCGA-G9-A9S0&quot; &quot;TCGA-G9-A9S4&quot;
+[287] &quot;TCGA-H9-A6BX&quot; &quot;TCGA-H9-A6BY&quot;
+[289] &quot;TCGA-KK-A6E4&quot; &quot;TCGA-KK-A6E8&quot;
+[291] &quot;TCGA-EJ-7312&quot; &quot;TCGA-YL-A9WK&quot;
+[293] &quot;TCGA-KK-A7B0&quot; &quot;TCGA-EJ-7325&quot;
+[295] &quot;TCGA-KK-A7B2&quot; &quot;TCGA-ZG-A9LU&quot;
+[297] &quot;TCGA-ZG-A9LY&quot; &quot;TCGA-ZG-A9M4&quot;
+[299] &quot;TCGA-KK-A8I7&quot; &quot;TCGA-ZG-A9L4&quot;
+[301] &quot;TCGA-M7-A71Z&quot; &quot;TCGA-YL-A8SI&quot;
+[303] &quot;TCGA-HI-7169&quot; &quot;TCGA-EJ-AB27&quot;
+[305] &quot;TCGA-HC-7817&quot; &quot;TCGA-X4-A8KQ&quot;
+[307] &quot;TCGA-J4-A67M&quot; &quot;TCGA-V1-A9OQ&quot;
+[309] &quot;TCGA-ZG-A9L6&quot; &quot;TCGA-EJ-A46B&quot;
+[311] &quot;TCGA-EJ-A46E&quot; &quot;TCGA-EJ-A46F&quot;
+[313] &quot;TCGA-M7-A724&quot; &quot;TCGA-V1-A9ZI&quot;
+[315] &quot;TCGA-V1-A9ZR&quot; &quot;TCGA-EJ-A65B&quot;
+[317] &quot;TCGA-EJ-A65D&quot; &quot;TCGA-QU-A6IN&quot;
+[319] &quot;TCGA-V1-A9OT&quot; &quot;TCGA-J4-A67Q&quot;
+[321] &quot;TCGA-V1-A9OY&quot; &quot;TCGA-TP-A8TT&quot;
+[323] &quot;TCGA-ZG-A9LS&quot; &quot;TCGA-ZG-A9LM&quot;
+[325] &quot;TCGA-ZG-A9LZ&quot; &quot;TCGA-V1-A9OH&quot;
+[327] &quot;TCGA-V1-A9OL&quot; &quot;TCGA-ZG-A9L1&quot;
+[329] &quot;TCGA-V1-A9Z7&quot; &quot;TCGA-V1-A9Z8&quot;
+[331] &quot;TCGA-KC-A7F5&quot; &quot;TCGA-V1-A9O5&quot;
+[333] &quot;TCGA-VP-AA1N&quot; &quot;TCGA-M7-A723&quot;
+[335] &quot;TCGA-ZG-A9L0&quot; &quot;TCGA-V1-A9Z9&quot;
+[337] &quot;TCGA-KK-A5A1&quot; &quot;TCGA-Y6-A9XI&quot;
+[339] &quot;TCGA-KK-A6E3&quot; &quot;TCGA-M7-A722&quot;
+[341] &quot;TCGA-YL-A9WL&quot; &quot;TCGA-ZG-A9KY&quot;
+[343] &quot;TCGA-YL-A9WY&quot; &quot;TCGA-ZG-A9LB&quot;
+[345] &quot;TCGA-TP-A8TV&quot; &quot;TCGA-V1-A9OX&quot;
+[347] &quot;TCGA-YL-A9WX&quot; &quot;TCGA-ZG-A9L9&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZm9yKHYgaW4gMTpsZW5ndGgoY29tcGxldGUpKXtcbiAgICByb3duYW1lcyhjb21wbGV0ZVtbdl1dKSA8LSBzdWJzdHIocm93bmFtZXMoY29tcGxldGVbW3ZdXSksIDEsIDEyKTtcbn1cbmBgYCJ9 -->
+<pre class="r"><code>for(v in 1:length(complete)){
+    rownames(complete[[v]]) &lt;- substr(rownames(complete[[v]]), 1, 12);
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2934,8 +3307,9 @@ mo &lt;- curatedTCGAData(diseaseCode = &quot;PRAD&quot;,
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkJpb2luZm9ybWF0aWNzIHByb2plY3QgeWVhciAyMDIzLzIwMjQiDQphdXRob3I6ICJMdWNpYSBBbm5hIE1lbGxpbmkiDQpkYXRlOg0KI2JpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWINCm91dHB1dDogDQogICAgaHRtbF9ub3RlYm9vazoNCiAgICAgICAgdG9jOiB0cnVlDQogICAgICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQ0KICAgICAgICB0b2NfZmxvYXQ6IHRydWUNCiAgICAgICAgdGhlbWU6IGNlcnVsZWFuDQogICAgICAgIGZpZ19jYXB0aW9uOiB0cnVlDQotLS0NCg0KDQpgYGB7cn0NCmlmICghcmVxdWlyZSgiQmlvY01hbmFnZXIiLCBxdWlldGx5ID0gVFJVRSkpDQogICAgaW5zdGFsbC5wYWNrYWdlcygiQmlvY01hbmFnZXIiKQ0KDQpCaW9jTWFuYWdlcjo6aW5zdGFsbCgiY3VyYXRlZFRDR0FEYXRhIik7DQpCaW9jTWFuYWdlcjo6aW5zdGFsbCgiVENHQXV0aWxzIik7DQpCaW9jTWFuYWdlcjo6aW5zdGFsbCgiVENHQWJpb2xpbmtzIik7DQpgYGANCg0KYGBge3IgbWVzc2FnZT1GQUxTRSwgd2FybmluZz1GQUxTRX0NCmxpYnJhcnkoImN1cmF0ZWRUQ0dBRGF0YSIpOw0KbGlicmFyeSgiVENHQWJpb2xpbmtzIik7DQpsaWJyYXJ5KCJUQ0dBdXRpbHMiKTsNCmBgYA0KIzEuRG93bmxvYWQgUHJvc3RhdGUgYWRlbm9jYXJjaW5vbWEgZGF0YXNldCMNCiNtaVJOQVNlcUdlbmUgICAgICAgICAgICAgIEdlbmUtbGV2ZWwgbG9nMiBSUE0gbWlSTkEgZXhwcmVzc2lvbiB2YWx1ZXMNCiNSTkFTZXEyR2VuZSAgICAgICAgICAgICAgIFJTRU0gVFBNIGdlbmUgZXhwcmVzc2lvbiB2YWx1ZXMNCiNSUFBBQXJyYXkgICAgICAgICAgICAgICAgIFJldmVyc2UgUGhhc2UgUHJvdGVpbiBBcnJheSBub3JtYWxpemVkIHByb3RlaW4gZXhwcmVzc2lvbiB2YWx1ZXMNCmBgYHtyfQ0KDQphc3NheXMgPC0gYygibWlSTkFTZXFHZW5lIiwgIlJOQVNlcTJHZW5lIiwgIlJQUEFBcnJheSIpOw0KbW8gPC0gY3VyYXRlZFRDR0FEYXRhKGRpc2Vhc2VDb2RlID0gIlBSQUQiLCANCiAgICAgICAgICAgICAgICAgICAgICAgIGFzc2F5cyA9IGFzc2F5cywNCiAgICAgICAgICAgICAgICAgICAgICAgIHZlcnNpb24gPSAiMi4xLjEiLCBkcnkucnVuPUZBTFNFKTsNCmBgYA0KDQpgYGB7ciBtZXNzYWdlPVRSVUV9DQptbw0KYGBgDQoNCmBgYHtyfQ0Kc2Vzc2lvbkluZm8oKQ0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkJpb2luZm9ybWF0aWNzIHByb2plY3QgeWVhciAyMDIzLzIwMjQiDQphdXRob3I6ICJMdWNpYSBBbm5hIE1lbGxpbmkiDQpkYXRlOg0KI2JpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWINCm91dHB1dDogDQogICAgaHRtbF9ub3RlYm9vazoNCiAgICAgICAgdG9jOiB0cnVlDQogICAgICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQ0KICAgICAgICB0b2NfZmxvYXQ6IHRydWUNCiAgICAgICAgdGhlbWU6IGNlcnVsZWFuDQogICAgICAgIGZpZ19jYXB0aW9uOiB0cnVlDQotLS0NCg0KDQpgYGB7ciBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQ0KaWYgKCFyZXF1aXJlKCJCaW9jTWFuYWdlciIsIHF1aWV0bHkgPSBUUlVFKSkNCiAgICBpbnN0YWxsLnBhY2thZ2VzKCJCaW9jTWFuYWdlciIpDQoNCkJpb2NNYW5hZ2VyOjppbnN0YWxsKCJjdXJhdGVkVENHQURhdGEiKTsNCkJpb2NNYW5hZ2VyOjppbnN0YWxsKCJUQ0dBdXRpbHMiKTsNCkJpb2NNYW5hZ2VyOjppbnN0YWxsKCJUQ0dBYmlvbGlua3MiKTsNCmBgYA0KDQpgYGB7ciBtZXNzYWdlPUZBTFNFLCB3YXJuaW5nPUZBTFNFfQ0KbGlicmFyeSgiY3VyYXRlZFRDR0FEYXRhIik7DQpsaWJyYXJ5KCJUQ0dBYmlvbGlua3MiKTsNCmxpYnJhcnkoIlRDR0F1dGlscyIpOw0KYGBgDQojIERvd25sb2FkIFByb3N0YXRlIGFkZW5vY2FyY2lub21hIGRhdGFzZXQjDQo8IS0tIG1pUk5BU2VxR2VuZSAgICAgICAgICAgICAgR2VuZS1sZXZlbCBsb2cyIFJQTSBtaVJOQSBleHByZXNzaW9uIHZhbHVlcw0KPD5STkFTZXEyR2VuZSAgICAgICAgICAgICAgIFJTRU0gVFBNIGdlbmUgZXhwcmVzc2lvbiB2YWx1ZXMNCjw+UlBQQUFycmF5ICAgICAgICAgICAgICAgICBSZXZlcnNlIFBoYXNlIFByb3RlaW4gQXJyYXkgbm9ybWFsaXplZCBwcm90ZWluIGV4cHJlc3Npb24gdmFsdWVzIC0tPg0KYGBge3J9DQoNCmFzc2F5cyA8LSBjKCJtaVJOQVNlcUdlbmUiLCAiUk5BU2VxMkdlbmUiLCAiUlBQQUFycmF5Iik7DQptbyA8LSBjdXJhdGVkVENHQURhdGEoZGlzZWFzZUNvZGUgPSAiUFJBRCIsIA0KICAgICAgICAgICAgICAgICAgICAgICAgYXNzYXlzID0gYXNzYXlzLA0KICAgICAgICAgICAgICAgICAgICAgICAgdmVyc2lvbiA9ICIyLjEuMSIsIGRyeS5ydW49RkFMU0UpOw0KYGBgDQoNCmBgYHtyIG1lc3NhZ2U9VFJVRX0NCm1vDQpgYGANCiMgRGF0YSBwcmUtcHJvY2Vzc2luZw0KQ29uc2lkZXIgb25seSBwcmltYXJ5IHNvbGlkIHR1bW9ycw0KQW5hbHl0ZSBpbmZvcm1hdGlvbiBtaXNzaW5nIGZyb20gUFJBRF9SUFBBQXJyYXkgKDIwdGggcG9zaXRpb24pIHRoYXQgY2F1c2VzIGluY29uc2lzdGVudCBiYXJjb2RlIGxlbmd0aHMgaW4gTXVsdGlBcnJheUV4cGVyaW1lbnQgb2JqZWN0IGBgYG1vYGBgLg0KYGBge3IgbWVzc2FnZT1GQUxTRSwgd2FybmluZz1GQUxTRX0NCnByaW1hcnkgPC0gVENHQXV0aWxzOjpUQ0dBc2FtcGxlU2VsZWN0KGNvbG5hbWVzKG1vKSwgYygiMDEiKSk7DQptbyA8LSBtb1sscHJpbWFyeSxdDQpgYGANCkNoZWNrIGZvciByZXBsaWNhdGVzIGZvciBzYW1lIHBhdGllbnQgKGZpcnN0IDEyIGNoYXJhY3RlcnMpDQpObyByZXBsaWNhdGVzIHByZXNlbnQgaW4gYGBgbW9gYGAuDQpgYGB7cn0NCmNoZWNrX3JlcCA8LSBhbnlSZXBsaWNhdGVkKG1vKTsNCnByaW50KGNoZWNrX3JlcCkNCmBgYA0KUmVtb3ZlIEZGUEUgc2FtcGxlcyAoZnJvemVuIHRpc3N1ZSBpcyBiZXR0ZXIgcHJlc2V2ZWQpDQpgYGB7cn0NCm5vX2ZmcGUgPC0gd2hpY2goYXMuZGF0YS5mcmFtZShjb2xEYXRhKG1vKSkkcGF0aWVudC5zYW1wbGVzLnNhbXBsZS5pc19mZnBlID09ICJubyIpOw0KYXMuZGF0YS5mcmFtZShjb2xEYXRhKG1vKSkNCm1vIDwtIG1vWywgbm9fZmZwZSwgXTsNCmBgYA0KQ29uc2lkZXIgc2FtcGxlcyBoYXZpbmcgYWxsIGNvbnNpZGVyZWQgb21pY3MgZGF0YQ0KYGBge3J9DQpjb21wbGV0ZSA8LSBpbnRlcnNlY3RDb2x1bW5zKG1vKTsNCmBgYA0KRXhwcmVzc2lvbkxpc3Qg4oaSIHNpbXBsZSBsaXN0IG9mIG1hdHJpY2VzDQpgYGB7cn0NCmNvbXBsZXRlIDwtIGFzc2F5cyhjb21wbGV0ZSkNCnByaW50KGRpbShjb21wbGV0ZVtbMV1dKSkNCmBgYA0KVHJhbnNwb3NlIGFsbCB0aHJlZSBtYXRyaWNlcywgb2J0YWluaW5nIHNhbXBsZXMgJFx0aW1lcyQgZmVhdHVyZXMNCmBgYHtyfQ0KY29tcGxldGUgPC0gbGFwcGx5KGNvbXBsZXRlLEZVTj10KQ0KYGBgDQpSZW1vdmUgZmVhdHVyZXMgaGF2aW5nIG1pc3NpbmcgdmFsdWVzIChubyBtaXNzaW5nIHZhbHVlcyBpbiB0aGUgY3VycmVudCBkYXRhc2V0KQ0KYGBge3J9DQpmb3IgKGkgaW4gMTpsZW5ndGgoY29tcGxldGUpKXsNCiAgI3ByaW50KGRpbShjb21wbGV0ZVtbaV1dKSkNCiAgY29tcGxldGVbW2ldXSA8LSBjb21wbGV0ZVtbaV1dWyxjb2xTdW1zKGlzLm5hKGNvbXBsZXRlW1tpXV0pKT09MF0NCiAgI3ByaW50KGRpbShjb21wbGV0ZVtbaV1dKSkNCn0NCmBgYA0KU2VsZWN0IGZlYXR1cmVzIGhhdmluZyBtb3JlIHZhcmlhbmNlIGFjcm9zcyBzYW1wbGVzIGJlY2F1c2UgdGhleSBicmluZyBtb3JlIGluZm9ybWF0aW9uLg0KYGBge3J9DQpuZiA8LSAxMDA7DQpmb3IoaSBpbiAxOmxlbmd0aChjb21wbGV0ZSkpew0KICAgIA0KICAgIGlkeCA8LSBjYXJldDo6bmVhclplcm9WYXIoY29tcGxldGVbW2ldXSkNCiAgICBtZXNzYWdlKHBhc3RlKCJSZW1vdmVkICIsIGxlbmd0aChpZHgpLCAiZmVhdHVyZXMgZnJvbSIsIG5hbWVzKGNvbXBsZXRlKVtpXSkpOw0KICAgIGlmKGxlbmd0aChpZHgpICE9IDApew0KICAgICAgICBjb21wbGV0ZVtbaV1dIDwtIGNvbXBsZXRlW1tpXV1bLCAtaWR4XTsNCiAgICB9DQoNCiAgICBpZihuY29sKGNvbXBsZXRlW1tpXV0pIDw9IG5mKSBuZXh0DQogICAgDQogICAgdmFycyA8LSBhcHBseShjb21wbGV0ZVtbaV1dLCAyLCB2YXIpOw0KICAgIGlkeCA8LSBzb3J0KHZhcnMsIGluZGV4LnJldHVybj1UUlVFLCBkZWNyZWFzaW5nID0gVFJVRSkkaXg7DQogICAgDQogICAgY29tcGxldGVbW2ldXSA8LSBjb21wbGV0ZVtbaV1dWywgaWR4WzE6bmZdXTsNCiAgICANCn0NCmBgYA0KU3RhbmRhcmRpemUgZmVhdHVyZXMgd2l0aCB6LXNjb3JlDQpgYGB7cn0NCnpzY29yZSA8LSBmdW5jdGlvbihkYXRhKXsNCiAgICANCiAgICB6c2NvcmVfdmVjIDwtIGZ1bmN0aW9uKHgpIHsgcmV0dXJuICgoeCAtIG1lYW4oeCkpIC8gc2QoeCkpfQ0KICAgIGRhdGEgPC0gYXBwbHkoZGF0YSwgMiwgenNjb3JlX3ZlYykNCiAgICANCiAgICANCiAgICByZXR1cm4oZGF0YSkNCn0NCg0KY29tcGxldGUgPC0gbGFwcGx5KGNvbXBsZXRlLCB6c2NvcmUpOw0KYGBgDQpDbGVhbiBiYXJjb2RlcyByZXRhaW5pbmcgb25seSAiUHJvamVjdC1UU1MtUGFydGljaXBhbnQiIChmaXJzdCAxMiBjaGFyYWN0ZXJzKQ0KYGBge3J9DQpmb3IodiBpbiAxOmxlbmd0aChjb21wbGV0ZSkpew0KICAgIHJvd25hbWVzKGNvbXBsZXRlW1t2XV0pIDwtIHN1YnN0cihyb3duYW1lcyhjb21wbGV0ZVtbdl1dKSwgMSwgMTIpOw0KfQ0KYGBgDQoNCg0KDQoNCg0KYGBge3J9DQpzZXNzaW9uSW5mbygpDQpgYGANCg0K</div>
 
 
 </div>
