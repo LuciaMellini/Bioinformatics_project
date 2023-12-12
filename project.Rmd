@@ -32,6 +32,7 @@ library("TCGAutils");
 
 library("SNFtool")
 library("NetPreProc");
+library("cluster");
 ```
 # Download Prostate adenocarcinoma dataset#
 <!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
@@ -180,53 +181,56 @@ Integration through average of matrices
 W_int_mean <- Reduce('+', W_list)/length(W_list)
 ```
 ```{r}
+for (i in 1:length(W_list))
+    plot(W_list[[i]],xlim=c(0,0.01),ylim=c(0,0.01))
+```
+
+```{r}
 plot(W_int_mean,xlim=c(0,0.01),ylim=c(0,0.01))
 ```
 ```{r}
 plot(W_int_SNF,xlim=c(0,0.01),ylim=c(0,0.01))
 ```
 # Disease subtype discovery with PAM
-## Similarity matrices from each data source
+Number of clusters.
 ```{r}
-# Convert similarity matrix into a distance matrix. The similarities
-# are normalized in the range [0, 1] using min-max normalization before
-# conversion into distances.
+k <- length(unique(subtypes$Subtype_Integrative));
+```
+## Each data source
+Convert similarity matrix into a distance matrix. The similarities are normalized in the range &\left[0, 1\right]$ using min-max normalization before conversion into distances.
+```{r}
 dist <- list()
 D <- list()
 for (i in 1:length((W_list))){
   dist[[i]] <- 1 - NetPreProc::Max.Min.norm(W_list[[i]])
   D[[i]] <- as.dist(dist[[i]])
 }
-
-
-# Apply clustering algorithms on integrated matrix:
-k <- length(unique(subtypes$Subtype_Integrative));
 for (i in 1:length((W_list)))
   pam.res <- pam(D[[i]], k=k)
 ```
-## Similarity matrix obtained by integration through mean
+## Integrated data through mean
 ```{r}
-# Convert similarity matrix into a distance matrix. The similarities
-# are normalized in the range [0, 1] using min-max normalization before
-# conversion into distances.
-dist <- 1 - NetPreProc::Max.Min.norm(W_int_mean);
-D <- as.dist(dist); 
+dist_mean <- 1 - NetPreProc::Max.Min.norm(W_int_mean);
+D_mean <- as.dist(dist_mean); 
 
-# Apply clustering algorithms on integrated matrix:
-k <- length(unique(subtypes$Subtype_Integrative));
-pam.res <- pam(D, k=k);
+pam.res <- pam(D_mean, k=k);
 ```
-## Similarity matrix obtained integration through SNF
+## Integrated data through SNF
 ```{r}
-# Convert similarity matrix into a distance matrix. The similarities
-# are normalized in the range [0, 1] using min-max normalization before
-# conversion into distances.
-dist <- 1 - NetPreProc::Max.Min.norm(W_int_mean);
-D <- as.dist(dist); 
+dist_SNF <- 1 - NetPreProc::Max.Min.norm(W_int_SNF);
+D_SNF <- as.dist(dist_SNF); 
 
 # Apply clustering algorithms on integrated matrix:
+pam.res <- pam(D_SNF, k=k);
+```
+#Disease subtype discovery with spectral clustering
+(Consider distance matrix calculated above)
+## Integrated data through SNF
+```{r}
 k <- length(unique(subtypes$Subtype_Integrative));
-pam.res <- pam(D, k=k);
+sc.res <- SNFtool::spectralClustering(W_int_SNF, K=k)
+#to have uniform type
+pam.sc.res <- pam(sc.res,k=k)
 ```
 
 
