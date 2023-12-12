@@ -20,12 +20,16 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("curatedTCGAData");
 BiocManager::install("TCGAutils");
 BiocManager::install("TCGAbiolinks");
+
+install.packages("SNFtool");
 ```
 
 ```{r message=FALSE, warning=FALSE}
 library("curatedTCGAData");
 library("TCGAbiolinks");
 library("TCGAutils");
+
+library("SNFtool")
 ```
 # Download Prostate adenocarcinoma dataset#
 <!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
@@ -127,19 +131,31 @@ for(v in 1:length(complete)){
 subtypes <- as.data.frame(TCGAbiolinks::PanCancerAtlas_subtypes())
 
 subtypes <- subtypes[subtypes$cancer.type == "PRAD", ];
-
 # Retain only primary solid tumors and select samples in common with omics data
 # (in the same order):
 subtypes <- subtypes[TCGAutils::TCGAsampleSelect(subtypes$pan.samplesID, "01"), ];
 sub_select <- substr(subtypes$pan.samplesID,1,12) %in% rownames(complete[[1]]);
 subtypes <- subtypes[sub_select, ];
+```
+We consider only samples in the omics data in ```complete``` for which also subtype data is present in ```subtypes```
+```{r}
 rownames(subtypes) <- substr(subtypes$pan.samplesID, 1, 12);
-subtypes <- subtypes[rownames(complete[[1]]),];
-
+for (i in 1:length(complete))
+  complete[[i]] <- complete[[i]][rownames(subtypes),]
 # Print number of samples for each subtype:
 table(subtypes$Subtype_Integrative);
-
+names(complete[[1]]))
 ```
+# Check subtype & omics data order
+```{r}
+count <- 0
+for(i in 1:length(rownames(subtypes))){
+  if(rownames(subtypes)[i] != rownames(complete[[1]])[i])
+     count <- count + 1
+}
+count
+```
+All patients/samples are in the same order in both the datasets.
 
 
 
