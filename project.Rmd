@@ -144,9 +144,8 @@ for (i in 1:length(complete))
   complete[[i]] <- complete[[i]][rownames(subtypes),]
 # Print number of samples for each subtype:
 table(subtypes$Subtype_Integrative);
-names(complete[[1]]))
 ```
-# Check subtype & omics data order
+## Check subtype & omics data order
 ```{r}
 count <- 0
 for(i in 1:length(rownames(subtypes))){
@@ -156,7 +155,34 @@ for(i in 1:length(rownames(subtypes))){
 count
 ```
 All patients/samples are in the same order in both the datasets.
+# Multi-omics data integration
+Similarity matrices for each data source using exponential euclidian distance (affinity matrix).
+```{r}
+W_list <- list();
+for(i in 1:length(complete)){
+    Dist <- (dist2(as.matrix(complete[[i]]), as.matrix(complete[[i]])))^(1/2)
+    W_list[[i]] <- affinityMatrix(Dist)
+}
+```
+## Integration through SNF
+Integration of the matrices using Similarity Network Fusion
+*_t_ number of iterations
+*_K_ number of neighbours to consider to compute local similarity matrix
 
+```{r}
+W_int_SNF <- SNF(W_list, K=20, t=20);
+```
+## Integration through average
+Integration through average of matrices
+```{r}
+W_int_mean <- Reduce('+', W_list)/length(W_list)
+```
+```{r}
+plot(W_int_mean,xlim=c(0,0.01),ylim=c(0,0.01))
+```
+```{r}
+plot(W_int_SNF,xlim=c(0,0.01),ylim=c(0,0.01))
+```
 
 
 
