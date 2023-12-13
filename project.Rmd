@@ -17,22 +17,27 @@ output:
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("curatedTCGAData");
-BiocManager::install("TCGAutils");
-BiocManager::install("TCGAbiolinks");
+BiocManager::install("curatedTCGAData") 
+BiocManager::install("TCGAutils") 
+BiocManager::install("TCGAbiolinks") 
 
 install.packages("SNFtool");
 install.packages("NetPreProc");
+#install.packages("caret");
+#install.packages("cluster");
+#install.packages("mclustcomp");
 ```
 
 ```{r message=FALSE, warning=FALSE}
-library("curatedTCGAData");
-library("TCGAbiolinks");
-library("TCGAutils");
+library("curatedTCGAData") 
+library("TCGAbiolinks") 
+library("TCGAutils") 
 
 library("SNFtool")
-library("NetPreProc");
-library("cluster");
+library("NetPreProc") 
+#library("caret");
+#library("cluster");
+#library("mclustcomp");
 ```
 # Download Prostate adenocarcinoma dataset#
 <!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
@@ -40,42 +45,37 @@ library("cluster");
 <>RPPAArray                 Reverse Phase Protein Array normalized protein expression values -->
 ```{r}
 
-assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray");
+assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray") 
 mo <- curatedTCGAData(diseaseCode = "PRAD", 
                         assays = assays,
-                        version = "2.1.1", dry.run=FALSE);
-```
-
-```{r message=TRUE}
-mo
+                        version = "2.0.1", dry.run=FALSE) 
 ```
 # Data pre-processing
 Consider only primary solid tumors
 Analyte information missing from PRAD_RPPAArray (20th position) that causes inconsistent barcode lengths in MultiArrayExperiment object  ```mo``` (but doesn't cause problems for the code below).
 ```{r message=FALSE, warning=FALSE}
-primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01"));
+primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01")) 
 mo <- mo[,primary,]
 ```
 Check for replicates for same patient (first 12 characters)
 No replicates present in ```mo```.
 ```{r}
-check_rep <- anyReplicated(mo);
+check_rep <- anyReplicated(mo) 
 print(check_rep)
 ```
 Remove FFPE samples (frozen tissue is better preseved)
 ```{r}
-no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no");
-as.data.frame(colData(mo))
-mo <- mo[, no_ffpe, ];
+no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no") 
+#as.data.frame(colData(mo))
+mo <- mo[, no_ffpe, ] 
 ```
 Consider samples having all considered omics data
 ```{r}
-complete <- intersectColumns(mo);
+complete <- intersectColumns(mo) 
 ```
 ExpressionList → simple list of matrices
 ```{r}
 complete <- assays(complete)
-print(dim(complete[[1]]))
 ```
 Transpose all three matrices, obtaining samples $\times$ features
 ```{r}
@@ -91,21 +91,21 @@ for (i in 1:length(complete)){
 ```
 Select features having more variance across samples because they bring more information.
 ```{r}
-nf <- 100;
+nf <- 100 
 for(i in 1:length(complete)){
     
     idx <- caret::nearZeroVar(complete[[i]])
-    message(paste("Removed ", length(idx), "features from", names(complete)[i]));
+    message(paste("Removed ", length(idx), "features from", names(complete)[i])) 
     if(length(idx) != 0){
-        complete[[i]] <- complete[[i]][, -idx];
+        complete[[i]] <- complete[[i]][, -idx] 
     }
 
     if(ncol(complete[[i]]) <= nf) next
     
-    vars <- apply(complete[[i]], 2, var);
-    idx <- sort(vars, index.return=TRUE, decreasing = TRUE)$ix;
+    vars <- apply(complete[[i]], 2, var) 
+    idx <- sort(vars, index.return=TRUE, decreasing = TRUE)$ix 
     
-    complete[[i]] <- complete[[i]][, idx[1:nf]];
+    complete[[i]] <- complete[[i]][, idx[1:nf]] 
     
 }
 ```
@@ -121,32 +121,32 @@ zscore <- function(data){
     return(data)
 }
 
-complete <- lapply(complete, zscore);
+complete <- lapply(complete, zscore) 
 ```
 Clean barcodes retaining only "Project-TSS-Participant" (first 12 characters)
 ```{r}
 for(v in 1:length(complete)){
-    rownames(complete[[v]]) <- substr(rownames(complete[[v]]), 1, 12);
+    rownames(complete[[v]]) <- substr(rownames(complete[[v]]), 1, 12) 
 }
 ```
 # Download disease subtypes
 ```{r}
 subtypes <- as.data.frame(TCGAbiolinks::PanCancerAtlas_subtypes())
 
-subtypes <- subtypes[subtypes$cancer.type == "PRAD", ];
+subtypes <- subtypes[subtypes$cancer.type == "PRAD", ] 
 # Retain only primary solid tumors and select samples in common with omics data
 # (in the same order):
-subtypes <- subtypes[TCGAutils::TCGAsampleSelect(subtypes$pan.samplesID, "01"), ];
-sub_select <- substr(subtypes$pan.samplesID,1,12) %in% rownames(complete[[1]]);
-subtypes <- subtypes[sub_select, ];
+subtypes <- subtypes[TCGAutils::TCGAsampleSelect(subtypes$pan.samplesID, "01"), ] 
+sub_select <- substr(subtypes$pan.samplesID,1,12) %in% rownames(complete[[1]]) 
+subtypes <- subtypes[sub_select, ] 
 ```
 We consider only samples in the omics data in ```complete``` for which also subtype data is present in ```subtypes```
 ```{r}
-rownames(subtypes) <- substr(subtypes$pan.samplesID, 1, 12);
+rownames(subtypes) <- substr(subtypes$pan.samplesID, 1, 12) 
 for (i in 1:length(complete))
   complete[[i]] <- complete[[i]][rownames(subtypes),]
 # Print number of samples for each subtype:
-table(subtypes$Subtype_Integrative);
+table(subtypes$Subtype_Integrative) 
 ```
 ## Check subtype & omics data order
 ```{r}
@@ -163,17 +163,18 @@ Similarity matrices for each data source using exponential euclidian distance (a
 ```{r}
 W_list <- list();
 for(i in 1:length(complete)){
-    Dist <- (dist2(as.matrix(complete[[i]]), as.matrix(complete[[i]])))^(1/2)
-    W_list[[i]] <- affinityMatrix(Dist)
+    Dist <- (dist2(as.matrix(complete[[i]]), as.matrix(complete[[i]])))^(1/2);
+    W_list[[i]] <- affinityMatrix(Dist);
 }
 ```
+
 ## Integration through SNF
 Integration of the matrices using Similarity Network Fusion
 *_t_ number of iterations
 *_K_ number of neighbours to consider to compute local similarity matrix
 
 ```{r}
-W_int_SNF <- SNF(W_list, K=20, t=20);
+W_int_SNF <- SNF(W_list, K=20, t=20)
 ```
 ## Integration through average
 Integration through average of matrices
@@ -194,7 +195,7 @@ plot(W_int_SNF,xlim=c(0,0.01),ylim=c(0,0.01))
 # Disease subtype discovery with PAM
 Number of clusters.
 ```{r}
-k <- length(unique(subtypes$Subtype_Integrative));
+k <- length(unique(subtypes$Subtype_Integrative)) 
 ```
 ## Each data source
 Convert similarity matrix into a distance matrix. The similarities are normalized in the range &\left[0, 1\right]$ using min-max normalization before conversion into distances.
@@ -210,28 +211,32 @@ for (i in 1:length((W_list)))
 ```
 ## Integrated data through mean
 ```{r}
-dist_mean <- 1 - NetPreProc::Max.Min.norm(W_int_mean);
-D_mean <- as.dist(dist_mean); 
+dist_mean <- 1 - NetPreProc::Max.Min.norm(W_int_mean) 
+D_mean <- as.dist(dist_mean)  
 
-pam.res <- pam(D_mean, k=k);
+pam.res <- pam(D_mean, k=k) 
 ```
 ## Integrated data through SNF
 ```{r}
-dist_SNF <- 1 - NetPreProc::Max.Min.norm(W_int_SNF);
-D_SNF <- as.dist(dist_SNF); 
+dist_SNF <- 1 - NetPreProc::Max.Min.norm(W_int_SNF) 
+D_SNF <- as.dist(dist_SNF)  
 
 # Apply clustering algorithms on integrated matrix:
-pam.res <- pam(D_SNF, k=k);
+pam.res <- pam(D_SNF, k=k) 
+```
+```{r}
+?nemo
 ```
 #Disease subtype discovery with spectral clustering
 (Consider distance matrix calculated above)
 ## Integrated data through SNF
 ```{r}
-k <- length(unique(subtypes$Subtype_Integrative));
+k <- length(unique(subtypes$Subtype_Integrative)) 
 sc.res <- SNFtool::spectralClustering(W_int_SNF, K=k)
 #to have uniform type
 pam.sc.res <- pam(sc.res,k=k)
 ```
+
 
 
 ```{r}
