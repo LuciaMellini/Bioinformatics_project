@@ -228,6 +228,20 @@ Convert disease subtypes to numeric vectors
 ```{r}
 labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
 ```
+Chosen indeces to measure cluster quality
+* Counting pairs
+** Adjusted Rand index
+** Jaccard index
+** Rand index
+* Set overlaps/matching
+** F-measure
+* Information theory
+** Joint entropy
+** Normalized Mutual Information (by Strehl & Ghosh)
+```{r}
+types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1");
+```
+
 ##Non-integrated data - clustering with PAM
 ```{r}
 df <- dataframe()
@@ -254,7 +268,6 @@ as.data.frame(metrics.pam);
 ## Data integrated through SNF - spectral clustering
 
 ```{r}
-types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1");
 metrics.pam <- mclustcomp(sc.res$clustering, labels, types=types);
 
 as.data.frame(metrics.pam);
