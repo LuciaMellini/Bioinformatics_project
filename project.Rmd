@@ -22,11 +22,10 @@ BiocManager::install("TCGAutils")
 BiocManager::install("TCGAbiolinks") 
 
 install.packages("SNFtool");
-install.packages("NetPreProc");
-install.packages("caret");
-install.packages("cluster");
-install.packages("mclustcomp");
-install.packages("factoextra")
+install.packages("NetPreProc")
+install.packages("caret")
+install.packages("cluster")
+install.packages("mclustcomp")
 ```
 ```{r message=FALSE, warning=FALSE}
 library("curatedTCGAData") 
@@ -35,10 +34,9 @@ library("TCGAutils")
 
 library("SNFtool")
 library("NetPreProc") 
-library("caret");
-library("cluster");
-library("mclustcomp");
-library("factoextra")
+library("caret")
+library("cluster")
+library("mclustcomp")
 ```
 # Download Prostate adenocarcinoma dataset#
 <!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
@@ -230,11 +228,6 @@ Convert disease subtypes to numeric vectors
 ```{r}
 labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
 ```
-Chosen indeces to measure cluster quality
-```{r}
-types <- c("rand", "adjrand", "nmi1");
-```
-
 ##Non-integrated data - clustering with PAM
 ```{r}
 df <- dataframe()
@@ -259,15 +252,7 @@ metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types);
 as.data.frame(metrics.pam);
 ```
 ## Data integrated through SNF - spectral clustering
-* Counting pairs
-** Adjusted Rand index
-** Jaccard index
-** Rand index
-* Set overlaps/matching
-** F-measure
-* Information theory
-** Joint entropy
-** Normalized Mutual Information (by Strehl & Ghosh)
+
 ```{r}
 types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1");
 metrics.pam <- mclustcomp(sc.res$clustering, labels, types=types);
