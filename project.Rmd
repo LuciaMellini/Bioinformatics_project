@@ -23,11 +23,11 @@ BiocManager::install("TCGAbiolinks")
 
 install.packages("SNFtool");
 install.packages("NetPreProc");
-#install.packages("caret");
-#install.packages("cluster");
-#install.packages("mclustcomp");
+install.packages("caret");
+install.packages("cluster");
+install.packages("mclustcomp");
+install.packages("factoextra")
 ```
-
 ```{r message=FALSE, warning=FALSE}
 library("curatedTCGAData") 
 library("TCGAbiolinks") 
@@ -35,9 +35,10 @@ library("TCGAutils")
 
 library("SNFtool")
 library("NetPreProc") 
-#library("caret");
-#library("cluster");
-#library("mclustcomp");
+library("caret");
+library("cluster");
+library("mclustcomp");
+library("factoextra")
 ```
 # Download Prostate adenocarcinoma dataset#
 <!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
@@ -181,17 +182,6 @@ Integration through average of matrices
 ```{r}
 W_int_mean <- Reduce('+', W_list)/length(W_list)
 ```
-```{r}
-for (i in 1:length(W_list))
-    plot(W_list[[i]],xlim=c(0,0.01),ylim=c(0,0.01))
-```
-
-```{r}
-plot(W_int_mean,xlim=c(0,0.01),ylim=c(0,0.01))
-```
-```{r}
-plot(W_int_SNF,xlim=c(0,0.01),ylim=c(0,0.01))
-```
 # Disease subtype discovery with PAM
 Number of clusters.
 ```{r}
@@ -202,19 +192,20 @@ Convert similarity matrix into a distance matrix. The similarities are normalize
 ```{r}
 dist <- list()
 D <- list()
+pam.res <- list()
 for (i in 1:length((W_list))){
   dist[[i]] <- 1 - NetPreProc::Max.Min.norm(W_list[[i]])
   D[[i]] <- as.dist(dist[[i]])
 }
 for (i in 1:length((W_list)))
-  pam.res <- pam(D[[i]], k=k)
+  pam.res[[i]] <- pam(D[[i]], k=k)
 ```
 ## Integrated data through mean
 ```{r}
 dist_mean <- 1 - NetPreProc::Max.Min.norm(W_int_mean) 
 D_mean <- as.dist(dist_mean)  
 
-pam.res <- pam(D_mean, k=k) 
+pam.mean.res <- pam(D_mean, k=k) 
 ```
 ## Integrated data through SNF
 ```{r}
@@ -222,23 +213,93 @@ dist_SNF <- 1 - NetPreProc::Max.Min.norm(W_int_SNF)
 D_SNF <- as.dist(dist_SNF)  
 
 # Apply clustering algorithms on integrated matrix:
-pam.res <- pam(D_SNF, k=k) 
-```
-```{r}
-?nemo
+pam.SNF.res <- pam(D_SNF, k=k) 
 ```
 #Disease subtype discovery with spectral clustering
 (Consider distance matrix calculated above)
 ## Integrated data through SNF
 ```{r}
-k <- length(unique(subtypes$Subtype_Integrative)) 
 sc.res <- SNFtool::spectralClustering(W_int_SNF, K=k)
 #to have uniform type
-pam.sc.res <- pam(sc.res,k=k)
+sc.res <- pam(sc.res,k=k)
 ```
 
 
+#Comparing obtained clusterings with molecular disease subtypes
+Convert disease subtypes to numeric vectors
+```{r}
+labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
+```
+Chosen indeces to measure cluster quality
+```{r}
+types <- c("rand", "adjrand", "nmi1");
+```
 
+##Non-integrated data - clustering with PAM
+```{r}
+df <- dataframe()
+#names(complete)
+for (i in 1:length(complete)){
+  metrics.pam <- mclustcomp(pam.res[[i]]$clustering, labels, types=types);
+
+  print(as.data.frame(metrics.pam));
+}
+
+```
+## Data integrated through SNF - clustering with PAM
+```{r}
+metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types);
+
+as.data.frame(metrics.pam);
+```
+## Data integrated though mean - clustering with PAM
+```{r}
+metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types);
+
+as.data.frame(metrics.pam);
+```
+## Data integrated through SNF - spectral clustering
+* Counting pairs
+** Adjusted Rand index
+** Jaccard index
+** Rand index
+* Set overlaps/matching
+** F-measure
+* Information theory
+** Joint entropy
+** Normalized Mutual Information (by Strehl & Ghosh)
+```{r}
+types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1");
+metrics.pam <- mclustcomp(sc.res$clustering, labels, types=types);
+
+as.data.frame(metrics.pam);
+```
+```{r}
+for (i in 1:length(complete))
+  plot(complete[[i]])
+```
+Representation of distance matrix obtained by in Euclidian space using Multidimensional Scaling.
+* integration though SNF
+```{r}
+mds <- cmdscale(D_SNF, k = 2)
+x <- mds[,1]
+y <- mds[,2]
+
+plot(x,y, pch=16)
+```
+* integration through mean
+```{r}
+mds <- cmdscale(D_mean, k = 2)
+x <- mds[,1]
+y <- mds[,2]
+
+plot(x,y, pch=16)
+```
+```{r}
+?clusplot
+clusplot(pam.mean.res, main="", cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE)
+clusplot(pam.SNF.res, main ="", cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE)
+```
 ```{r}
 sessionInfo()
 ```
