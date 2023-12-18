@@ -1,7 +1,9 @@
 ---
-title: "Bioinformatics project year 2023/2024"
+title: "Disease subtype discovery using
+multi-omics data integration"
+subtitle: "Bioinformatics project"
 author: "Lucia Anna Mellini"
-date:
+date: "year 2023/2024"
 #bibliography: references.bib
 output: 
     html_notebook:
@@ -12,7 +14,7 @@ output:
         fig_caption: true
 ---
 
-
+Install and load used packages.
 ```{r message=FALSE, warning=FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -38,57 +40,62 @@ library("caret")
 library("cluster")
 library("mclustcomp")
 ```
-# Download Prostate adenocarcinoma dataset#
-<!-- miRNASeqGene              Gene-level log2 RPM miRNA expression values
-<>RNASeq2Gene               RSEM TPM gene expression values
-<>RPPAArray                 Reverse Phase Protein Array normalized protein expression values -->
+# Prostate adenocarcinoma multi-omics dataset
+In this project we will be using multi-omics data from a dataset from The Cancer Genome Atlas (TCGA) regarding Prostate adenocarcinoma (disease code "PRAD").
+Using the _curatedTCGAData_ package it is possibile to download different views of the TCGA dataset
+In particular we will be looking at:
+* miRNA data      (_miRNASeqGene_ - gene-level miRNA normalized expression values)
+* mRNA data       (_RNASeq2Gene_ - gene expressione values)
+* protein data    (_RPPAArray_ - Reverse Phase Protein Array normalized protein expression values)
 ```{r}
-
 assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray") 
 mo <- curatedTCGAData(diseaseCode = "PRAD", 
                         assays = assays,
                         version = "2.0.1", dry.run=FALSE) 
 ```
+A summary of the imported data stored in a MultiArrayExperiment object:
+```{r}
+mo
+```
 # Data pre-processing
-Consider only primary solid tumors
-Analyte information missing from PRAD_RPPAArray (20th position) that causes inconsistent barcode lengths in MultiArrayExperiment object  ```mo``` (but doesn't cause problems for the code below).
+We choose to consider only primary solid tumors. The information about the type of sample analyzed (i.e. primary, metastatic, solid, blood derived, etc.) is specified in the barcode of the sample by 2 numeric characters in the 13th and 14th position (for more information about TCGA [barcodes](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_Barcode/)). Primary solid tumors are identified by "01".
+For the dataset in question the length of the barcodes is one character shorter for the data view _PRAD_RPPAArray_, in fact the specification of analyte information for the samples is missing in the 20th position of the barcode. Seen that in the evaluation phase we consider only the first 12 characters of the barcode, concerning a specific individual (fields Project, Tissue Source Site(TSS)  and Participant), this difference is irrelevant for this project.
 ```{r message=FALSE, warning=FALSE}
 primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01")) 
 mo <- mo[,primary,]
 ```
-Check for replicates for same patient (first 12 characters)
-No replicates present in ```mo```.
+We do not want to avoid working with replicates for the same sample, so we check that the first 12 characters in the barcode, indicating the identifier for the sample, are unique in the multi-omics dataset. It emerges that indeed there are no replicated samples.
 ```{r}
 check_rep <- anyReplicated(mo) 
 print(check_rep)
 ```
-Remove FFPE samples (frozen tissue is better preseved)
+Also, we want to take into account only samples that have been preserved by freezing. seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
 ```{r}
 no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no") 
 #as.data.frame(colData(mo))
 mo <- mo[, no_ffpe, ] 
 ```
-Consider samples having all considered omics data
+Obviously we want to look at the samples from three points of view, so we keep only those that are present in all three data views in the multi-omics dataset.
 ```{r}
 complete <- intersectColumns(mo) 
 ```
-ExpressionList → simple list of matrices
+For convenience's sake we transform each of the three _ExpressionList_s in ```mo``` in simple matrices.
 ```{r}
 complete <- assays(complete)
 ```
-Transpose all three matrices, obtaining samples $\times$ features
+To help computation we also transpose all matrices, obtaining tables with a row for each sample, and the columns containing the relative features.
 ```{r}
 complete <- lapply(complete,FUN=t)
 ```
-Remove features having missing values (no missing values in the current dataset)
+FIt would also be ideal to not have to deal with missing values. It turns out that in the samples in the current dataset there are none.
 ```{r}
 for (i in 1:length(complete)){
-  #print(dim(complete[[i]]))
+  dim_prev <- dim(complete[[i]])
   complete[[i]] <- complete[[i]][,colSums(is.na(complete[[i]]))==0]
-  #print(dim(complete[[i]]))
+  print(dim(complete[[i]])-dim_prev)
 }
 ```
-Select features having more variance across samples because they bring more information.
+Subsequently we select features having more variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance.
 ```{r}
 nf <- 100 
 for(i in 1:length(complete)){
@@ -108,8 +115,7 @@ for(i in 1:length(complete)){
     
 }
 ```
-
-Standardize features with z-score
+We then standardize such features with z-score.
 ```{r}
 zscore <- function(data){
     
@@ -122,7 +128,7 @@ zscore <- function(data){
 
 complete <- lapply(complete, zscore) 
 ```
-Clean barcodes retaining only "Project-TSS-Participant" (first 12 characters)
+Lastly, we clean the TCGA barcodes, retaining only the first 12 characters that specify the sample's Project, TSS and Participant.
 ```{r}
 for(v in 1:length(complete)){
     rownames(complete[[v]]) <- substr(rownames(complete[[v]]), 1, 12) 
@@ -156,8 +162,9 @@ for(i in 1:length(rownames(subtypes))){
 }
 count
 ```
-All patients/samples are in the same order in both the datasets.
+All samples are in the same order in both the datasets.
 # Multi-omics data integration
+For each integration method, follows a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
 Similarity matrices for each data source using exponential euclidian distance (affinity matrix).
 ```{r}
 W_list <- list();
@@ -169,9 +176,8 @@ for(i in 1:length(complete)){
 
 ## Integration through SNF
 Integration of the matrices using Similarity Network Fusion
-*_t_ number of iterations
-*_K_ number of neighbours to consider to compute local similarity matrix
-
+* _t_ number of iterations
+* _K_ number of neighbours to consider to compute local similarity matrix
 ```{r}
 W_int_SNF <- SNF(W_list, K=20, t=20)
 ```
@@ -180,6 +186,8 @@ Integration through average of matrices
 ```{r}
 W_int_mean <- Reduce('+', W_list)/length(W_list)
 ```
+
+
 # Disease subtype discovery with PAM
 Number of clusters.
 ```{r}
@@ -224,42 +232,56 @@ sc.res <- pam(sc.res,k=k)
 
 
 #Comparing obtained clusterings with molecular disease subtypes
-Convert disease subtypes to numeric vectors
-```{r}
-labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
-```
-Chosen indeces to measure cluster quality
+For each combination of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots that represent the separation in clusters of the samples, shown as points extracted with Multidimensional Scaling from the distance matrices given by the used integration method. And, more formally, the clusterings are measured against different indices.
+
+*Chosen indices to measure cluster quality*
 * Counting pairs
-** Adjusted Rand index
-** Jaccard index
-** Rand index
+  * Adjusted Rand index
+  * Jaccard index
+  * Rand index
 * Set overlaps/matching
-** F-measure
+  * F-measure
 * Information theory
-** Joint entropy
-** Normalized Mutual Information (by Strehl & Ghosh)
+  * Joint entropy
+  * Normalized Mutual Information (by Strehl & Ghosh)
 ```{r}
 types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1");
 ```
-
+Convert disease subtypes to numeric vectors:
+```{r}
+labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
+```
 ##Non-integrated data - clustering with PAM
 ```{r}
-df <- dataframe()
-#names(complete)
-for (i in 1:length(complete)){
-  metrics.pam <- mclustcomp(pam.res[[i]]$clustering, labels, types=types);
-
-  print(as.data.frame(metrics.pam));
-}
+for (i in 1:length(complete))
+  clusplot(pam.res[[i]], main ="", cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
 
 ```
+
+```{r}
+df <- data.frame()
+for (i in 1:length(complete)){
+  metrics.pam <- mclustcomp(pam.res[[i]]$clustering, labels, types=types);
+  scores <- as.list(metrics.pam$scores)
+  name <- names(complete)[i]
+  df[name] <- scores
+}
+metrics.pam
+df
+```
 ## Data integrated through SNF - clustering with PAM
+```{r}
+clusplot(pam.SNF.res, main ="", cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE)
+```
 ```{r}
 metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types);
 
 as.data.frame(metrics.pam);
 ```
 ## Data integrated though mean - clustering with PAM
+```{r}
+clusplot(pam.mean.res, main="", cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE)
+```
 ```{r}
 metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types);
 
@@ -276,28 +298,7 @@ as.data.frame(metrics.pam);
 for (i in 1:length(complete))
   plot(complete[[i]])
 ```
-Representation of distance matrix obtained by in Euclidian space using Multidimensional Scaling.
-* integration though SNF
-```{r}
-mds <- cmdscale(D_SNF, k = 2)
-x <- mds[,1]
-y <- mds[,2]
 
-plot(x,y, pch=16)
-```
-* integration through mean
-```{r}
-mds <- cmdscale(D_mean, k = 2)
-x <- mds[,1]
-y <- mds[,2]
-
-plot(x,y, pch=16)
-```
-```{r}
-?clusplot
-clusplot(pam.mean.res, main="", cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE)
-clusplot(pam.SNF.res, main ="", cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE)
-```
 ```{r}
 sessionInfo()
 ```
