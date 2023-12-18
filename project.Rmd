@@ -72,7 +72,6 @@ print(check_rep)
 Also, we want to take into account only samples that have been preserved by freezing. seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
 ```{r}
 no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no") 
-#as.data.frame(colData(mo))
 mo <- mo[, no_ffpe, ] 
 ```
 Obviously we want to look at the samples from three points of view, so we keep only those that are present in all three data views in the multi-omics dataset.
@@ -173,26 +172,26 @@ for(i in 1:length(complete)){
 }
 ```
 ## Integration through SNF
-Integration of the matrices using Similarity Network Fusion @wang2014similarity
+Integration of the matrices using Similarity Network Fusion @wang2014similarity.
 * _t_ number of iterations
 * _K_ number of neighbours to consider to compute local similarity matrix
 ```{r}
 W_int_SNF <- SNF(W_list, K=20, t=20)
 ```
 ## Integration through average
-Integration through average of matrices
+Integration through averaging the matrices.
 ```{r}
 W_int_mean <- Reduce('+', W_list)/length(W_list)
 ```
-
-
-# Disease subtype discovery with PAM
-Number of clusters.
+# Disease subtype discovery with clustering
+First of all we need the number of clusters to identify, which corresponds to the number of iCluster @shen2009integrative molecular subtypes (in column _Subtype_Integrative_).
 ```{r}
 k <- length(unique(subtypes$Subtype_Integrative)) 
 ```
-## Each data source
-Convert similarity matrix into a distance matrix. The similarities are normalized in the range &\left[0, 1\right]$ using min-max normalization before conversion into distances.
+We apply each clustering algorithm on all possible configurations of the data represented as distance matrices: separated and integrated views of the data. In all cases the similarities are normalized in the range &\left[0, 1\right]$ using min-max normalization. After we consider the respective conversion into distance matrices.
+## PAM algorithm
+We try to find a possible clustering through the Partitioning Around Medoids algorithm @PAM.
+### Each data source
 ```{r}
 dist <- list()
 D <- list()
@@ -204,14 +203,14 @@ for (i in 1:length((W_list))){
 for (i in 1:length((W_list)))
   pam.res[[i]] <- pam(D[[i]], k=k)
 ```
-## Integrated data through mean
+### Integrated data through mean
 ```{r}
 dist_mean <- 1 - NetPreProc::Max.Min.norm(W_int_mean) 
 D_mean <- as.dist(dist_mean)  
 
 pam.mean.res <- pam(D_mean, k=k) 
 ```
-## Integrated data through SNF
+### Integrated data through SNF
 ```{r}
 dist_SNF <- 1 - NetPreProc::Max.Min.norm(W_int_SNF) 
 D_SNF <- as.dist(dist_SNF)  
@@ -223,9 +222,17 @@ pam.SNF.res <- pam(D_SNF, k=k)
 (Consider distance matrix calculated above)
 ## Integrated data through SNF
 ```{r}
+#"medoids"    "id.med"     "clustering" "objective"  "isolation"  "clusinfo"   "silinfo"    "diss"       "call"       "data"   
 sc.res <- SNFtool::spectralClustering(W_int_SNF, K=k)
 #to have uniform type
 sc.res <- pam(sc.res,k=k)
+for(i in length(rownames(complete[1]))){
+  print(rownames(complete[[1]])[i], sc.res$clustering[i])
+  sc.res$clustering[i] <- c(rownames(complete[[1]])[i], sc.res$clustering[i])
+}
+  
+  
+sc.res$clustering
 ```
 
 
@@ -253,7 +260,6 @@ labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes
 ```{r}
 for (i in 1:length(complete))
   clusplot(pam.res[[i]], main ="", cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
-
 ```
 
 ```{r}
@@ -292,6 +298,10 @@ metrics.pam <- mclustcomp(sc.res$clustering, labels, types=types);
 
 as.data.frame(metrics.pam);
 ```
+```{r}
+clusplot(sc.res)
+```
+
 ```{r}
 for (i in 1:length(complete))
   plot(complete[[i]])
