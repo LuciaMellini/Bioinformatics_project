@@ -4,7 +4,7 @@ multi-omics data integration"
 subtitle: "Bioinformatics project"
 author: "Lucia Anna Mellini"
 date: "year 2023/2024"
-#bibliography: references.bib
+bibliography: references.bib
 output: 
     html_notebook:
         toc: true
@@ -138,14 +138,16 @@ for(v in 1:length(complete)){
 ```{r}
 subtypes <- as.data.frame(TCGAbiolinks::PanCancerAtlas_subtypes())
 
-subtypes <- subtypes[subtypes$cancer.type == "PRAD", ] 
-# Retain only primary solid tumors and select samples in common with omics data
-# (in the same order):
+subtypes <- subtypes[subtypes$cancer.type == "PRAD", ]
+```
+Like for the multi-omics dataset we retain only primary solid tumors and keep the exclusively the first part of the TCGA barcode of the sample.
+```{r}
 subtypes <- subtypes[TCGAutils::TCGAsampleSelect(subtypes$pan.samplesID, "01"), ] 
-sub_select <- substr(subtypes$pan.samplesID,1,12) %in% rownames(complete[[1]]) 
+
+sub_select <- substr(subtypes$pan.samplesID,1,12) %in% rownames(complete[[1]])
 subtypes <- subtypes[sub_select, ] 
 ```
-We consider only samples in the omics data in ```complete``` for which also subtype data is present in ```subtypes```
+We consider only samples that are present both in the multi-omics and the subtype data. Seen that the subtype samples are a subset of those in the multi-omics data, it is sufficient to keep only that subset of rows in ```complete```.
 ```{r}
 rownames(subtypes) <- substr(subtypes$pan.samplesID, 1, 12) 
 for (i in 1:length(complete))
@@ -153,19 +155,16 @@ for (i in 1:length(complete))
 # Print number of samples for each subtype:
 table(subtypes$Subtype_Integrative) 
 ```
-## Check subtype & omics data order
+To help with later evaluations we assure that the samples are in the same order in both the multi-omics and the subtype datasets that we are working with.
 ```{r}
-count <- 0
-for(i in 1:length(rownames(subtypes))){
-  if(rownames(subtypes)[i] != rownames(complete[[1]])[i])
-     count <- count + 1
+for(i in 1:length(complete)){
+  print(sum(rownames(subtypes) != rownames(complete[[i]])))
 }
-count
 ```
-All samples are in the same order in both the datasets.
 # Multi-omics data integration
-For each integration method, follows a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
-Similarity matrices for each data source using exponential euclidian distance (affinity matrix).
+The objective is to fuse the different types data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
+#For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
+We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
 ```{r}
 W_list <- list();
 for(i in 1:length(complete)){
@@ -173,9 +172,8 @@ for(i in 1:length(complete)){
     W_list[[i]] <- affinityMatrix(Dist);
 }
 ```
-
 ## Integration through SNF
-Integration of the matrices using Similarity Network Fusion
+Integration of the matrices using Similarity Network Fusion @wang2014similarity
 * _t_ number of iterations
 * _K_ number of neighbours to consider to compute local similarity matrix
 ```{r}
