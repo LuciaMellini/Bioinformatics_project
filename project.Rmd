@@ -23,7 +23,7 @@ BiocManager::install("curatedTCGAData")
 BiocManager::install("TCGAutils") 
 BiocManager::install("TCGAbiolinks") 
 
-install.packages("SNFtool");
+install.packages("SNFtool")
 install.packages("NetPreProc")
 install.packages("caret")
 install.packages("cluster")
@@ -94,7 +94,7 @@ for (i in 1:length(complete)){
   print(dim(complete[[i]])-dim_prev)
 }
 ```
-Subsequently we select features having more variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance.
+Subsequently we select features having the most variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance.
 ```{r}
 nf <- 100 
 for(i in 1:length(complete)){
@@ -143,7 +143,7 @@ Like for the multi-omics dataset we retain only primary solid tumors and keep th
 ```{r}
 subtypes <- subtypes[TCGAutils::TCGAsampleSelect(subtypes$pan.samplesID, "01"), ] 
 
-sub_select <- substr(subtypes$pan.samplesID,1,12) %in% rownames(complete[[1]])
+sub_select <- substr(subtypes$pan.samplesID,1,12) %in% samples
 subtypes <- subtypes[sub_select, ] 
 ```
 We consider only samples that are present both in the multi-omics and the subtype data. Seen that the subtype samples are a subset of those in the multi-omics data, it is sufficient to keep only that subset of rows in ```complete```.
@@ -156,19 +156,18 @@ table(subtypes$Subtype_Integrative)
 ```
 To help with later evaluations we assure that the samples are in the same order in both the multi-omics and the subtype datasets that we are working with.
 ```{r}
-for(i in 1:length(complete)){
-  print(sum(rownames(subtypes) != rownames(complete[[i]])))
-}
+samples <- rownames(complete[[1]])
+print(sum(rownames(subtypes) != samples))
 ```
 # Multi-omics data integration
 The objective is to fuse the different types data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
 #For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
 We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
 ```{r}
-W_list <- list();
+W_list <- list()
 for(i in 1:length(complete)){
-    Dist <- (dist2(as.matrix(complete[[i]]), as.matrix(complete[[i]])))^(1/2);
-    W_list[[i]] <- affinityMatrix(Dist);
+    Dist <- (dist2(as.matrix(complete[[i]]), as.matrix(complete[[i]])))^(1/2)
+    W_list[[i]] <- affinityMatrix(Dist)
 }
 ```
 ## Integration through SNF
@@ -203,14 +202,14 @@ for (i in 1:length((W_list))){
 for (i in 1:length((W_list)))
   pam.res[[i]] <- pam(D[[i]], k=k)
 ```
-### Integrated data through mean
+### Data integrated through mean
 ```{r}
 dist_mean <- 1 - NetPreProc::Max.Min.norm(W_int_mean) 
 D_mean <- as.dist(dist_mean)  
 
 pam.mean.res <- pam(D_mean, k=k) 
 ```
-### Integrated data through SNF
+### Data integrated through SNF
 ```{r}
 dist_SNF <- 1 - NetPreProc::Max.Min.norm(W_int_SNF) 
 D_SNF <- as.dist(dist_SNF)  
@@ -218,24 +217,25 @@ D_SNF <- as.dist(dist_SNF)
 # Apply clustering algorithms on integrated matrix:
 pam.SNF.res <- pam(D_SNF, k=k) 
 ```
-#Disease subtype discovery with spectral clustering
+## Disease subtype discovery with spectral clustering
 (Consider distance matrix calculated above)
-## Integrated data through SNF
+### Each data source
 ```{r}
-#"medoids"    "id.med"     "clustering" "objective"  "isolation"  "clusinfo"   "silinfo"    "diss"       "call"       "data"   
-sc.res <- SNFtool::spectralClustering(W_int_SNF, K=k)
-#to have uniform type
-sc.res <- pam(sc.res,k=k)
-for(i in length(rownames(complete[1]))){
-  print(rownames(complete[[1]])[i], sc.res$clustering[i])
-  sc.res$clustering[i] <- c(rownames(complete[[1]])[i], sc.res$clustering[i])
-}
-  
-  
-sc.res$clustering
+sc.res <- list()
+for (i in 1:length((W_list)))
+  sc.res[[i]] <- SNFtool::spectralClustering(W_list[[i]], K=k)
+  sc.res[[i]] <- setNames(sc.res[[i]], samples)
 ```
-
-
+### Data integrated through SNF
+```{r}   
+sc.SNF.res <- SNFtool::spectralClustering(W_int_SNF, K=k)
+sc.SNF.res <- setNames(sc.SNF.res, samples)
+```
+### Data integrated though mean
+```{r}   
+sc.mean.res <- SNFtool::spectralClustering(W_int_mean, K=k)
+sc.mean.res <- setNames(sc.mean.res, samples)
+```
 #Comparing obtained clusterings with molecular disease subtypes
 For each combination of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots that represent the separation in clusters of the samples, shown as points extracted with Multidimensional Scaling from the distance matrices given by the used integration method. And, more formally, the clusterings are measured against different indices.
 
@@ -250,61 +250,82 @@ For each combination of integration method follows a quality evaluation of the p
   * Joint entropy
   * Normalized Mutual Information (by Strehl & Ghosh)
 ```{r}
-types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1");
+types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1")
 ```
 Convert disease subtypes to numeric vectors:
 ```{r}
 labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
 ```
-##Non-integrated data - clustering with PAM
+## Clustering with PAM
+### Non-integrated data
 ```{r}
 for (i in 1:length(complete))
   clusplot(pam.res[[i]], main ="", cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
 ```
-
 ```{r}
-df <- data.frame()
 for (i in 1:length(complete)){
-  metrics.pam <- mclustcomp(pam.res[[i]]$clustering, labels, types=types);
-  scores <- as.list(metrics.pam$scores)
-  name <- names(complete)[i]
-  df[name] <- scores
+  metrics.pam <- mclustcomp(pam.res[[i]]$clustering, labels, types=types)
+  print(as.data.frame(metrics.pam))
 }
-metrics.pam
-df
 ```
-## Data integrated through SNF - clustering with PAM
+### Data integrated through SNF
 ```{r}
 clusplot(pam.SNF.res, main ="", cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE)
 ```
 ```{r}
-metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types);
+metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types)
 
-as.data.frame(metrics.pam);
+as.data.frame(metrics.pam)
 ```
-## Data integrated though mean - clustering with PAM
+### Data integrated though mean
 ```{r}
 clusplot(pam.mean.res, main="", cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE)
 ```
 ```{r}
-metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types);
+metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types)
 
-as.data.frame(metrics.pam);
+as.data.frame(metrics.pam)
 ```
-## Data integrated through SNF - spectral clustering
-
+## Spectral clustering
+### Non-integrated data
 ```{r}
-metrics.pam <- mclustcomp(sc.res$clustering, labels, types=types);
-
-as.data.frame(metrics.pam);
+for (i in 1:length(complete)){
+  mds <- cmdscale(D[[i]], k = 2)
+  x <- mds[,1]
+  y <- mds[,2]
+  
+  plot(x,y, col=sc.res[[i]])
+}
 ```
 ```{r}
-clusplot(sc.res)
+for (i in 1:length(complete)){
+  metrics.sc <- mclustcomp(sc.res[[i]], labels, types=types)
+  print(as.data.frame(metrics.sc))
+}
 ```
-
+### Data integrated through SNF
 ```{r}
-for (i in 1:length(complete))
-  plot(complete[[i]])
+mds <- cmdscale(D_SNF, k = 2)
+x <- mds[,1]
+y <- mds[,2]
+
+plot(x,y, col=sc.SNF.res)
+```
+```{r}
+metrics.sc <- mclustcomp(sc.SNF.res, labels, types=types)
+  print(as.data.frame(metrics.sc))
+```
+### Data integrated through mean
+```{r}
+mds <- cmdscale(D_mean, k = 2)
+x <- mds[,1]
+y <- mds[,2]
+
+plot(x,y, col=sc.mean.res)
+```
+```{r}
+metrics.sc <- mclustcomp(sc.mean.res, labels, types=types)
+  print(as.data.frame(metrics.sc))
 ```
 
 ```{r}
