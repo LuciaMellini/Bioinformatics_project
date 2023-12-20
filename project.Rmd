@@ -2,8 +2,8 @@
 title: "Disease subtype discovery using
 multi-omics data integration"
 subtitle: "Bioinformatics project"
-author: "Lucia Anna Mellini"
-date: "year 2023/2024"
+author: "Lucia Anna Mellini - 28597A"
+date: "Academic year 2023/2024"
 csl: ieee.csl
 bibliography: references.bib
 output: 
