@@ -86,7 +86,7 @@ To help computation we also transpose all matrices, obtaining tables with a row 
 ```{r}
 complete <- lapply(complete,FUN=t)
 ```
-FIt would also be ideal to not have to deal with missing values. It turns out that in the samples in the current dataset there are none.
+It would also be ideal to not have to deal with missing values. It turns out that in the samples in the current dataset there are none.
 ```{r}
 for (i in 1:length(complete)){
   dim_prev <- dim(complete[[i]])
@@ -161,7 +161,7 @@ print(sum(rownames(subtypes) != samples))
 ```
 # Multi-omics data integration
 The objective is to fuse the different types data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
-#For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
+For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
 We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
 ```{r}
 W_list <- list()
@@ -188,8 +188,10 @@ First of all we need the number of clusters to identify, which corresponds to th
 k <- length(unique(subtypes$Subtype_Integrative)) 
 ```
 We apply each clustering algorithm on all possible configurations of the data represented as distance matrices: separated and integrated views of the data. In all cases the similarities are normalized in the range &\left[0, 1\right]$ using min-max normalization. After we consider the respective conversion into distance matrices.
+
 ## PAM algorithm
 We try to find a possible clustering through the Partitioning Around Medoids algorithm @PAM.
+
 ### Each data source
 ```{r}
 dist <- list()
@@ -217,8 +219,9 @@ D_SNF <- as.dist(dist_SNF)
 # Apply clustering algorithms on integrated matrix:
 pam.SNF.res <- pam(D_SNF, k=k) 
 ```
-## Disease subtype discovery with spectral clustering
+## Spectral clustering
 (Consider distance matrix calculated above)
+
 ### Each data source
 ```{r}
 sc.res <- list()
@@ -236,7 +239,7 @@ sc.SNF.res <- setNames(sc.SNF.res, samples)
 sc.mean.res <- SNFtool::spectralClustering(W_int_mean, K=k)
 sc.mean.res <- setNames(sc.mean.res, samples)
 ```
-#Comparing obtained clusterings with molecular disease subtypes
+# Comparing obtained clusterings with molecular disease subtypes
 For each combination of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots that represent the separation in clusters of the samples, shown as points extracted with Multidimensional Scaling from the distance matrices given by the used integration method. And, more formally, the clusterings are measured against different indices.
 
 *Chosen indices to measure cluster quality*
