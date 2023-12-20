@@ -4,6 +4,7 @@ multi-omics data integration"
 subtitle: "Bioinformatics project"
 author: "Lucia Anna Mellini"
 date: "year 2023/2024"
+csl: ieee.csl
 bibliography: references.bib
 output: 
     html_notebook:
@@ -42,11 +43,11 @@ library("mclustcomp")
 ```
 # Prostate adenocarcinoma multi-omics dataset
 In this project we will be using multi-omics data from a dataset from The Cancer Genome Atlas (TCGA) regarding Prostate adenocarcinoma (disease code "PRAD").
-Using the _curatedTCGAData_ package it is possibile to download different views of the TCGA dataset
+Using the *curatedTCGAData* package it is possibile to download different views of the TCGA dataset
 In particular we will be looking at:
-* miRNA data      (_miRNASeqGene_ - gene-level miRNA normalized expression values)
-* mRNA data       (_RNASeq2Gene_ - gene expressione values)
-* protein data    (_RPPAArray_ - Reverse Phase Protein Array normalized protein expression values)
+* miRNA data      (*miRNASeqGene* - gene-level miRNA normalized expression values)
+* mRNA data       (*RNASeq2Gene* - gene expressione values)
+* protein data    (*RPPAArray* - Reverse Phase Protein Array normalized protein expression values)
 ```{r}
 assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray") 
 mo <- curatedTCGAData(diseaseCode = "PRAD", 
@@ -59,7 +60,7 @@ mo
 ```
 # Data pre-processing
 We choose to consider only primary solid tumors. The information about the type of sample analyzed (i.e. primary, metastatic, solid, blood derived, etc.) is specified in the barcode of the sample by 2 numeric characters in the 13th and 14th position (for more information about TCGA [barcodes](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_Barcode/)). Primary solid tumors are identified by "01".
-For the dataset in question the length of the barcodes is one character shorter for the data view _PRAD_RPPAArray_, in fact the specification of analyte information for the samples is missing in the 20th position of the barcode. Seen that in the evaluation phase we consider only the first 12 characters of the barcode, concerning a specific individual (fields Project, Tissue Source Site(TSS)  and Participant), this difference is irrelevant for this project.
+For the dataset in question the length of the barcodes is one character shorter for the data view _PRAD_RPPAArray_, in fact the specification of analyte information for the samples is missing in the 20th position of the barcode. Seen that in the evaluation phase we consider only the first 12 characters of the barcode, concerning a specific individual (fields Project, Tissue Source Site(TSS) and Participant), this difference is irrelevant for this project.
 ```{r message=FALSE, warning=FALSE}
 primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01")) 
 mo <- mo[,primary,]
@@ -78,7 +79,7 @@ Obviously we want to look at the samples from three points of view, so we keep o
 ```{r}
 complete <- intersectColumns(mo) 
 ```
-For convenience's sake we transform each of the three _ExpressionList_s in ```mo``` in simple matrices.
+For convenience's sake we transform each of the three *ExpressionList*s in `mo` in simple matrices.
 ```{r}
 complete <- assays(complete)
 ```
@@ -86,12 +87,13 @@ To help computation we also transpose all matrices, obtaining tables with a row 
 ```{r}
 complete <- lapply(complete,FUN=t)
 ```
-It would also be ideal to not have to deal with missing values. It turns out that in the samples in the current dataset there are none.
+It would also be ideal to not have to deal with missing values. It turns out that there are *NA*s only in the protein expression data view.
 ```{r}
 for (i in 1:length(complete)){
-  dim_prev <- dim(complete[[i]])
+  dim_prev <- length(complete[[i]][1,])
   complete[[i]] <- complete[[i]][,colSums(is.na(complete[[i]]))==0]
-  print(dim(complete[[i]])-dim_prev)
+  dim_curr <- length(complete[[i]][1,])
+  print(dim_prev-dim_curr)
 }
 ```
 Subsequently we select features having the most variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance.
@@ -146,7 +148,7 @@ subtypes <- subtypes[TCGAutils::TCGAsampleSelect(subtypes$pan.samplesID, "01"), 
 sub_select <- substr(subtypes$pan.samplesID,1,12) %in% samples
 subtypes <- subtypes[sub_select, ] 
 ```
-We consider only samples that are present both in the multi-omics and the subtype data. Seen that the subtype samples are a subset of those in the multi-omics data, it is sufficient to keep only that subset of rows in ```complete```.
+We consider only samples that are present both in the multi-omics and the subtype data. Seen that the subtype samples are a subset of those in the multi-omics data, it is sufficient to keep only that subset of rows in `complete`.
 ```{r}
 rownames(subtypes) <- substr(subtypes$pan.samplesID, 1, 12) 
 for (i in 1:length(complete))
@@ -172,8 +174,8 @@ for(i in 1:length(complete)){
 ```
 ## Integration through SNF
 Integration of the matrices using Similarity Network Fusion @wang2014similarity.
-* _t_ number of iterations
-* _K_ number of neighbours to consider to compute local similarity matrix
+* *t* number of iterations
+* *K* number of neighbours to consider to compute local similarity matrix
 ```{r}
 W_int_SNF <- SNF(W_list, K=20, t=20)
 ```
@@ -183,14 +185,14 @@ Integration through averaging the matrices.
 W_int_mean <- Reduce('+', W_list)/length(W_list)
 ```
 # Disease subtype discovery with clustering
-First of all we need the number of clusters to identify, which corresponds to the number of iCluster @shen2009integrative molecular subtypes (in column _Subtype_Integrative_).
+First of all we need the number of clusters to identify, which corresponds to the number of iCluster @shen2009integrative molecular subtypes (in column *Subtype_Integrative*).
 ```{r}
 k <- length(unique(subtypes$Subtype_Integrative)) 
 ```
-We apply each clustering algorithm on all possible configurations of the data represented as distance matrices: separated and integrated views of the data. In all cases the similarities are normalized in the range &\left[0, 1\right]$ using min-max normalization. After we consider the respective conversion into distance matrices.
+We apply each clustering algorithm on individual and integrated views of the data represented as distance matrices. In all cases the distance matrices are derived from the respective normalized similarity matrices. We noramilize the affinity matrices in the range $\left[0, 1\right]$ using min-max normalization.
 
 ## PAM algorithm
-We try to find a possible clustering through the Partitioning Around Medoids algorithm @PAM.
+We find a possible clustering through the Partitioning Around Medoids(PAM) algorithm @PAM.
 
 ### Each data source
 ```{r}
@@ -220,7 +222,7 @@ D_SNF <- as.dist(dist_SNF)
 pam.SNF.res <- pam(D_SNF, k=k) 
 ```
 ## Spectral clustering
-(Consider distance matrix calculated above)
+Below we apply spectral clustering @von2007SP to study disease subtypes.
 
 ### Each data source
 ```{r}
@@ -240,22 +242,23 @@ sc.mean.res <- SNFtool::spectralClustering(W_int_mean, K=k)
 sc.mean.res <- setNames(sc.mean.res, samples)
 ```
 # Comparing obtained clusterings with molecular disease subtypes
-For each combination of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots that represent the separation in clusters of the samples, shown as points extracted with Multidimensional Scaling from the distance matrices given by the used integration method. And, more formally, the clusterings are measured against different indices.
-
-*Chosen indices to measure cluster quality*
-* Counting pairs
+For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
+More formally, the clusterings are measured against different indices. The chosen indices to measure cluster quality are the following (subdivided by type):
+*Counting pairs*
   * Adjusted Rand index
   * Jaccard index
   * Rand index
-* Set overlaps/matching
+*Set overlaps/matching*
   * F-measure
-* Information theory
+*Information theory*
   * Joint entropy
   * Normalized Mutual Information (by Strehl & Ghosh)
+
+Here we prepare the labels for the chosen indeces.
 ```{r}
 types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1")
 ```
-Convert disease subtypes to numeric vectors:
+After we convert disease subtypes into numeric vectors.
 ```{r}
 labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
 ```
@@ -320,6 +323,8 @@ metrics.sc <- mclustcomp(sc.SNF.res, labels, types=types)
 ```
 ### Data integrated through mean
 ```{r}
+install.packages("vegan")
+library(vegan)
 mds <- cmdscale(D_mean, k = 2)
 x <- mds[,1]
 y <- mds[,2]
