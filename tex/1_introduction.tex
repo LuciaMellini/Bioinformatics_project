@@ -1,0 +1,32 @@
+\chapter{Introduction}
+The objective of the project is to discover disease subtypes of Prostate adenocarcinoma from a dataset coming from The Cancer Genome Atlas (TCGA)\cite{hutter2018TCGA}. For the examined cancer we take into consideration the dataset with code "\textit{PRAD}". In particular we will consider the subtypes identified by The Cancer Genome Atlas Research Network \cite{abeshouse2015molecularPRAD}. We will be looking at a subset of the types of data analysed in \cite{abeshouse2015molecularPRAD}, namely the biomolecules  obtained from mRNA and miRNA sequencing, and reverse-phase protein array of the samples. The Cancer Genome Atlas Research Network performed unsupervised
+clustering of data from each molecular platform, as well as integrative clustering using iCluster \cite{shen2009integrative}. The latter approach is more ideal seen that it allows joint inference from multi-omics data by generating a single integrated cluster assignment through simultaneously capturing patterns of genomic alterations. Instead, identifying tumor subtypes by separately clustering each data view requires to manually integrate the results.
+The analyses with both individual and integrative clustering of the TCGA Prostate adenocarcinoma dataset uncovered both known and novel associations, with 74\% of all tumors being assignable to one of seven molecular classes. These are based on distinct oncogenic drivers: fusions involving (1) ERG, (2) ETV1, (3) ETV4, or (4) FLI1; mutations in (5) SPOP
+or (6) FOXA1; or (7) IDH1 mutations. Thus, more generally, the tumors can be subdivided into 3 disease subtypes. We will try to predict the membership of a sample in the multi-omics dataset to a class by applying different clustering algorithms.
+
+\section{Data integration}
+We could try and classify each data view of the multi-omics dataset (in our case mRNA, miRNA and protein expression) into subtypes. Nevertheless the disease subtpyes would be better determined if all of the molecular data were taken into account simultaneously. So, we want to fuse the different types of data from the multi-omics dataset into a unique object on which it is possible to evaluate the distance between the samples. We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix. These similarity matrices specify the distance between all possible pairs of samples. This format of the data allows the application of data integration methods, like the ones described below.
+
+\subsection{Mean}
+In this case we compute the integrated matrix by averaging component-wise the original three distance matrices obtained from data regarding mRNA, miRNA and protein espression. This method is very naïve since it considers strictly the similarity between pairs of samples, without having a global view of the distances.
+
+\subsection{SNF}
+
+
+The first step in the SNF algorithm is the construction of a similarity matrix
+among samples for each data source $s$. The similarity measure exploited is the 
+*scaled exponential euclidean distance* (the same we used in lesson 1):
+
+\begin{equation}
+    \label{eq:scaled_exponential_sim}
+    W^{(s)}(i,j) = exp \left(- \frac{\rho(x_i,x_j)^2}{\mu \varepsilon_{ij}}\right)
+\end{equation}
+
+where:
+
+* $\rho(x_i, x_j)$ is the  Euclidean  distance  between  patients \(x_i\) and \(x_j\)
+* $\mu$ is a parameter.
+* $\varepsilon_{i,j}$ is a scaling factor: $\varepsilon_{i,j} = \frac{mean(\rho(x_i, N_i)) + mean(\rho(x_j, N_j)) + \rho(x_i, x_j)}{3}$, where  \(mean(\rho(x_i, N_i))\) is the average value of the distances between \(x_i\) and each of its neighbors.
+
+
+\section{Clustering algorithms}
