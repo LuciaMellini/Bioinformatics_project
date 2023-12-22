@@ -65,17 +65,17 @@ For the dataset in question the length of the barcodes is one character shorter 
 primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01")) 
 mo <- mo[,primary,]
 ```
-We do not want to avoid working with replicates for the same sample, so we check that the first 12 characters in the barcode, indicating the identifier for the sample, are unique in the multi-omics dataset. It emerges that indeed there are no replicated samples.
+We do not want to avoid working with replicates for the same sample, so we check that the barcode, the identifier for the sample, are unique in the multi-omics dataset. It emerges that indeed there are no replicated samples.
 ```{r}
 check_rep <- anyReplicated(mo) 
 print(check_rep)
 ```
-Also, we want to take into account only samples that have been preserved by freezing. seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
+Also, we want to take into account only samples that have been preserved by freezing, seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
 ```{r}
 no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no") 
 mo <- mo[, no_ffpe, ] 
 ```
-Obviously we want to look at the samples from three points of view, so we keep only those that are present in all three data views in the multi-omics dataset.
+Obviously we want to look at the samples from three points of view, so we keep only those that are present in all three considered data views in the multi-omics dataset.
 ```{r}
 complete <- intersectColumns(mo) 
 ```
@@ -87,7 +87,7 @@ To help computation we also transpose all matrices, obtaining tables with a row 
 ```{r}
 complete <- lapply(complete,FUN=t)
 ```
-It would also be ideal to not have to deal with missing values. It turns out that there are *NA*s only in the protein expression data view.
+It would also be ideal to not have to deal with missing values, so we get rid of those columns. It turns out that there are *NA*s only in the protein expression data view.
 ```{r}
 for (i in 1:length(complete)){
   dim_prev <- length(complete[[i]][1,])

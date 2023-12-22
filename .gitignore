@@ -16,4 +16,5 @@
 *.fls
 *.gz
 *.log
+*.out
 *.toc
