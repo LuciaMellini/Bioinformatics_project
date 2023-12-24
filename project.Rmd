@@ -30,6 +30,9 @@ install.packages("caret")
 install.packages("cluster")
 install.packages("mclustcomp")
 ```
+```{r}
+install.packages("latex2exp")
+```
 ```{r message=FALSE, warning=FALSE}
 library("curatedTCGAData") 
 library("TCGAbiolinks") 
@@ -41,6 +44,10 @@ library("caret")
 library("cluster")
 library("mclustcomp")
 ```
+```{r}
+library("latex2exp")
+```
+
 # Prostate adenocarcinoma multi-omics dataset
 In this project we will be using multi-omics data from a dataset from The Cancer Genome Atlas (TCGA) regarding Prostate adenocarcinoma (disease code "PRAD").
 Using the *curatedTCGAData* package it is possibile to download different views of the TCGA dataset
@@ -65,17 +72,17 @@ For the dataset in question the length of the barcodes is one character shorter 
 primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01")) 
 mo <- mo[,primary,]
 ```
-We do not want to avoid working with replicates for the same sample, so we check that the barcode, the identifier for the sample, are unique in the multi-omics dataset. It emerges that indeed there are no replicated samples.
+We do not want to avoid working with replicates for the same sample, so we check that the first 12 characters in the barcode, indicating the identifier for the sample, are unique in the multi-omics dataset. It emerges that indeed there are no replicated samples.
 ```{r}
 check_rep <- anyReplicated(mo) 
 print(check_rep)
 ```
-Also, we want to take into account only samples that have been preserved by freezing, seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
+Also, we want to take into account only samples that have been preserved by freezing. seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
 ```{r}
 no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no") 
 mo <- mo[, no_ffpe, ] 
 ```
-Obviously we want to look at the samples from three points of view, so we keep only those that are present in all three considered data views in the multi-omics dataset.
+Obviously we want to look at the samples from three points of view, so we keep only those that are present in all three data views in the multi-omics dataset.
 ```{r}
 complete <- intersectColumns(mo) 
 ```
@@ -87,7 +94,7 @@ To help computation we also transpose all matrices, obtaining tables with a row 
 ```{r}
 complete <- lapply(complete,FUN=t)
 ```
-It would also be ideal to not have to deal with missing values, so we get rid of those columns. It turns out that there are *NA*s only in the protein expression data view.
+It would also be ideal to not have to deal with missing values. It turns out that there are *NA*s only in the protein expression data view.
 ```{r}
 for (i in 1:length(complete)){
   dim_prev <- length(complete[[i]][1,])
@@ -162,7 +169,8 @@ samples <- rownames(complete[[1]])
 print(sum(rownames(subtypes) != samples))
 ```
 # Multi-omics data integration
-The objective is to fuse the different types of data from the multi-omics dataset into a unique object on which it is possible to evaluate the distance between the samples.
+The objective is to fuse the different types data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
+For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
 We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
 ```{r}
 W_list <- list()
@@ -241,7 +249,7 @@ sc.mean.res <- SNFtool::spectralClustering(W_int_mean, K=k)
 sc.mean.res <- setNames(sc.mean.res, samples)
 ```
 # Comparing obtained clusterings with molecular disease subtypes
-For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given obtained though integration method. 
+For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
 More formally, the clusterings are measured against different indices. The chosen indices to measure cluster quality are the following (subdivided by type):
 *Counting pairs*
   * Adjusted Rand index
@@ -265,7 +273,7 @@ labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes
 ### Non-integrated data
 ```{r}
 for (i in 1:length(complete))
-  clusplot(pam.res[[i]], main ="", cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
+  clusplot(pam.res[[i]], xlab=TeX(r'), main ="", cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
 ```
 ```{r}
 for (i in 1:length(complete)){
