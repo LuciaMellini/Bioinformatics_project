@@ -15,7 +15,7 @@ For the following paragraphs it is helpful to understand the format of TCGA barc
     \underbrace{\text{00}}_\text{center}
 \end{equation*}
 \paragraph{Primary solid tumors}
-We only look at samples regarding primary solid tumors, so those that do not concern e.g. metastatic, solid, blood derived tumors. The type of sample analysed is specified by the sample barcode characters ``\texttt{01}" in position 13 and 14.
+We only look at samples regarding primary solid tumors, so those that do not concern e.g. metastatic, solid, blood derived tumors. The type of sample analyzed is specified by the sample barcode characters ``\texttt{01}" in position 13 and 14.
 For the dataset in question the length of the barcodes is one character shorter for the data view \textit{PRAD\_RPPAArray}, in fact the specification of analyte information for the samples is missing in the 20th position of the barcode. Seen that in the evaluation phase we consider only the first 12 characters of the barcode, concerning a specific patient (fields Project, Tissue Source Site (TSS) and Participant), this difference is irrelevant for the scope of this project.
 \paragraph{Replicates} We do not want to avoid working with replicates for the same sample, so we check that the barcode, the identifier for the sample, are unique in the multi-omics dataset. It emerges that our dataset doesn't contain replicated samples.
 \paragraph{FFPE} Also, we want to take into account only samples which biopsies have been frozen. In fact, formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
@@ -23,29 +23,29 @@ For the dataset in question the length of the barcodes is one character shorter 
 \paragraph{Missing values} In addition we get rid of features having missing values. The samples kept until now in the mRNA and miRNA data views don't contain \textit{NA}s, but the protein expression features were not completely ``clean''.\
 \paragraph{Highest variance} Subsequently we select features having the most variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance between the samples.
 \paragraph{Normalization} We then standardize such features with z-score, by applying for each value $v$
-\begin{equation}
+\begin{equation*}
     \frac{(v-\mu)}{\sigma}
-\end{equation}
-where $\mu$ and $\sigma$ are respectively the mean and standard deviation of the values for a same attribute across samples.
+\end{equation*}
+where $\mu$ and $\sigma$ are respectively the mean and standard deviation of the values for some attribute across samples.
 \paragraph{Trim barcodes} We are only interested in the barcode information about a specific individual, so we retain only the first 12 characters describing the patient. In particular we keep the sample's Project, TSS and Participant.
 \paragraph{Samples with specified subtype} We consider only the samples in the multi-omics that possess information about the subtype data obtained through iCluster. Seen that the subtype samples are a subset of those in the multi-omics data, it is sufficient to keep only that subset of patients.
 
 \section{Data integration}\label{methods_dataInt}
-We could try and classify each data view of the multi-omics dataset (in our case mRNA, miRNA and protein expression) into subtypes. Nevertheless the disease subtpyes would be better determined if all of the molecular data were taken into account simultaneously. So, we want to fuse the different types of data from the multi-omics dataset into a unique object on which it is possible to evaluate the distance between the samples. We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
+We could try and classify each data view of the multi-omics dataset (in our case mRNA, miRNA and protein expression) into subtypes. Nevertheless the disease subtypes would be better determined if all of the molecular data were taken into account simultaneously. So, we want to fuse the different types of data from the multi-omics dataset into a unique object on which it is possible to evaluate the distance between the samples. We start by finding the similarity matrix for each data source using exponential Euclidean distance, also called an affinity matrix.
 More formally the similarity matrix among samples of a data source $s$ is given by:
-\begin{equation} \label{eq:scaled_exponential_sim}
+\begin{equation*}
     W^{(s)}(i,j) = exp \left(- \frac{\rho(x_i,x_j)^2}{\mu \varepsilon_{ij}}\right)
-\end{equation}
+\end{equation*}
 where:
 \begin{description}
-    \item [$\rho(x_i, x_j)$] is the Euclidean  distance  between samples \(x_i\) and \(x_j\)
-    \item [$\mu$] is a parameter
-    \item [$\varepsilon_{i,j}$] is a scaling factor: $\varepsilon_{i,j} = \frac{mean(\rho(x_i, N_i)) + mean(\rho(x_j, N_j)) + \rho(x_i, x_j)}{3}$, where  $mean(\rho(x_i, N_i))$ is the average value of the distances between $x_i$ and each of its neighbours
+    \item [$\rho(x_i, x_j)$] is the Euclidean  distance  between samples \(x_i\) and \(x_j\),
+    \item [$\mu$] is a parameter,
+    \item [$\varepsilon_{i,j}$] is a scaling factor: $\varepsilon_{i,j} = \frac{\mu(\rho(x_i, N_i)) + \mu(\rho(x_j, N_j)) + \rho(x_i, x_j)}{3}$, where  $\mu(\rho(x_i, N_i))$ is the average value of the distances between $x_i$ and each of its neighbours.
 \end{description}
-These similarity matrices for each data source $s$ specify the distance between all possible pairs of samples. This format of the data allows the application of data integration methods, like the ones described in Section \ref{dataInt_mean} and \ref{dataInt_SNF}.
+The similarity matrices for each data source $s$ specify the distance between all possible pairs of samples. This format of the data allows to apply data integration methods, like the the ones described in Section \ref{dataInt_mean} and \ref{dataInt_SNF}.
 
 \subsection{Mean} \label{dataInt_mean}
-In this case we compute the integrated matrix by averaging component-wise the original three distance matrices obtained from data regarding mRNA, miRNA and protein espression. This method is very naïve since it considers strictly the similarity between pairs of samples, without having a global view of the distances.
+In this case we compute the integrated matrix by averaging component-wise the original three distance matrices obtained from data regarding mRNA, miRNA and protein expression. This method is very naïve since it considers strictly the similarity between pairs of samples, without having a global view of the distances. The simplicity of this approach is also reflected in the poorer clustering results with respect to the other used approach.
 
 \subsection{SNF} \label{dataInt_SNF}
 The SNF\cite{wang2014similarity} approach uses networks of samples as basis for integration. It consists of two steps:
@@ -57,56 +57,79 @@ The fused network captures shared and complementary information from the differe
 
 The first step in the SNF algorithm is the construction of a similarity matrix among samples for each data source $s$, as described in Section \ref{methods_dataInt}. Then, other two matrices are derived from $W^{(s)}(i,j)$. One is a ``global" similarity matrix $P^{(s)}$ which captures the overall relationships between samples:
 
-\begin{equation}\label{eq:global_kernel}
+\begin{equation*}
     G^{(s)}(i,j) = 
     \begin{dcases}
         \frac{W^{(s)}(i,j)}{2 \sum_{k \neq i} W^{(s)}(i,k)} & \text{ if $j \neq i$}\\
         \frac{1}{2} & \text{ if $j = i$}\\
     \end{dcases}       
-\end{equation}
+\end{equation*}
 
 
 For this equation the property $\sum_{j} P(i,j)=1$ holds.
 
-The other one is a ``local" similarity matrix $S^{(s)}$, that considers only local similarities in the neighbuorhood of each individual:
+The other one is a ``local" similarity matrix $S^{(s)}$, that considers only local similarities in the neighbourhood of each individual:
 
-\begin{equation}
-\label{eq:local_kernel}
+\begin{equation*}
     L^{(s)}(i,j) = 
     \begin{dcases}
       \frac{W^{(s)}(i,j)}{\sum_{k \in N_i} W^{(s)}(i,k)} & \text{ if $j \in N_i$}\\
       0 & \text{otherwise}\\
     \end{dcases}       
-\end{equation}
+\end{equation*}
 
-where $N_i = \{ x_k | x_k \in kNN(x_i) \cup \{ x_i \}\}$. \newline
+where $N_i = \{ x_k | x_k \in \text{kNN}(x_i) \cup \{ x_i \}\}$. \newline
 
 
 For all $s\in S$ data views, the matrices $W^{(s)}$, $L^{(s)}$ and $G^{(s)}$ are constructed. The similarities are diffused through the $G^{(s)}$s until convergence;this occurs when matrix in step $T$ is similar to the one computed in step $T-1$.  
 In the simplest case, when $|S|=2$, we have $G_t^{(s)}$ that refers to the matrix $P^{(s)}$ for data $s \in \{ s_1,s_2\}$ at time $t$.
 For $|S|=2$ the following recursive updating formulas describe the diffusion process:
 
-\begin{equation}
-    \label{eq:update}
+\begin{equation*}
     \begin{aligned}
         G^{(s_1)}_{t+1}=L^{(s_1)} \times G^{(s_2)}_{t} \times L^{(s_1)\top} \\
         G^{(s_2)}_{t+1}=L^{(s_2)} \times G^{(s_1)}_{t} \times L^{(s_2)\top}  
     \end{aligned}
-\end{equation}
+\end{equation*}
 
 In other words $G^{(s_1)}$ is updated by using $L^{(s_1)}$ from the same data source but $G^{(s_2)}$ from a different view and vice-versa.
 
-SNF can be easily extended to $|S| > 2$ data sources. \newline
+SNF can be easily extended to $|S|>2$ data sources. \newline
 
 
 The final integrated matrix $G^{(c)}$ is the average of all the global matrices that have reached convergence:
 
-\begin{equation}
-    \label{eq:consensus}
+\begin{equation*}
     G^{(c)} = \frac{1}{|S|} \sum_{k=1}^{|S|} G_T^{(k)}
-\end{equation}
+\end{equation*}
 
 
 \section{Clustering algorithms}\label{methods_clustering}
-\subsection{PAM}\label{clustering_PAM}
+As explained in the Introduction (Chapter \ref{introduction}) we use clustering algorithms to classify the samples in the multi-omics dataset into one of the three disease subtypes found with iCluster in \cite{shen2009integrative}. We hope to find a classification similar to the one proposed in the cited paper. We have chosen as clustering methods the PAM algorithm\cite{PAM}, illustrated in Section \ref{clustering_PAM}, and spectral clustering\cite{von2007SP}, as discussed in Section \ref{clustering_spectral}.
+
+All approaches are based on the same principle: when partitioning a set of objects into $k$ clusters, the main objective is to group objects with a high degree of similarity in the same cluster, while dissimilar objects end up in different clusters.
+
+\subsection{Partitioning Around Medoids (PAM)}\label{clustering_PAM}
+This method is based on finding $k$ representative objects, called medoids, among the objects in the dataset. These objects are considered representative if they represent various aspects of the structure of the data. Medoids are defined as the objects of the cluster for which the average dissimilarity to all the objects of the cluster is minimal. Subsequently the $k$ clusters are constructed by assigning each element of the dataset to the nearest medoid.
+The data given in input to PAM can assume two configurations:
+\begin{description}
+    \item[measurement values matrix] where the rows represent objects and the columns correspond to variables hte represent coordinates (all contained in a certain interval),
+    \item[dissimilarity matrix] where the cells of the matrix indicate the distance between the objects specified in the corresponding row and column.
+\end{description}
+In our study we have opted for the second approach, since it is easy to express the distance between objects as a function of their similarity obtained though integration of the data. Specifically, for $S$ being the similarity matrix of the objects, the $D$ distance matrix is the result of applying the following function :
+\begin{equation*}
+    S_{i,j} \mapsto 1 - \text{\textsl{min\_max\_norm}}(S_{i,j})
+\end{equation*} 
+where $i,j$ are indices of the matrix $S$.
+
+The function \textsl{min\_max\_norm} refers to the normalization of the elements in the affinity matrix $S$ in the range $\left[0, 1\right]$, using min-max normalization. In other words: 
+\begin{equation*}
+    \text{\textsl{min\_max\_norm}}(S_{i,j}) = \frac{S_{i,j}-\text{min}\{S_{i,j}|\forall i,j\}}{\text{min}\{S_{i,j}|\forall i,j\}-\text{max}\{S_{i,j}|\forall i,j\}}
+\end{equation*}
+\newline
+
+Now we outline an abstract description of the PAM algorithm.
+\paragraph*{BUILD phase}
+\paragraph*{SWAP phase}
+
 \subsection{Spectral clustering}\label{clustering_spectral}

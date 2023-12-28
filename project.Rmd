@@ -196,7 +196,7 @@ First of all we need the number of clusters to identify, which corresponds to th
 ```{r}
 k <- length(unique(subtypes$Subtype_Integrative)) 
 ```
-We apply each clustering algorithm on individual and integrated views of the data represented as distance matrices. In all cases the distance matrices are derived from the respective normalized similarity matrices. We noramilize the affinity matrices in the range $\left[0, 1\right]$ using min-max normalization.
+We apply each clustering algorithm on individual and integrated views of the data represented as distance matrices. In all cases the distance matrices are derived from the respective normalized similarity matrices. We normalize the affinity matrices in the range $\left[0, 1\right]$ using min-max normalization.
 
 ## PAM algorithm
 We find a possible clustering through the Partitioning Around Medoids(PAM) algorithm @PAM.
@@ -225,7 +225,6 @@ pam.mean.res <- pam(D_mean, k=k)
 dist_SNF <- 1 - NetPreProc::Max.Min.norm(W_int_SNF) 
 D_SNF <- as.dist(dist_SNF)  
 
-# Apply clustering algorithms on integrated matrix:
 pam.SNF.res <- pam(D_SNF, k=k) 
 ```
 ## Spectral clustering
@@ -250,7 +249,7 @@ sc.mean.res <- setNames(sc.mean.res, samples)
 ```
 # Comparing obtained clusterings with molecular disease subtypes
 For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
-More formally, the clusterings are measured against different indices. The chosen indices to measure cluster quality are the following (subdivided by type):
+More formally, the clusterings are compared to subtypes assigned by iCluster through multiple indices. The chosen indices to measure cluster quality are the following (subdivided by type):
 *Counting pairs*
   * Adjusted Rand index
   * Jaccard index
