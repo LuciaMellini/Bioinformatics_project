@@ -105,13 +105,15 @@ The final integrated matrix $G^{(c)}$ is the average of all the global matrices 
 
 
 \section{Clustering algorithms}\label{methods_clustering}
-As explained in the Introduction (Chapter \ref{introduction}) we use clustering algorithms to classify the samples in the multi-omics dataset into one of the three disease subtypes found with iCluster in \cite{shen2009integrative}. We hope to find a classification similar to the one proposed in the cited paper. We have chosen as clustering methods the PAM algorithm\cite{PAM}, illustrated in Section \ref{clustering_PAM}, and spectral clustering\cite{von2007SP}, as discussed in Section \ref{clustering_spectral}.
+As explained in the Introduction (Chapter \ref{introduction}) we use clustering algorithms to classify the samples in the multi-omics dataset into one of the three disease subtypes found with iCluster in \cite{shen2009integrative}. We hope to find a classification similar to the one proposed in the cited paper. We have chosen as clustering methods the PAM algorithm%\cite{PAM}
+, illustrated in Section \ref{clustering_PAM}, and spectral clustering\cite{von2007SP}, as discussed in Section \ref{clustering_spectral}.
 
 All approaches are based on the same principle: when partitioning a set of objects into $k$ clusters, the main objective is to group objects with a high degree of similarity in the same cluster, while dissimilar objects end up in different clusters.
 
 \subsection{Partitioning Around Medoids (PAM)}\label{clustering_PAM}
-This method is based on finding $k$ representative objects, called medoids, among the objects in the dataset. These objects are considered representative if they represent various aspects of the structure of the data. Medoids are defined as the objects of the cluster for which the average dissimilarity to all the objects of the cluster is minimal. Subsequently the $k$ clusters are constructed by assigning each element of the dataset to the nearest medoid.
-The data given in input to PAM can assume two configurations:
+This method is based on finding $k$ representative objects, called medoids, among the objects in the dataset. These objects are considered representative if they model various aspects of the structure of the data. Medoids are defined as the objects of the cluster for which the average dissimilarity to all the objects of the cluster is minimal. Subsequently the $k$ clusters are constructed by assigning each element of the dataset to the nearest medoid. The final goal is to obtain a set of clusters where the average or the sum distances of objects belonging to the cluster and the medoid is minimized.
+
+The data given in input to PAM can assume two possible configurations:
 \begin{description}
     \item[measurement values matrix] where the rows represent objects and the columns correspond to variables hte represent coordinates (all contained in a certain interval),
     \item[dissimilarity matrix] where the cells of the matrix indicate the distance between the objects specified in the corresponding row and column.
@@ -128,8 +130,27 @@ The function \textsl{min\_max\_norm} refers to the normalization of the elements
 \end{equation*}
 \newline
 
-Now we outline an abstract description of the PAM algorithm.
-\paragraph*{BUILD phase}
-\paragraph*{SWAP phase}
+Now we outline an abstract description of the PAM algorithm.\newline 
+For clarity's sake we define $O$ as the set of all objects in the dataset, and $S$ as the set of objects that are tentatively defined as medoids. The derived set $U = O - S$ is the set of unselected objects.
+
+The algorithm has two phases:
+
+\subsubsection*{BUILD phase}
+An initial clustering is obtained by the successive selection of the representative objects, until $k$ objects populate the set of selected objects $S$. The first chosen medoid is the object for which the sum of the dissimilarities to all other objects is as small as possible. In other words, it is the object that is most centrally located in $O$. Subsequently, the other $k-1$ representative objects are those that decrease the objective function as much as possible. In particular, a point $i \in U$ is chosen as a representative objects if it has a high number of unselected objects $j\in U\setminus \{i\}$ that are closer to $i$ than to already selected representatives belonging to $S$.
+
+\subsubsection*{SWAP phase}
+This phase is intended to improve the set of selected representatives in $S$.
+For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-representative:
+\begin{enumerate}
+    \item Swap $i$ and $h$, as that $h$ is a representative and $i$ is not,
+    \item Compute the contribution $C_{jih}$ of each object $j \in U\setminus \{h\}$ to the swap of $i$ and $h$. We can have two main situations:
+    \item \begin{enumerate}
+        \item $d(j, i) > D_{j}$, where $D_{j}$ is the dissimilarity between $j$ and the closest object in $S$. Then, $K_{jih} = min\{d(j,h) - D_{j}, 0\}$.
+        \item $d(j, i) = D_{j}$. Then, $K_{jih} = min\{d(j,h), E_{j}\} - D_{j}$, where $E_{j}$ is the dissimilarity between $j$ and the second closest object in $S$.
+    \end{enumerate}
+    \item Compute the total results of the swap as $T_{ih} = \sum\{ K_{jih} | j \in U\}$.
+    \item Select the pair $i, h$ that minimizes $T_{ih}$.
+    \item If $T_{ih} < 0$ the swap is performed, $D_{j}$ and $E_{j}$ are recomputed and we return at the first step of the SWAP phase. Otherwise, the algorithm stops if all $T_{ih} > 0$.
+\end{enumerate}
 
 \subsection{Spectral clustering}\label{clustering_spectral}
