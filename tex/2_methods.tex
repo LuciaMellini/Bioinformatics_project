@@ -140,17 +140,33 @@ An initial clustering is obtained by the successive selection of the representat
 
 \subsubsection*{SWAP phase}
 This phase is intended to improve the set of selected representatives in $S$.
-For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-representative:
+
+For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-representative, we execute the following procedure.
 \begin{enumerate}
-    \item Swap $i$ and $h$, as that $h$ is a representative and $i$ is not,
-    \item Compute the contribution $C_{jih}$ of each object $j \in U\setminus \{h\}$ to the swap of $i$ and $h$. We can have two main situations:
-    \item \begin{enumerate}
-        \item $d(j, i) > D_{j}$, where $D_{j}$ is the dissimilarity between $j$ and the closest object in $S$. Then, $K_{jih} = min\{d(j,h) - D_{j}, 0\}$.
-        \item $d(j, i) = D_{j}$. Then, $K_{jih} = min\{d(j,h), E_{j}\} - D_{j}$, where $E_{j}$ is the dissimilarity between $j$ and the second closest object in $S$.
-    \end{enumerate}
-    \item Compute the total results of the swap as $T_{ih} = \sum\{ K_{jih} | j \in U\}$.
-    \item Select the pair $i, h$ that minimizes $T_{ih}$.
-    \item If $T_{ih} < 0$ the swap is performed, $D_{j}$ and $E_{j}$ are recomputed and we return at the first step of the SWAP phase. Otherwise, the algorithm stops if all $T_{ih} > 0$.
+    \item Swap $i$ and $h$, as that $h$ is a representative and $i$ is not.\label{item:1}
+    \item Compute the contribution $C_{jih}$ of each object $j \in U\setminus \{h\}$ to the swap of $i$ and $h$. With $E_j$ being the dissimilarity between $j$ and the second most similar representative object in $S$, and $D_{max,j} = \max_{k\in S}{d(j,k)}$, $C_{jih}$ si defined as follows:
+    \begin{equation*}
+        C_{jih}=
+        \begin{dcases}
+            0 & \text{if } d(j,i)> D_{max,j}\land d(j,h)> D_{max,j}\\
+            d(j,h)-d(j,i) & \text{if } d(j,h)<E_j  \\
+            E_j-d(j,i) & \text{if } d(j,h)\geq E_j \\
+        \end{dcases}
+    \end{equation*}  
+    \item Calculate the total result of a swap between $i$ and $h$ by adding all contributions $C_{jih}$
+    \begin{equation*}
+        T_{ih}=\sum_j{C_{jih}}
+    \end{equation*}
+    \item Determine the pair $(i,h)$ such that
+    \begin{equation*}
+        (i,h)=\argmax_{(i,h)}{T_{ih}}
+    \end{equation*}
+    \item 
+    \begin{description}
+        \item[If $T_{ih}<0$] swap $i$ and $h$ and return to step \ref{item:1}.
+        \item[If $T_{ih}\geq 0$] the algorithm terminates because the objective function cannot be decreased by carrying out a swap.
+    \end{description}
 \end{enumerate}
+Seen that all valid swaps are considered, the results of the algorithm do not depend on the order in which the objects are taken into account.
 
 \subsection{Spectral clustering}\label{clustering_spectral}
