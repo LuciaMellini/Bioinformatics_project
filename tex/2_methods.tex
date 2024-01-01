@@ -170,3 +170,44 @@ For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-re
 Seen that all valid swaps are considered, the results of the algorithm do not depend on the order in which the objects are taken into account.
 
 \subsection{Spectral clustering}\label{clustering_spectral}
+For this approach we look at the similarity graph where the objects of the matrix correspond to the nodes of the graph. In our case the input of the algorithm is a similarity matrix, that acts as the weight matrix for the graph. The clustering problem in this case is reformulated using the similarity graph. We want to find a partition of the graph such that the edges between different groups have low weights and edges within the subgraph have high weights. In other words, the objects in a cluster that correspond to nodes in the same group are similar, while the points in different clusters are dissimilar from each other.
+
+We present in Algorithm \ref{alg: spectral_clustering} one version of the spectral clustering, in particular the one applied to the multi-omics dataset objects. The main trick is to change the representation of the abstract data points $x_i$, for which the similarity is expressed in the affinity matrix given as input, to points $y_i\in\mathbb{R}^k$. This change of representation is useful thanks to the properties of the graph Laplacians. In particular, it enhances the cluster-properties in the data, so that the cluster can be trivially detected in the new representation, in this case the authors have chosen the simple $k$-means algorithm\cite{Hastie2009ElementsStatisticalLearning}.
+\subsubsection*{Normalized graph Laplacian}
+In literature there exist two kinds of normalized graph Laplacians\cite{chung1997SpectralGraphTheory} that are defined as 
+\begin{equation*}
+    L_{sym}\coloneqq D^{-\frac{1}{2}}LD^{-\frac{1}{2}}=I-D^{-\frac{1}{2}}WD^{-\frac{1}{2}}
+\end{equation*}
+\begin{equation*}
+    L_{rw}\coloneqq D^{-1}L=I-D^{-1}W
+\end{equation*}
+where
+\begin{description}
+    \item[$L$] is the unnormalized graph Laplacian defined as $L\coloneqq D-W$,
+    \item[$D$] is the degree matrix, defined as the diagonal matrix with degrees of each node on the diagonal,
+    \item[$W$] is the weighted adjacency matrix of the graph.    
+\end{description}
+
+We focus only on the first Laplacian matrix $L_{sym}$ that owes it name to its symmetricity, since it appears in the spectral algorithm of our interest.
+\begin{algorithm}
+    \caption{Spectral clustering}
+    \label{alg: spectral_clustering}
+    \begin{algorithmic}
+        \Input
+        \State $S\in \mathbb{R}^{n\times n}$ similarity matrix
+        \State $k$ number of clusters to construct
+        \EndInput
+        \State
+        \State Compute a similarity graph, let $W$ be it's weighted adjacency matrix
+        \State Compute the normalized Laplacian $L_{sym}$
+        \State Compute the $k$ smallest eigenvectors $u_1,\dots,u_k$ fo $L_{sym}$\
+        \State Let $U\in \mathbb{R}^{n\times k}$ with $U=\left[u_1|u_2|\dots|u_k\right]$
+        \State For the matrix $T\in\mathbb{R}^{n\times k}$ from $U$ by normalizing the rows bu setting $t_{ij}=\frac{u_{ij}}{sum_k{(u^2_{ik}})^\frac{1}{2}}$
+        \State $\forall i \in \{1,\dots,n\}$ let $y_i\in \mathbb{R}^k$ be the vector corresponding to the $i$-th row of U
+        \State Cluster the points $\{y_i\}_{i\in\{1,\dots,n\}}$ in $\mathbb{R}^k$ with $k$-means into clusters $C_1,\dots,C_k$
+        \State
+        \Output
+        \State Clusters $A_1,\dots,A_k: A_i=\{j|y_j\in C_i\}$
+        \EndOutput
+    \end{algorithmic}
+\end{algorithm}
