@@ -239,7 +239,7 @@ for (i in 1:length((W_list)))
 ```
 ### Data integrated through SNF
 ```{r}   
-sc.SNF.res <- SNFtool::spectralClustering(W_int_SNF, K=k)
+sc.SNF.res <- SNFtool::spectralClustering(W_int_SNF, K=k, type=1)
 sc.SNF.res <- setNames(sc.SNF.res, samples)
 ```
 ### Data integrated though mean
