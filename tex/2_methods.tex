@@ -21,7 +21,7 @@ For the dataset in question the length of the barcodes is one character shorter 
 \paragraph{FFPE} Also, we want to take into account only samples which biopsies have been frozen. In fact, formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
 \paragraph{All data views} Obviously we want to look at the samples from all three points of view, so we keep only those that are present in all three considered data views in the multi-omics dataset.
 \paragraph{Missing values} In addition we get rid of features having missing values. The samples kept until now in the mRNA and miRNA data views don't contain \textit{NA}s, but the protein expression features were not completely ``clean''.\
-\paragraph{Highest variance} Subsequently we select features having the most variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance between the samples.
+\paragraph{Highest variance} Subsequently we select features having the most variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we maintain only the first 100 features with highest variance between the samples.
 \paragraph{Normalization} We then standardize such features with z-score, by applying for each value $v$
 \begin{equation*}
     \frac{(v-\mu)}{\sigma}
@@ -86,10 +86,10 @@ In the simplest case, when $|S|=2$, we have $G_t^{(s)}$ that refers to the matri
 For $|S|=2$ the following recursive updating formulas describe the diffusion process:
 
 \begin{equation*}
-    \begin{aligned}
+    \begin{gathered}
         G^{(s_1)}_{t+1}=L^{(s_1)} \times G^{(s_2)}_{t} \times L^{(s_1)\top} \\
         G^{(s_2)}_{t+1}=L^{(s_2)} \times G^{(s_1)}_{t} \times L^{(s_2)\top}  
-    \end{aligned}
+    \end{gathered}
 \end{equation*}
 
 In other words $G^{(s_1)}$ is updated by using $L^{(s_1)}$ from the same data source but $G^{(s_2)}$ from a different view and vice-versa.
@@ -167,7 +167,7 @@ For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-re
         \item[If \boldmath$T_{ih}\geq 0$] the algorithm terminates because the objective function cannot be decreased by carrying out a swap.
     \end{description}
 \end{enumerate}
-Seen that all valid swaps are considered, the results of the algorithm do not depend on the order in which the objects are taken into account.
+Seen that all valid swaps are evaluated, the results of the algorithm do not depend on the order in which the objects are taken into account.
 
 \subsection{Spectral clustering}\label{clustering_spectral}
 For this approach we look at the similarity graph where the objects of the matrix correspond to the nodes of the graph. In our case the input of the algorithm is a similarity matrix, that acts as the weight matrix for the graph. The clustering problem in this case is reformulated using the similarity graph. We want to find a partition of the graph such that the edges between different groups have low weights and edges within the subgraph have high weights. In other words, the objects in a cluster that correspond to nodes in the same group are similar, while the points in different clusters are dissimilar from each other.

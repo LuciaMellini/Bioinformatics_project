@@ -1,20 +1,80 @@
 \chapter{Results}
-\section{Clustering quality indices}
+For each type of integration method follows a qualitative evaluation of the possible clusterings in subtypes. Also quantitative measures are provided by comparing the clusterings to the subtypes assigned by iCluster through multiple indices selected from1~\cite{wagner2007comparing}. The chosen indices to measure cluster quality, subdivided by type, are the following:
+\begin{itemize}
+    \item Counting pairs
+    \begin{itemize}             
+        \item Rand index
+        \item Adjusted Rand index
+        \item Jaccard index
+    \end{itemize}
+    \item Set overlaps
+    \begin{itemize}
+        \item $\mathcal{F}$-measure
+    \end{itemize}
+    \item Mutual information
+    \begin{itemize}
+        \item Joint entropy
+        \item Normalized Mutual Information (by Strehl \& Ghosh)
+    \end{itemize}
+\end{itemize}
+In Section~\ref{results_indices} we present all the selected indices to better grasp the meaning of the results listed below. In Sections~\ref{results_nonIntegrated}-~\ref{results_SNF} we present the obtained results themselves. We give a visual idea by means of plots. The points represent the samples as rendered in Euclidean space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. In addition we state the value for all the indices presented in Section~\ref{results_indices}.
+
+\section{Clustering quality indices}\label{results_indices}
+We would like to answer the question of how similar the solutions of two different clustering algorithms are. In the next sections we refer to $X$ a finite set of objects such that $|X|=n$. A clustering $\mathcal{C}$ is a set $\{c_1,\dots,C_k\}$ that is a partition of $X$.
+
 \subsection{Counting pairs}
-\subsubsection{Jaccard index}
+To compare clusterings $\mathcal{C}$ and $\mathcal{C}'$ we can look at pairs of elements classified in the same way in both clusterings. So, on the basis of it partition according to a certain clustering, the set of objects $X$ can be seen as the disjoint union of the following sets:
+\begin{equation*}
+    \begin{gathered}
+        S_{11}=\{(s,r)|(s\in C_i\land r\in C_i) \land (s\in C'_j\land r\in C'_j)\}\\
+        S_{00}=\{(s,r)|(s\in C_i\land r\notin C_i) \land (s\in C'_j\land r\notin C'_j)\}\\
+        S_{10}=\{(s,r)|(s\in C_i\land r\in C_i) \land (s\in C'_j\land r\notin C'_j)\}\\
+        S_{01}=\{(s,r)|(s\in C_i\land r\notin C_i) \land (s\in C'_j\land r\in C'_j)\}
+    \end{gathered}
+\end{equation*}
+Let $n_{ab}\coloneqq|S_{ab}|$, $a,b\in\{0,1\}$ denote the respective sizes.
 \subsubsection{Rand index}
+In this case we count the correctly classified elements. Thus, the Rand index si defined by:
+\begin{equation*}
+    \mathcal{R}(\mathcal{C},\mathcal{C}')=frac{2(n_{11}+n_{00})}{n(n-1)}
+\end{equation*}
+$mathcal{R}$ ranges from 0, when the clusterings are identical, to 1, when the clusterings are identical. Seen that the similarity index also depends on the number of clusterings, it can be shown that unfortunately in the case of independent clusterings the Rand Index converges to 1 the number of clusterings increase.
+
 \subsubsection{Adjusted Rand index}
-\subsection{Set overlaps/pairing}
-\subsubsection{F-measure}
+When working with two random clusterings the expected value of the Random index is not a constant. The Adjusted Random index is the normalized difference between the Rand index and its expected value under a null hypothesis. The adjustment assumes a generalized hypergeometric distribution as a null hypothesis: the two clusterings are drawn randomly each with a fixed number of clusters of fixed size. 
+The index is defined as follows:
+\begin{equation*}
+    \begin{gathered}
+       \mathcal{R}_{adj}(\mathcal{C},\mathcal{C}')=\frac{\sum_{i=1}^k\sum_{j=1}^\ell\binom{|C_i\cap C'_j|}{2}-t_3}{\frac{1}{2}(t_1+t_2)-t_3} \\
+       \text{where } t_1=\sum_{i=1}^k\binom{|C_i|}{2}\text{, }t_2=\sum_{j=1}^\ell\binom{|C'_j|}{2}\text{, }t_3=\frac{2t_1t_2}{n(n-1)}
+    \end{gathered}    
+\end{equation*}
+$\mathcal{R}_{adj}$ has maximum value 1 for identical clusterings. The index has expected value 0 for independent clusterings, but some pairs of clusterings distributed differently with respect to the null assumption may result in negative values, up to $-0.5$.
+
+\subsubsection{Jaccard index}
+The Jaccard index is similar to the Rand index, but it disregards the pairs of elements that are in different clusters for both clusterings. It is defined as follows:
+\begin{equation*}
+    \mathcal{J}(\mathcal{C},\mathcal{C}')=\frac{n_{11}}{n_{11}+n_{01}+n_{10}}
+\end{equation*}
+
+\subsection{Set overlaps}
+These kinds of measure try to match clusters that have a maximum or relative overlap.
+
+\subsubsection{$\mathcal{F}$-measure}
+The $\mathcal{F}$-measure for a cluster $C'_j$ with respect to a class $C_i$ indicates how good the cluster $C'_j$ describes $C_i$
+
 \subsection{Information theory}
-\subsection{Joint entropy}
-\subsection{Normalized Mutual Information}
-\section{Non-integrated data}
+\subsubsection{Joint entropy}
+\subsubsection{Normalized Mutual Information}
+
+\section{Non-integrated data}\label{results_nonIntegrated}
 \subsection{Clustering with PAM}
 \subsection{Spectral clustering}
-\section{Data integration though mean}
+
+\section{Data integration though mean}\label{results_mean}
 \subsection{Clustering with PAM}
 \subsection{Spectral clustering}
-\section{Data integration through SNF}
+
+\section{Data integration through SNF}\label{results_SNF}
 \subsection{Clustering with PAM}
 \subsection{Spectral clustering}

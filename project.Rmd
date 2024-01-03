@@ -171,7 +171,7 @@ print(sum(rownames(subtypes) != samples))
 # Multi-omics data integration
 The objective is to fuse the different types data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
 For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
-We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
+We start by finding the similarity matrix for each data source using exponential Euclidean distance, also called an affinity matrix.
 ```{r}
 W_list <- list()
 for(i in 1:length(complete)){
@@ -248,7 +248,7 @@ sc.mean.res <- SNFtool::spectralClustering(W_int_mean, K=k)
 sc.mean.res <- setNames(sc.mean.res, samples)
 ```
 # Comparing obtained clusterings with molecular disease subtypes
-For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
+For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidean space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
 More formally, the clusterings are compared to subtypes assigned by iCluster through multiple indices. The chosen indices to measure cluster quality are the following (subdivided by type):
 *Counting pairs*
   * Adjusted Rand index
