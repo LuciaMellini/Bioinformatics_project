@@ -29,10 +29,10 @@ install.packages("NetPreProc")
 install.packages("caret")
 install.packages("cluster")
 install.packages("mclustcomp")
+install.packages("filehash")
+install.packages( 'tikzDevice')
 ```
-```{r}
-install.packages("latex2exp")
-```
+
 ```{r message=FALSE, warning=FALSE}
 library("curatedTCGAData") 
 library("TCGAbiolinks") 
@@ -43,10 +43,9 @@ library("NetPreProc")
 library("caret")
 library("cluster")
 library("mclustcomp")
+library("tikzDevice")
 ```
-```{r}
-library("latex2exp")
-```
+
 
 # Prostate adenocarcinoma multi-omics dataset
 In this project we will be using multi-omics data from a dataset from The Cancer Genome Atlas (TCGA) regarding Prostate adenocarcinoma (disease code "PRAD").
@@ -171,7 +170,7 @@ print(sum(rownames(subtypes) != samples))
 # Multi-omics data integration
 The objective is to fuse the different types data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
 For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
-We start by finding the similarity matrix for each data source using exponential Euclidean distance, also called an affinity matrix.
+We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
 ```{r}
 W_list <- list()
 for(i in 1:length(complete)){
@@ -248,7 +247,7 @@ sc.mean.res <- SNFtool::spectralClustering(W_int_mean, K=k)
 sc.mean.res <- setNames(sc.mean.res, samples)
 ```
 # Comparing obtained clusterings with molecular disease subtypes
-For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidean space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
+For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
 More formally, the clusterings are compared to subtypes assigned by iCluster through multiple indices. The chosen indices to measure cluster quality are the following (subdivided by type):
 *Counting pairs*
   * Adjusted Rand index
@@ -272,7 +271,7 @@ labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes
 ### Non-integrated data
 ```{r}
 for (i in 1:length(complete))
-  clusplot(pam.res[[i]], xlab=TeX(r'), main ="", cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
+  clusplot(pam.res[[i]], main ="", sub=NULL, cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
 ```
 ```{r}
 for (i in 1:length(complete)){
@@ -282,7 +281,9 @@ for (i in 1:length(complete)){
 ```
 ### Data integrated through SNF
 ```{r}
-clusplot(pam.SNF.res, main ="", cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE)
+#tikz("myPlot.tex")
+clusplot(pam.SNF.res, main ="", sub=NULL, cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE)
+#dev.off()
 ```
 ```{r}
 metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types)
@@ -291,7 +292,7 @@ as.data.frame(metrics.pam)
 ```
 ### Data integrated though mean
 ```{r}
-clusplot(pam.mean.res, main="", cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE)
+clusplot(pam.mean.res, main="", sub=NULL, cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE)
 ```
 ```{r}
 metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types)
@@ -329,8 +330,6 @@ metrics.sc <- mclustcomp(sc.SNF.res, labels, types=types)
 ```
 ### Data integrated through mean
 ```{r}
-install.packages("vegan")
-library(vegan)
 mds <- cmdscale(D_mean, k = 2)
 x <- mds[,1]
 y <- mds[,2]

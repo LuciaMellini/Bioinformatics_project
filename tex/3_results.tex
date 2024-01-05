@@ -14,13 +14,13 @@ For each type of integration method follows a qualitative evaluation of the poss
     \item Mutual information
     \begin{itemize}
         \item Joint entropy
-        \item Normalized Mutual Information (by Strehl \& Ghosh)
+        \item Normalized mutual information (by Strehl \& Ghosh)
     \end{itemize}
 \end{itemize}
 In Section~\ref{results_indices} we present all the selected indices to better grasp the meaning of the results listed below. In Sections~\ref{results_nonIntegrated}-~\ref{results_SNF} we present the obtained results themselves. We give a visual idea by means of plots. The points represent the samples as rendered in Euclidean space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. In addition we state the value for all the indices presented in Section~\ref{results_indices}.
 
 \section{Clustering quality indices}\label{results_indices}
-We would like to answer the question of how similar the solutions of two different clustering algorithms are. In the next sections we refer to $X$ a finite set of objects such that $|X|=n$. A clustering $\mathcal{C}$ is a set $\{c_1,\dots,C_k\}$ that is a partition of $X$.
+We would like to answer the question of how similar the solutions of two different clustering algorithms are. In the next sections we refer to $X$ a finite set of objects such that $|X|=n$. A clustering $\mathcal{C}$ is a set $\{C_1,\dots,C_k\}$ that is a partition of $X$.
 
 \subsection{Counting pairs}
 To compare clusterings $\mathcal{C}$ and $\mathcal{C}'$ we can look at pairs of elements classified in the same way in both clusterings. So, on the basis of it partition according to a certain clustering, the set of objects $X$ can be seen as the disjoint union of the following sets:
@@ -61,12 +61,53 @@ The Jaccard index is similar to the Rand index, but it disregards the pairs of e
 These kinds of measure try to match clusters that have a maximum or relative overlap.
 
 \subsubsection{$\mathcal{F}$-measure}
-The $\mathcal{F}$-measure for a cluster $C'_j$ with respect to a class $C_i$ indicates how good the cluster $C'_j$ describes $C_i$
+The $\mathcal{F}$-measure for a cluster $C'_j$ with respect to a class $C_i$ indicates how good the cluster $C'_j$ describes $C_i$ in the following way:
+\begin{equation*}
+    \begin{gathered}
+        \mathcal{F}(C_i,C'_j)=\frac{2\cdot r_{ij}\cdot p_{ij}}{r_{ij}+p{ij}}=\frac{2|C_i||C'_j|}{|C_i|+|C'_j|}\\
+        \text{where }p_{ij}=\frac{|C_i\cap C'_j|}{|C'_j|} \text{ (mean of precision) and } r_{ij}=\frac{|C_i\cap C'_j|}{|C_i|} \text{ (recall)}
+    \end{gathered}
+\end{equation*}
 
-\subsection{Information theory}
+The overall $\mathcal{F}$-measure is defined as the weight of the maximum $\mathcal{F}$-measures fot the clusters in $\mathcal{C}'$:
+\begin{equation*}
+    \mathcal{F}(\mathcal{C},\mathcal{C}')=\mathcal{F}(\mathcal{C}') = \frac{1}{n}\sum_{i=1}^k n_i\max_{j=1}^\ell\{\mathcal{F}(C_i,C'_j)\}
+\end{equation*}
+
+This measure is not symmetric since it indicates the quality of a clustering in relation with another. So it may be appropriate to compare a clustering with an optimal clustering solution. In our case we tale the partition in disease subtypes extracted with iCluster as our baseline.
+
+\subsection{Mutual information}
+This approach in the comparison of clusterings has its origin in information theory, and is based on the notion of entropy. Let's assume all elements in $X$ have the same probability of being picked. Then, choosing an element of $X$ at random, the probability that this element is in cluster $C_i\in\mathcal{C}$ is $\mathbb{P}(i)=\frac{|C_i|}{n}$. The entropy associated with clustering $\mathcal{C}$ iCluster
+\begin{equation*}
+    \mathcal{H}(\mathcal{C})=-\sum_{i=1}^k\mathbb{P}(i)\log_{2}{(\mathbb{P}(i))}.
+\end{equation*}
+
+In other words the entropy of a clustering $\mathcal{C}$ measures the uncertainty about the cluster assigned to a randomly chosen element in $X$. As a consequence, the entropy is 0 for a trivial clustering, that groups all elements in one subset or partitions $X$ by separating each element.
+
 \subsubsection{Joint entropy}
-\subsubsection{Normalized Mutual Information}
+The notion of entropy can be extended to that of mutual information between two clusterings $mathcal{C}$, $\mathcal{C}'$, formally defined as
+\begin{equation*}
+    \begin{gathered}
+       \mathcal{MI}(C_i, C_j) = \sum_{i=1}^{k} \sum_{j=1}^{l} \mathbb{P}(i,j) \log_{2}{ \frac{\mathbb{P}(i,j)}{\mathbb{P}(i)\mathbb{P}(j)} }\\
+       \text{where }\mathbb{P}(i,j)=\frac{|C_i\cap C'_j|}{n}
+    \end{gathered}    
+\end{equation*}
+so $\mathbb{P}(i,j)$ denotes the probability that an element belongs to $C_i\in\mathcal{C}$ and to cluster $C'_j\in\mathcal{C}'$.
 
+Conceptually, it describes how much we can on average reduce the uncertainty about the cluster of a random element in $X$ when knowing its cluster in another partition of $X$.
+
+This metric is not bounded by a constant value since
+\begin{equation*}
+    \mathcal{MI}(\mathcal{C},\mathcal{C}')\leq\min\{\mathcal{H}(\mathcal{C})\mathcal{H}(\mathcal{C}')\}
+\end{equation*}
+which makes it a difficult measure to interpret. So, it seems reasonable to apply a normalization by the geometric or arithmetic mean of the entropies. In the next section we present the former, proposed in~\cite{StrehlA2003Ce-A}.
+
+\subsubsection{Normalized mutual information (by Strehl \& Gosh)}
+We would like to approximately determine the clustering that has maximal average normalized mutual information with all the clustering in consideration. So we look at the normalized mutual information between two clusterings defined as
+\begin{equation*}
+    \mathcal{NMI}(C_i, C_j) = \frac{\mathcal{MI}(C_i, C_j)}{\sqrt{\mathcal{H}(C_i) \mathcal{H}(C_j)}}
+\end{equation*}.
+Seen that $\mathcal{H}(\mathcal{C})=\mathcal{MI}(\mathcal{C},\mathcal{C})$, the geometric mean is the preferred normalization. So, the normalized mutual information measure ranges between 0, when $\mathbb{P}(i,j)=0$ or $\mathbb{P}(i,j)=\mathbb{P}(i)\cdot\mathbb{P}(j)$, and 1 when $\mathcal{C}=\mathcal{C}'$.
 \section{Non-integrated data}\label{results_nonIntegrated}
 \subsection{Clustering with PAM}
 \subsection{Spectral clustering}
