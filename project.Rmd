@@ -29,8 +29,9 @@ install.packages("NetPreProc")
 install.packages("caret")
 install.packages("cluster")
 install.packages("mclustcomp")
-install.packages("filehash")
-install.packages( 'tikzDevice')
+install.packages("filehash") #tikzDevice dependence
+install.packages( "tikzDevice")
+install.packages("siber")
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -45,8 +46,6 @@ library("cluster")
 library("mclustcomp")
 library("tikzDevice")
 ```
-
-
 # Prostate adenocarcinoma multi-omics dataset
 In this project we will be using multi-omics data from a dataset from The Cancer Genome Atlas (TCGA) regarding Prostate adenocarcinoma (disease code "PRAD").
 Using the *curatedTCGAData* package it is possibile to download different views of the TCGA dataset
@@ -232,9 +231,10 @@ Below we apply spectral clustering @von2007SP to study disease subtypes.
 ### Each data source
 ```{r}
 sc.res <- list()
-for (i in 1:length((W_list)))
+for (i in 1:length((W_list))){
   sc.res[[i]] <- SNFtool::spectralClustering(W_list[[i]], K=k)
   sc.res[[i]] <- setNames(sc.res[[i]], samples)
+}
 ```
 ### Data integrated through SNF
 ```{r}   
@@ -250,8 +250,8 @@ sc.mean.res <- setNames(sc.mean.res, samples)
 For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
 More formally, the clusterings are compared to subtypes assigned by iCluster through multiple indices. The chosen indices to measure cluster quality are the following (subdivided by type):
 *Counting pairs*
-  * Adjusted Rand index
   * Jaccard index
+  * Adjusted Rand index
   * Rand index
 *Set overlaps/matching*
   * F-measure
@@ -270,8 +270,13 @@ labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes
 ## Clustering with PAM
 ### Non-integrated data
 ```{r}
-for (i in 1:length(complete))
-  clusplot(pam.res[[i]], main ="", sub=NULL, cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE)
+for (i in 1:length(complete)){
+  str <- paste0("plots/pam_",i,".tex")
+  tikz(str)
+  clusplot(pam.res[[i]], main ="", sub=NULL, cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE, col.clus="grey")
+  dev.off()
+}
+  
 ```
 ```{r}
 for (i in 1:length(complete)){
@@ -281,9 +286,9 @@ for (i in 1:length(complete)){
 ```
 ### Data integrated through SNF
 ```{r}
-#tikz("myPlot.tex")
-clusplot(pam.SNF.res, main ="", sub=NULL, cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE)
-#dev.off()
+tikz("plots/pam_SNF.tex")
+clusplot(pam.SNF.res, main ="", sub=NULL, cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE, col.clus="grey")
+dev.off()
 ```
 ```{r}
 metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types)
@@ -292,7 +297,9 @@ as.data.frame(metrics.pam)
 ```
 ### Data integrated though mean
 ```{r}
-clusplot(pam.mean.res, main="", sub=NULL, cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE)
+tikz("plots/pam_mean.tex")
+clusplot(pam.mean.res, main="", sub=NULL, cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE, col.clus="grey")
+dev.off()
 ```
 ```{r}
 metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types)
@@ -300,14 +307,29 @@ metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types)
 as.data.frame(metrics.pam)
 ```
 ## Spectral clustering
+In this case the code to obtain the desired plots is a bit more elaborate, seen that the object returned by `SNFtool::spectralClustering` is less expressive than the one outputted by `pam`. As a result, the function `clusplot` is available only for the latter. So, in this code block we have to deduce and draw the ellipsoid hull explicitly for each cluster.
 ### Non-integrated data
 ```{r}
 for (i in 1:length(complete)){
   mds <- cmdscale(D[[i]], k = 2)
   x <- mds[,1]
   y <- mds[,2]
+  str <- paste0("plots/sc_",i,".tex")
+  tikz(str)
   
+  label <- list()
+  points_label <- list()
+  eh <- list()
+  for(j in unique(sc.res[[i]])){
+    label[[j]] <- samples[sc.res[[i]][samples]==j]
+    points_label[[j]] <- mds[rownames(mds) %in% label[[j]], ]
+    eh[[j]] <- ellipsoidhull(points_label[[j]])
+  }
   plot(x,y, col=sc.res[[i]])
+  for(j in unique(sc.res[[i]]))
+    lines(predict(eh[[j]]),col="grey")
+  
+  dev.off()
 }
 ```
 ```{r}
@@ -322,7 +344,21 @@ mds <- cmdscale(D_SNF, k = 2)
 x <- mds[,1]
 y <- mds[,2]
 
+tikz("plots/sc_SNF.tex")
+
+label <- list()
+points_label <- list()
+eh <- list()
+for(i in unique(sc.SNF.res)){
+  label[[i]] <- samples[sc.SNF.res[samples]==i]
+  points_label[[i]] <- mds[rownames(mds) %in% label[[i]], ]
+  eh[[i]] <- ellipsoidhull(points_label[[i]])
+}
 plot(x,y, col=sc.SNF.res)
+for(i in unique(sc.SNF.res))
+  lines(predict(eh[[i]]), col="grey")
+
+dev.off()
 ```
 ```{r}
 metrics.sc <- mclustcomp(sc.SNF.res, labels, types=types)
@@ -334,7 +370,21 @@ mds <- cmdscale(D_mean, k = 2)
 x <- mds[,1]
 y <- mds[,2]
 
+tikz("plots/sc_mean.tex")
+
+label <- list()
+points_label <- list()
+eh <- list()
+for(i in unique(sc.mean.res)){
+  samples_label[[i]] <- samples[sc.mean.res[samples]==i]
+  points_label[[i]] <- mds[rownames(mds) %in% samples_label[[i]], ]
+  eh[[i]] <- ellipsoidhull(points_label[[i]])
+}
 plot(x,y, col=sc.mean.res)
+for(i in unique(sc.mean.res))
+  lines(predict(eh[[i]]), col="grey")
+
+dev.off()
 ```
 ```{r}
 metrics.sc <- mclustcomp(sc.mean.res, labels, types=types)
