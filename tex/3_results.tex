@@ -1,5 +1,8 @@
 \chapter{Results}
-For each type of integration method follows a qualitative evaluation of the possible clusterings in subtypes. Also quantitative measures are provided by comparing the clusterings to the subtypes assigned by iCluster through multiple indices selected from1~\cite{wagner2007comparing}. The chosen indices to measure cluster quality, subdivided by type, are the following:
+
+In Sections~\ref{results_pam} and~\ref{results_sc} we present the results for each clustering approach, depending on the used integration methods. We give a qualitative evaluation of the possible partition in subtypes of the samples by means of plots. The points represent the samples as rendered in Euclidean space after potential integration. They are extracted with Multidimensional Scaling from the similarity or distance matrices, depending on the clustering approach. The axes of the plots are labeled as \textit{Component1} and \textit{Component2} seen that the similarity and the distance are measured between pairs of objects in the multi-omics dataset.
+
+Also quantitative measures are provided by comparing the clusterings to the subtypes assigned by iCluster through multiple indices selected from~\cite{wagner2007comparing}. The chosen indices to measure cluster quality, subdivided by type, are the following:
 \begin{itemize}
     \item Counting pairs
     \begin{itemize}             
@@ -17,7 +20,11 @@ For each type of integration method follows a qualitative evaluation of the poss
 no        \item Normalized mutual information (by Strehl \& Ghosh)
     \end{itemize}
 \end{itemize}
-In Section~\ref{results_indices} we present all the selected indices to better grasp the meaning of the results listed below. In Sections~\ref{results_nonIntegrated}-~\ref{results_SNF} we present the obtained results themselves. We give a visual idea by means of plots. The points represent the samples as rendered in Euclidean space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. In addition we state the value for all the indices presented in Section~\ref{results_indices}.
+To better grasp the meaning of the results we examine these indices in depth in Section~\ref{results_indices}.
+
+
+
+
 
 \section{Clustering quality indices}\label{results_indices}
 We would like to answer the question of how similar the solutions of two different clustering algorithms are. In the next sections we refer to $X$ a finite set of objects such that $|X|=n$. A clustering $\mathcal{C}$ is a set $\{C_1,\dots,C_k\}$ that is a partition of $X$.

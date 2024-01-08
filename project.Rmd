@@ -261,7 +261,7 @@ More formally, the clusterings are compared to subtypes assigned by iCluster thr
 
 Here we prepare the labels for the chosen indeces.
 ```{r}
-types <- c("adjrand", "jaccard", "rand", "f", "jent",  "nmi1")
+types <- c("rand","adjrand", "jaccard",  "f", "jent",  "nmi1")
 ```
 After we convert disease subtypes into numeric vectors.
 ```{r}
@@ -317,15 +317,15 @@ for (i in 1:length(complete)){
   str <- paste0("plots/sc_",i,".tex")
   tikz(str)
   
-  label <- list()
+  samples_label <- list()
   points_label <- list()
   eh <- list()
   for(j in unique(sc.res[[i]])){
-    label[[j]] <- samples[sc.res[[i]][samples]==j]
-    points_label[[j]] <- mds[rownames(mds) %in% label[[j]], ]
+    samples_label[[j]] <- samples[sc.res[[i]][samples]==j]
+    points_label[[j]] <- mds[rownames(mds) %in% samples_label[[j]], ]
     eh[[j]] <- ellipsoidhull(points_label[[j]])
   }
-  plot(x,y, col=sc.res[[i]])
+  plot(x,y, xlab="Component 1", ylab="Component 2", col=sc.res[[i]])
   for(j in unique(sc.res[[i]]))
     lines(predict(eh[[j]]),col="grey")
   
@@ -346,15 +346,15 @@ y <- mds[,2]
 
 tikz("plots/sc_SNF.tex")
 
-label <- list()
+samples_label <- list()
 points_label <- list()
 eh <- list()
 for(i in unique(sc.SNF.res)){
-  label[[i]] <- samples[sc.SNF.res[samples]==i]
-  points_label[[i]] <- mds[rownames(mds) %in% label[[i]], ]
+  samples_label[[i]] <- samples[sc.SNF.res[samples]==i]
+  points_label[[i]] <- mds[rownames(mds) %in% samples_label[[i]], ]
   eh[[i]] <- ellipsoidhull(points_label[[i]])
 }
-plot(x,y, col=sc.SNF.res)
+plot(x,y, xlab="Component 1", ylab="Component 2", col=sc.SNF.res)
 for(i in unique(sc.SNF.res))
   lines(predict(eh[[i]]), col="grey")
 
@@ -372,7 +372,7 @@ y <- mds[,2]
 
 tikz("plots/sc_mean.tex")
 
-label <- list()
+samples_label <- list()
 points_label <- list()
 eh <- list()
 for(i in unique(sc.mean.res)){
@@ -380,7 +380,7 @@ for(i in unique(sc.mean.res)){
   points_label[[i]] <- mds[rownames(mds) %in% samples_label[[i]], ]
   eh[[i]] <- ellipsoidhull(points_label[[i]])
 }
-plot(x,y, col=sc.mean.res)
+plot(x,y, xlab="Component 1", ylab="Component 2", col=sc.mean.res)
 for(i in unique(sc.mean.res))
   lines(predict(eh[[i]]), col="grey")
 
