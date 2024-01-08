@@ -14,7 +14,7 @@ For each type of integration method follows a qualitative evaluation of the poss
     \item Mutual information
     \begin{itemize}
         \item Joint entropy
-        \item Normalized mutual information (by Strehl \& Ghosh)
+no        \item Normalized mutual information (by Strehl \& Ghosh)
     \end{itemize}
 \end{itemize}
 In Section~\ref{results_indices} we present all the selected indices to better grasp the meaning of the results listed below. In Sections~\ref{results_nonIntegrated}-~\ref{results_SNF} we present the obtained results themselves. We give a visual idea by means of plots. The points represent the samples as rendered in Euclidean space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. In addition we state the value for all the indices presented in Section~\ref{results_indices}.
@@ -108,14 +108,67 @@ We would like to approximately determine the clustering that has maximal average
     \mathcal{NMI}(C_i, C_j) = \frac{\mathcal{MI}(C_i, C_j)}{\sqrt{\mathcal{H}(C_i) \mathcal{H}(C_j)}}
 \end{equation*}.
 Seen that $\mathcal{H}(\mathcal{C})=\mathcal{MI}(\mathcal{C},\mathcal{C})$, the geometric mean is the preferred normalization. So, the normalized mutual information measure ranges between 0, when $\mathbb{P}(i,j)=0$ or $\mathbb{P}(i,j)=\mathbb{P}(i)\cdot\mathbb{P}(j)$, and 1 when $\mathcal{C}=\mathcal{C}'$.
-\section{Non-integrated data}\label{results_nonIntegrated}
-\subsection{Clustering with PAM}
-\subsection{Spectral clustering}
 
-\section{Data integration though mean}\label{results_mean}
-\subsection{Clustering with PAM}
-\subsection{Spectral clustering}
+\section{Clustering with PAM}\label{results_pam}
+\subsection{Non-integrated data}\label{pam_nonIntegrated}
+\begin{figure}\label{fig:pam_1}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_1.tex}}
+    \caption{Clustering with PAM - non-integrated data - mRNA view}
+\end{figure}
+\begin{figure}\label{fig:pam_2}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_2.tex}}
+    \caption{Clustering with PAM - non-integrated data - miRNA view}
+\end{figure}
+\begin{figure}\label{fig:pam_3}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_3.tex}}
+    \caption{Clustering with PAM - non-integrated data - protein expression view}
+\end{figure}
 
-\section{Data integration through SNF}\label{results_SNF}
-\subsection{Clustering with PAM}
-\subsection{Spectral clustering}
+\subsection{Data integration though mean}\label{pam_mean}
+\begin{figure}\label{fig:pam_mean}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_mean.tex}}
+    \caption{Clustering with PAM - data integrated through mean}
+\end{figure}
+
+\subsection{Data integration though SNF}\label{pam_SNF}
+\begin{figure}\label{fig:pam_SNF}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_SNF.tex}}
+    \caption{Clustering with PAM - data integrated through SNF}
+\end{figure}
+
+\section{Spectral clustering}\label{results_sc}
+\subsection{Non-integrated data}\label{sc_nonIntegrated}
+\begin{figure}\label{fig:sc_1}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_1.tex}}
+    \caption{Spectral clustering - non-integrated data - mRNA view}
+\end{figure}
+\begin{figure}\label{fig:sc_2}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_2.tex}}
+    \caption{Spectral clustering - non-integrated data - miRNA view}
+\end{figure}
+\begin{figure}\label{fig:sc_3}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_3.tex}}
+    \caption{Spectral clustering - non-integrated data - protein expression view}
+\end{figure}
+
+\subsection{Data integration though mean}\label{sc_mean}
+\begin{figure}\label{fig:sc_mean}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_mean.tex}}
+    \caption{Spectral clustering - data integrated through mean}
+\end{figure}
+
+\subsection{Data integration through SNF}\label{sc_SNF}
+\begin{figure}\label{fig:sc_SNF}
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_SNF.tex}}
+    \caption{Spectral clustering - data integrated through SNF}
+\end{figure}
