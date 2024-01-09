@@ -2,7 +2,7 @@
 
 In Sections~\ref{results_pam} and~\ref{results_sc} we present the results for each clustering approach, depending on the used integration methods. We give a qualitative evaluation of the possible partition in subtypes of the samples by means of plots. The points represent the samples as rendered in Euclidean space after potential integration. They are extracted with Multidimensional Scaling from the similarity or distance matrices, depending on the clustering approach. The axes of the plots are labeled as \textit{Component1} and \textit{Component2} seen that the similarity and the distance are measured between pairs of objects in the multi-omics dataset.
 
-Also quantitative measures are provided by comparing the clusterings to the subtypes assigned by iCluster through multiple indices selected from~\cite{wagner2007comparing}. The chosen indices to measure cluster quality, subdivided by type, are the following:
+Also quantitative measures are provided in Table~\ref{tab:indices_PAM} and~\ref{tab:indices_sc} by comparing the clusterings to the subtypes assigned by iCluster through multiple indices selected from~\cite{wagner2007comparing}. The chosen indices to measure cluster quality, subdivided by type, are the following:
 \begin{itemize}
     \item Counting pairs
     \begin{itemize}             
@@ -17,14 +17,10 @@ Also quantitative measures are provided by comparing the clusterings to the subt
     \item Mutual information
     \begin{itemize}
         \item Joint entropy
-no        \item Normalized mutual information (by Strehl \& Ghosh)
+        \item Normalized mutual information (by Strehl \& Ghosh)
     \end{itemize}
 \end{itemize}
 To better grasp the meaning of the results we examine these indices in depth in Section~\ref{results_indices}.
-
-
-
-
 
 \section{Clustering quality indices}\label{results_indices}
 We would like to answer the question of how similar the solutions of two different clustering algorithms are. In the next sections we refer to $X$ a finite set of objects such that $|X|=n$. A clustering $\mathcal{C}$ is a set $\{C_1,\dots,C_k\}$ that is a partition of $X$.
@@ -116,8 +112,47 @@ We would like to approximately determine the clustering that has maximal average
 \end{equation*}.
 Seen that $\mathcal{H}(\mathcal{C})=\mathcal{MI}(\mathcal{C},\mathcal{C})$, the geometric mean is the preferred normalization. So, the normalized mutual information measure ranges between 0, when $\mathbb{P}(i,j)=0$ or $\mathbb{P}(i,j)=\mathbb{P}(i)\cdot\mathbb{P}(j)$, and 1 when $\mathcal{C}=\mathcal{C}'$.
 
+\begin{table}
+    \centering
+    \begin{tabularx}{\linewidth}{rrrrrr}
+         & \multicolumn{3}{c}{\textit{non-integrated}} & \multicolumn{2}{c}{\textit{integrated}} \\
+        \cmidrule(l{50pt}r{50pt}){2-4} 
+        \cmidrule(l{30pt}r{30pt}){5-6}
+         & \textit{mRNA} & \textit{miRNA} & \textit{prot. expr.} & \textit{mean} & \textit{SNF}\\
+        \midrule
+        \textbf{rand} & 0.54241217 & 0.55749641 & 0.552370380 & 0.55981455 & 0.6316769\\
+        \textbf{adjusted rand} & 0.02466935 & 0.03766003 & 0.007886092 & 0.02365087 & 0.1794663\\
+        \textbf{Jaccard} & 0.23980256 & 0.23589108 & 0.211298395 & 0.21852539 & 0.2972653\\
+        \textbf{$\mathcal{F}$-measure} & 98.11680616 & 95.53554760 & 93.389423077 & 93.28784661 & 92.6847450\\
+        \textbf{joint entropy} & 2.95004823 & 2.97528877 & 3.081400386 & 3.05172577 & 2.8840141\\
+        \textbf{NMI} & 0.02763638 & 0.05320068 & 0.019655983 & 0.04030343 & 0.1567445\\
+        \bottomrule		
+    \end{tabularx}
+    \caption{Quality indices values - clustering with PAM}\label{tab:indices_PAM}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{tabularx}{\linewidth}{rrrrrr}
+         & \multicolumn{3}{c}{\textit{non-integrated}} & \multicolumn{2}{c}{\textit{integrated}} \\
+         \cmidrule(l{50pt}r{50pt}){2-4} 
+         \cmidrule(l{30pt}r{30pt}){5-6}
+         & \textit{mRNA} & \textit{miRNA} & \textit{prot. expr.} & \textit{mean} & \textit{SNF}\\
+        \midrule
+        \textbf{rand} & 0.54825650 & 0.56804231 & 0.56601802 & 0.6093444 & 0.6061447\\
+        \textbf{adjusted rand} & 0.01767203 & 0.04410101 & 0.03343076 & 0.1425261 & 0.1213365\\
+        \textbf{Jaccard} & 0.22621777 & 0.22982885 & 0.22105016 & 0.2848604 & 0.2649890\\
+        \textbf{$\mathcal{F}$-measure} & 95.70960086 & 93.50669700 & 92.72429722 & 94.6885759 & 92.5081939\\
+        \textbf{joint entropy} & 3.01492847 & 3.03495677 & 3.07021256 & 2.8911368 & 2.9457976\\
+        \textbf{NMI} & 0.02502607 & 0.04736747 & 0.03714684 & 0.1225258 & 0.1199149\\
+        \bottomrule		
+    \end{tabularx}
+    \caption{Quality indices values - spectral clustering}\label{tab:indices_sc}
+\end{table}
 \section{Clustering with PAM}\label{results_pam}
+In this section we will be looking at how the data was clustered by the PAM algorithm. We will be looking at the graphical version of the results in Figures~\ref{fig:pam_1}~\ref{fig:pam_SNF}, and at the values in Table~\ref{tab:indices_PAM}
 \subsection{Non-integrated data}\label{pam_nonIntegrated}
+For the scope of studying Prostate adenocarcinoma's subtypes looking at different types of omic data is not ideal. In fact, these gives only a partial view of the biological causes that could be correlated with the manifestation of a particular subtype of the disease. On the other hand, from a data analysis point of view, it is interesting to see if the combination of the different views of the multi-omics dataset is more expressive than the independent information. In the case of PAM clustering, it is evident by looking at the plots (Figure~\ref{fig:pam_1}-~\ref{fig:pam_3}) that the mRNA, miRNA and protein expression views don't have much in common, so it is necessary to combine the three to extract comprehensive knowledge. In addition, looking at the values of the quality indices it emerges that the results among the three values are not close, so it doesn't make sense to look at those results to evaluate the partitioning of the samples as wholes.
 \begin{figure}\label{fig:pam_1}
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_1.tex}}
@@ -135,6 +170,7 @@ Seen that $\mathcal{H}(\mathcal{C})=\mathcal{MI}(\mathcal{C},\mathcal{C})$, the 
 \end{figure}
 
 \subsection{Data integration though mean}\label{pam_mean}
+The indices show that, probably because this method is quite simple, the quality of the clusters is not so different with respect to the results obtained on the separate data views.
 \begin{figure}\label{fig:pam_mean}
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_mean.tex}}
