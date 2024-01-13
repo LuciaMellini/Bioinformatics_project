@@ -1,6 +1,6 @@
 \chapter{Results}
 
-In Sections~\ref{results_pam} and~\ref{results_sc} we present the results for each clustering approach, depending on the used integration methods. We give a qualitative evaluation of the possible partition in subtypes of the samples by means of plots. The points represent the samples as rendered in Euclidean space after potential integration. They are extracted with Multidimensional Scaling from the similarity or distance matrices, depending on the clustering approach. The axes of the plots are labeled as \textit{Component1} and \textit{Component2} seen that the similarity and the distance are measured between pairs of objects in the multi-omics dataset.
+In Sections~\ref{results_pam} and~\ref{results_sc} we present the subdivision of the samples in disease subtypes for each clustering approach, depending on the used integration methods. We give a qualitative evaluation of the partitions by means of plots. The points represent the samples as rendered in Euclidean space after potential data integration. They are extracted with Multidimensional Scaling from distance matrices fo the samples. The axes of the plots are labeled as \textit{Component1} and \textit{Component2} seen that the distance is measured between pairs of objects in the multi-omics dataset.
 
 Also quantitative measures are provided in Table~\ref{tab:indices_PAM} and~\ref{tab:indices_sc} by comparing the clusterings to the subtypes assigned by iCluster through multiple indices selected from~\cite{wagner2007comparing}. The chosen indices to measure cluster quality, subdivided by type, are the following:
 \begin{itemize}
@@ -20,13 +20,15 @@ Also quantitative measures are provided in Table~\ref{tab:indices_PAM} and~\ref{
         \item Normalized mutual information (by Strehl \& Ghosh)
     \end{itemize}
 \end{itemize}
-To better grasp the meaning of the results we examine these indices in depth in Section~\ref{results_indices}. To understand the comparison even better in Section~\ref{results_iCluster} we show how the data in the non-integrated and integrated form are clustered using the labels given by iCluster.
+To better grasp the meaning of the results we examine these indices in depth in Section~\ref{results_indices}.
+
+To understand the comparison with iCluster even better, in Section~\ref{results_iCluster} we show how the data in the non-integrated and integrated form are clustered using the labels given by iCluster.
 
 \section{Clustering quality indices}\label{results_indices}
 We would like to answer the question of how similar the solutions of two different clustering algorithms are. In the next sections we refer to $X$ a finite set of objects such that $|X|=n$. A clustering $\mathcal{C}$ is a set $\{C_1,\dots,C_k\}$ that is a partition of $X$.
 
 \subsection{Counting pairs}
-To compare clusterings $\mathcal{C}$ and $\mathcal{C}'$ we can look at pairs of elements classified in the same way in both clusterings. So, on the basis of it partition according to a certain clustering, the set of objects $X$ can be seen as the disjoint union of the following sets:
+To compare clusterings $\mathcal{C}$ and $\mathcal{C}'$ we can look at pairs of elements classified in the same way in both clusterings. So, on the basis ofa certain partition, the set of objects $X$ can be seen as the disjoint union of the following sets:
 \begin{equation*}
     \begin{gathered}
         S_{11}=\{(s,r)|(s\in C_i\land r\in C_i) \land (s\in C'_j\land r\in C'_j)\}\\
@@ -35,16 +37,16 @@ To compare clusterings $\mathcal{C}$ and $\mathcal{C}'$ we can look at pairs of 
         S_{01}=\{(s,r)|(s\in C_i\land r\notin C_i) \land (s\in C'_j\land r\in C'_j)\}
     \end{gathered}
 \end{equation*}
-Let $n_{ab}\coloneqq|S_{ab}|$, $a,b\in\{0,1\}$ denote the respective sizes.
+Let $n_{ab}\coloneqq|S_{ab}|$, $a,b\in\{0,1\}$ denote the respective sizes of the sets.
 \subsubsection{Rand index}
-In this case we count the correctly classified elements. Thus, the Rand index si defined by:
+In this case we count the fraction of correctly classified elements. Thus, the Rand index si defined by:
 \begin{equation*}
-    \mathcal{R}(\mathcal{C},\mathcal{C}')=frac{2(n_{11}+n_{00})}{n(n-1)}
+    \mathcal{R}(\mathcal{C},\mathcal{C}')=\frac{2(n_{11}+n_{00})}{n(n-1)}
 \end{equation*}
-$mathcal{R}$ ranges from 0, when the clusterings are identical, to 1, when the clusterings are identical. Seen that the similarity index also depends on the number of clusterings, it can be shown that unfortunately in the case of independent clusterings the Rand Index converges to 1 the number of clusterings increase.
+$\mathcal{R}$ ranges from 0, when no pair is classified in the same way under both clusterings, to 1, when the clusterings are identical. Seen that the similarity index also depends on the number of clusterings, it can be shown that unfortunately for case of independent clusterings the Rand index converges to 1 as the number of clusterings increases.
 
 \subsubsection{Adjusted Rand index}
-When working with two random clusterings the expected value of the Random index is not a constant. The Adjusted Random index is the normalized difference between the Rand index and its expected value under a null hypothesis. The adjustment assumes a generalized hypergeometric distribution as a null hypothesis: the two clusterings are drawn randomly each with a fixed number of clusters of fixed size. 
+When working with two random clusterings the expected value of the Rand index is not a constant. The Adjusted Random index is the normalized difference between the Rand index and its expected value under a null hypothesis. The adjustment assumes a generalized hypergeometric distribution as a null hypothesis: the two clusterings are drawn randomly each with a fixed number of clusters of fixed size. 
 The index is defined as follows:
 \begin{equation*}
     \begin{gathered}
@@ -61,26 +63,26 @@ The Jaccard index is similar to the Rand index, but it disregards the pairs of e
 \end{equation*}
 
 \subsection{Set overlaps}
-These kinds of measure try to match clusters that have a maximum or relative overlap.
+These kinds of measures try to match clusters that have a maximum or relative overlap.
 
 \subsubsection{$\mathcal{F}$-measure}
 The $\mathcal{F}$-measure for a cluster $C'_j$ with respect to a class $C_i$ indicates how good the cluster $C'_j$ describes $C_i$ in the following way:
 \begin{equation*}
     \begin{gathered}
         \mathcal{F}(C_i,C'_j)=\frac{2\cdot r_{ij}\cdot p_{ij}}{r_{ij}+p{ij}}=\frac{2|C_i||C'_j|}{|C_i|+|C'_j|}\\
-        \text{where }p_{ij}=\frac{|C_i\cap C'_j|}{|C'_j|} \text{ (mean of precision) and } r_{ij}=\frac{|C_i\cap C'_j|}{|C_i|} \text{ (recall)}
+        \text{where }p_{ij}=\frac{|C_i\cap C'_j|}{|C'_j|} \text{ (precision) and } r_{ij}=\frac{|C_i\cap C'_j|}{|C_i|} \text{ (recall)}
     \end{gathered}
 \end{equation*}
 
-The overall $\mathcal{F}$-measure is defined as the weight of the maximum $\mathcal{F}$-measures fot the clusters in $\mathcal{C}'$:
+The overall $\mathcal{F}$-measure is defined as the weight of the maximum $\mathcal{F}$-measures for the clusters in $\mathcal{C}'$:
 \begin{equation*}
     \mathcal{F}(\mathcal{C},\mathcal{C}')=\mathcal{F}(\mathcal{C}') = \frac{1}{n}\sum_{i=1}^k n_i\max_{j=1}^\ell\{\mathcal{F}(C_i,C'_j)\}
 \end{equation*}
 
-This measure is not symmetric since it indicates the quality of a clustering in relation with another. So it may be appropriate to compare a clustering with an optimal clustering solution. In our case we tale the partition in disease subtypes extracted with iCluster as our baseline.
+This measure is not symmetric since it indicates the quality of a clustering in relation to another. So it may be appropriate to compare a clustering with an optimal clustering solution. In our case we consider as baseline the partition in disease subtypes extracted with iCluster.
 
 \subsection{Mutual information}
-This approach in the comparison of clusterings has its origin in information theory, and is based on the notion of entropy. Let's assume all elements in $X$ have the same probability of being picked. Then, choosing an element of $X$ at random, the probability that this element is in cluster $C_i\in\mathcal{C}$ is $\mathbb{P}(i)=\frac{|C_i|}{n}$. The entropy associated with clustering $\mathcal{C}$ iCluster
+This approach in the comparison of clusterings has its origin in information theory, and is based on the notion of entropy. Let's assume all elements in $X$ have the same probability of being picked. Then, choosing an element of $X$ at random, the probability that this element is in cluster $C_i\in\mathcal{C}$ is $\mathbb{P}(i)=\frac{|C_i|}{n}$. The entropy associated with clustering $\mathcal{C}$ is
 \begin{equation*}
     \mathcal{H}(\mathcal{C})=-\sum_{i=1}^k\mathbb{P}(i)\log_{2}{(\mathbb{P}(i))}.
 \end{equation*}
@@ -88,16 +90,13 @@ This approach in the comparison of clusterings has its origin in information the
 In other words the entropy of a clustering $\mathcal{C}$ measures the uncertainty about the cluster assigned to a randomly chosen element in $X$. As a consequence, the entropy is 0 for a trivial clustering, that groups all elements in one subset or partitions $X$ by separating each element.
 
 \subsubsection{Joint entropy}
-The notion of entropy can be extended to that of mutual information between two clusterings $mathcal{C}$, $\mathcal{C}'$, formally defined as
+The notion of entropy can be extended to that of mutual information between two clusterings $\mathcal{C}$, $\mathcal{C}'$, formally defined as
 \begin{equation*}
-    \begin{gathered}
-       \mathcal{MI}(C_i, C_j) = \sum_{i=1}^{k} \sum_{j=1}^{l} \mathbb{P}(i,j) \log_{2}{ \frac{\mathbb{P}(i,j)}{\mathbb{P}(i)\mathbb{P}(j)} }\\
-       \text{where }\mathbb{P}(i,j)=\frac{|C_i\cap C'_j|}{n}
-    \end{gathered}    
+       \mathcal{MI}(\mathcal{C}, \mathcal{C}') = \sum_{i=1}^{k} \sum_{j=1}^{l} \mathbb{P}(i,j) \log_{2}{ \frac{\mathbb{P}(i,j)}{\mathbb{P}(i)\mathbb{P}(j)} }
 \end{equation*}
-so $\mathbb{P}(i,j)$ denotes the probability that an element belongs to $C_i\in\mathcal{C}$ and to cluster $C'_j\in\mathcal{C}'$.
+where $\mathbb{P}(i,j)=\frac{|C_i\cap C'_j|}{n}$ denotes the probability that an element belongs to clusters $C_i\in\mathcal{C}$ and $C'_j\in\mathcal{C}'$.
 
-Conceptually, it describes how much we can on average reduce the uncertainty about the cluster of a random element in $X$ when knowing its cluster in another partition of $X$.
+Conceptually, it describes how much we can, on average. reduce the uncertainty about the cluster of a random element in $X$ when knowing its cluster in another partitioning of $X$.
 
 This metric is not bounded by a constant value since
 \begin{equation*}
@@ -106,11 +105,44 @@ This metric is not bounded by a constant value since
 which makes it a difficult measure to interpret. So, it seems reasonable to apply a normalization by the geometric or arithmetic mean of the entropies. In the next section we present the former, proposed in~\cite{StrehlA2003Ce-A}.
 
 \subsubsection{Normalized mutual information (by Strehl \& Gosh)}
-We would like to approximately determine the clustering that has maximal average normalized mutual information with all the clustering in consideration. So we look at the normalized mutual information between two clusterings defined as
+We would like to approximately determine the clustering that has maximal normalized mutual information. So we look at the normalized mutual information between two clusterings defined as
 \begin{equation*}
-    \mathcal{NMI}(C_i, C_j) = \frac{\mathcal{MI}(C_i, C_j)}{\sqrt{\mathcal{H}(C_i) \mathcal{H}(C_j)}}
+    \mathcal{NMI}(\mathcal{C},\mathcal{C}') = \frac{\mathcal{MI}(\mathcal{C},\mathcal{C}')}{\sqrt{\mathcal{H}(\mathcal{C}) \mathcal{H}(\mathcal{C}')}}
 \end{equation*}.
 Seen that $\mathcal{H}(\mathcal{C})=\mathcal{MI}(\mathcal{C},\mathcal{C})$, the geometric mean is the preferred normalization. So, the normalized mutual information measure ranges between 0, when $\mathbb{P}(i,j)=0$ or $\mathbb{P}(i,j)=\mathbb{P}(i)\cdot\mathbb{P}(j)$, and 1 when $\mathcal{C}=\mathcal{C}'$.
+
+\section{Clustering with iCluster}\label{results_iCluster}
+We have chosen to also render the iCluster results qualitatively since it is the reference for comparison with the methods used in this project. Looking at Figures~\ref{fig:iCluster_1} -~\ref{fig:iCluster_SNF}, it is evident that iCluster is not effective at partitioning the samples used in this project. It is to be said that the clustering extracted in~\cite{abeshouse2015molecularPRAD} through iCluster is based on different kinds of omic data. We have chosen to take into account also the protein expression aspect, whilst in the study they concentrated extensively on nucleic acids from multiple standpoints, as specified in Chapter~\ref{introduction}. This discrepancy between the chosen clustering algorithms (PAM and spectral clustering) and the baseline clustering emerges in all the results presented in the following sections: it is evident that the applied approaches have taken the partitions in a different direction, more in line with the data at hand.
+\begin{figure}[!]
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_1.tex}}
+    \caption{Clustering with iCluster - non-integrated data - mRNA view}
+    \label{fig:iCluster_1}
+\end{figure}
+\begin{figure}[!]
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_2.tex}}
+    \caption{Clustering with iCluster - non-integrated data - miRNA view}
+    \label{fig:iCluster_2}
+\end{figure}
+\begin{figure}[!]
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_3.tex}}
+    \caption{Clustering with iCluster - non-integrated data - protein expression view}
+    \label{fig:iCluster_3}
+\end{figure}
+\begin{figure}[!]
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_mean.tex}}
+    \caption{Clustering with iCluster - data integrated through mean}
+    \label{fig:iCluster_mean}
+\end{figure}
+\begin{figure}[!]
+    \centering
+    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_SNF.tex}}
+    \caption{Clustering with iCluster - data integrated through SNF}
+    \label{fig:iCluster_SNF}
+\end{figure}
 
 \begin{table}
     \centering
@@ -149,103 +181,85 @@ Seen that $\mathcal{H}(\mathcal{C})=\mathcal{MI}(\mathcal{C},\mathcal{C})$, the 
     \end{tabularx}
     \caption{Quality indices values - spectral clustering}\label{tab:indices_sc}
 \end{table}
-
-\section{Clustering with iCluster}\label{results_iCluster}
-We have chosen to also render the iClustering results seen that we have chosen this method as reference for comparison with the methods used in this project. Looking at Figures~\ref{fig:iCluster_1}-~\ref{fig:iCluster_SNF}, it is evident that iCluster is not effective at partitioning the samples used in this project. It is to be said that the clustering extracted in~\cite{abeshouse2015molecularPRAD} though iCluster is based on different kinds of omic data. We have chosen to take into account also the protein expression aspect, whilst in the study they concentrated extensively on nucleic acids from multiple standpoints, as specified in Chapter~\ref{introduction} This discrepancy between the considered objects and the baseline clustering emerges in all the results presented in the following sections: it is evident that the chosen clustering algorithms (PAM and spectral clustering) have taken the partitions in a completely different direction, more in line with the data at hand.
-\begin{figure}[!]\label{fig:iCluster_1}
-    \centering
-    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_1.tex}}
-    \caption{Clustering with iCluster - non-integrated data - mRNA view}
-\end{figure}
-\begin{figure}[!]\label{fig:iCluster_2}
-    \centering
-    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_2.tex}}
-    \caption{Clustering with iCluster - non-integrated data - miRNA view}
-\end{figure}
-\begin{figure}[!]\label{fig:iCluster_3}
-    \centering
-    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_3.tex}}
-    \caption{Clustering with iCluster - non-integrated data - protein expression view}
-\end{figure}
-\begin{figure}[!]\label{fig:iCluster_mean}
-    \centering
-    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_mean.tex}}
-    \caption{Clustering with iCluster - data integrated through mean}
-\end{figure}
-\begin{figure}[!]\label{fig:iCluster_SNF}
-    \centering
-    \resizebox{0.45\textheight}{!}{\subimport{./plots}{iCluster_SNF.tex}}
-    \caption{Clustering with iCluster - data integrated through SNF}
-\end{figure}
 \section{Clustering with PAM}\label{results_pam}
-In this section we will be looking at how the data was clustered by the PAM algorithm. We will be looking at the graphical version of the results in Figures~\ref{fig:pam_1}~\ref{fig:pam_SNF}, and at the values in Table~\ref{tab:indices_PAM}
+In this section we will be looking at how the data was clustered by the PAM algorithm. We refer to the plots in Figures~\ref{fig:pam_1} -~\ref{fig:pam_SNF}, and to the values displayed in Table~\ref{tab:indices_PAM}.
 \subsection*{Non-integrated data}\label{pam_nonIntegrated}
-For the scope of studying Prostate adenocarcinoma's subtypes looking at different types of omic data is not ideal. In fact, these gives only a partial view of the biological causes that could be correlated with the manifestation of a particular subtype of the disease. On the other hand, from a data analysis point of view, it is interesting to see if the combination of the different views of the multi-omics dataset is more expressive than the independent information. In the case of PAM clustering, it is evident by looking at the plots (Figure~\ref{fig:pam_1}-~\ref{fig:pam_3}) that the mRNA, miRNA and protein expression views don't have much in common, so it is necessary to combine the three to extract comprehensive knowledge. In addition, looking at the values of the quality indices it emerges that the results among the three values are not close, so it doesn't make sense to look at those results to evaluate the partitioning of the samples as wholes.
-\begin{figure}[!]\label{fig:pam_1}
+For the scope of studying Prostate adenocarcinoma's subtypes evaluating different types of omic data individually is not ideal. In fact, these gives only a partial view of the biological causes that could be correlated with the manifestation of a particular subtype of the disease. On the other hand, from a data analysis point of view, it is interesting to see if the combination of the different views of the multi-omics dataset is more expressive than the independent information. In the case of PAM clustering, it is evident by looking at the plots (Figure~\ref{fig:pam_1} -~\ref{fig:pam_3}) that the mRNA, miRNA and protein expression views don't have much in common, so it is necessary to combine the three to extract comprehensive knowledge. In addition, looking at the values of the quality indices it emerges that the results among the three values are not close, so it doesn't make sense to look at those results to evaluate the partitioning of the samples as wholes.
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_1.tex}}
     \caption{Clustering with PAM - non-integrated data - mRNA view}
+    \label{fig:pam_1}
 \end{figure}
-\begin{figure}[!]\label{fig:pam_2}
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_2.tex}}
     \caption{Clustering with PAM - non-integrated data - miRNA view}
+    \label{fig:pam_2}
 \end{figure}
-\begin{figure}[!]\label{fig:pam_3}
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_3.tex}}
     \caption{Clustering with PAM - non-integrated data - protein expression view}
+    \label{fig:pam_3}
 \end{figure}
 
-\subsection*{Data integration though mean}\label{pam_mean}
-The indices show that, probably because this method is quite simple, the quality of the clusters is not so different with respect to the results obtained on the separate data views. Also the plot in Figure~\ref{fig:pam_mean} it is difficult to identify a potential partitioning of the integrated sample points. Seen that in the non-integrated data, shown in Figures~\ref{fig:pam_1}-~\ref{fig:pam_3}, we can identify a slightly more organized pattern in the points, probably the mean simply "scrambles" the different data views.
-\begin{figure}[!]\label{fig:pam_mean}
+\subsection*{Data integration through mean}\label{pam_mean}
+The indices show that the quality of the clusters is not so different with respect to the results obtained on the separate data views, probably because this method is quite simple. Also in the plot in Figure~\ref{fig:pam_mean} it is difficult to identify a potential partitioning of the integrated sample points. Seen that in the non-integrated data, shown in Figures~\ref{fig:pam_1} -~\ref{fig:pam_2}, we can identify a slightly more organized pattern in the points, probably the mean "scrambles" the different data views.
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_mean.tex}}
     \caption{Clustering with PAM - data integrated through mean}
+    \label{fig:pam_mean}
 \end{figure}
 
-\subsection*{Data integration though SNF}\label{pam_SNF}
-Also in this case visually (Figure~\ref{fig:pam_SNF}) clusters are not at all evident. But looking at the indices the results are sensibly better than those obtained by averaging the information in different data views. This shows us that a more intricate integration method pays off. With respect to the simple mean integration method, the subdivision in clusters is more similar to the one found with iCluster, but the partition is still far from the desired baseline. The clustering obtained by integrating data with SNF and applying the PAM algorithm is the one closest to iCluster with respect to other approaches analyzed in this project.
-\begin{figure}[!]\label{fig:pam_SNF}
+\subsection*{Data integration through SNF}\label{pam_SNF}
+Also in this case clusters are not at all evident. by looking at the plot in Figure~\ref{fig:pam_SNF}. But according to the indices the results are sensibly better than those obtained by averaging the information in different data views. This shows us that a more intricate integration method pays off. With respect to the simple mean integration method, the subdivision in clusters is more similar to the one found with iCluster, but the partition is still far from the desired baseline. The clustering obtained by integrating data with SNF and applying the PAM algorithm is the one closest to iCluster among other approaches analyzed in this project.
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_SNF.tex}}
     \caption{Clustering with PAM - data integrated through SNF}
+    \label{fig:pam_SNF}
 \end{figure}
 
 \section{Spectral clustering}\label{results_sc}
-In this section we comment the clusters obtained with spectral clustering. We refer to the graphical version of the results in Figures~\ref{fig:pam_1}~\ref{fig:pam_SNF}, and at the values in Table~\ref{tab:indices_PAM}
+In this section we comment the clusters obtained with spectral clustering. We refer to the graphical version of the results in Figures~\ref{fig:pam_1} -~\ref{fig:pam_SNF}, and to the values in Table~\ref{tab:indices_PAM}.
 
 \subsection*{Non-integrated data}\label{sc_nonIntegrated}
-The argument about the importance of looking also at the results for the different views of the omics dataset discussed in Section~\ref{pam_nonIntegrated} hold also in this section. In the case of spectral clustering the partition achieved for mRNA and miRNA data looks quite promising (look at Figures~\ref{fig:sc_1},~\ref{fig:sc_2}). The indices, though, show that the clustering is not comparable to the one found with iCluster. This is probably due to the fact that we are looking at partial points of view, and that subdivision of the samples brought out by iCluster takes into account many other types of information.
-\begin{figure}[!]\label{fig:sc_1}
+The argument about the importance of looking also at the results for the different views of the omics dataset discussed in Section~\ref{pam_nonIntegrated} holds also in this section. In the case of spectral clustering the partition achieved for mRNA and miRNA data looks quite promising (Figures~\ref{fig:sc_1} and~\ref{fig:sc_2}). The indices, though, show that the clustering is not comparable to the one found with iCluster. This is probably due to the fact that we are looking at few points of view, and that subdivision of the samples brought out by iCluster takes into account many other types of information.
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_1.tex}}
     \caption{Spectral clustering - non-integrated data - mRNA view}
+    \label{fig:sc_1}
 \end{figure}
-\begin{figure}[!]\label{fig:sc_2}
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_2.tex}}
     \caption{Spectral clustering - non-integrated data - miRNA view}
+    \label{fig:sc_2}
 \end{figure}
-\begin{figure}[!]\label{fig:sc_3}
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{pam_3.tex}}
     \caption{Spectral clustering - non-integrated data - protein expression view}
+    \label{fig:sc_3}
 \end{figure}
 
-\subsection*{Data integration though mean}\label{sc_mean}
+\subsection*{Data integration through mean}\label{sc_mean}
 In the case of spectral clustering, simply averaging between samples in the three data views results in clustering slightly more similar to iCluster.
-\begin{figure}[!]\label{fig:sc_mean}
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_mean.tex}}
     \caption{Spectral clustering - data integrated through mean}
+    \label{fig:sc_mean}
 \end{figure}
 
 \subsection*{Data integration through SNF}\label{sc_SNF}
-A more elaborate approach such as SNF seems to give worse results with respect to averaging. This could be because the similarity detected in the partial views given by mRNA and miRNA information is less manipulated.
-\begin{figure}[!]\label{fig:sc_SNF}
+A more elaborate approach such as SNF seems to give worse results with respect to averaging. This could be because the similarity detected in the partial views given by mRNA and miRNA information is manipulated more by a complex approach like SNF.
+\begin{figure}[!]
     \centering
     \resizebox{0.45\textheight}{!}{\subimport{./plots}{sc_SNF.tex}}
     \caption{Spectral clustering - data integrated through SNF}
+    \label{fig:sc_SNF}
 \end{figure}
