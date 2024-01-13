@@ -105,19 +105,19 @@ The final integrated matrix $G^{(c)}$ is the average of all the global matrices 
 
 
 \section{Clustering algorithms}\label{methods_clustering}
-As explained in Chapter~\ref{introduction} we use clustering algorithms to classify the samples in the multi-omics dataset into one of the three disease subtypes found with iCluster in~\cite{shen2009integrative}. We hope to find a classification similar to the one proposed in the cited paper. We have chosen as clustering methods the PAM algorithm~\cite{PAM}, illustrated in Section~\ref{clustering_PAM}, and spectral clustering~\cite{von2007SP}, as discussed in Section~\ref{clustering_spectral}.
+As explained in Chapter~\ref{introduction} we use clustering algorithms to classify the samples in the \textit{PRAD} multi-omics dataset into one of the three disease subtypes found with iCluster in~\cite{abeshouse2015molecularPRAD}. We hope to find a classification similar to the one proposed in the cited paper. We have chosen as clustering methods the PAM algorithm~\cite{PAM}, illustrated in Section~\ref{clustering_PAM}, and spectral clustering~\cite{von2007SP}, as discussed in Section~\ref{clustering_spectral}.
 
 All approaches are based on the same principle: when partitioning a set of objects into $k$ clusters, the main objective is to group objects with a high degree of similarity in the same cluster, while dissimilar objects end up in different clusters.
 
 \subsection{Partitioning Around Medoids (PAM)}\label{clustering_PAM}
-This method is based on finding $k$ representative objects, called medoids, among the objects in the dataset. These objects are considered representative if they model various aspects of the structure of the data. Medoids are defined as the objects of the cluster for which the average dissimilarity to all the objects of the cluster is minimal. Subsequently the $k$ clusters are constructed by assigning each element of the dataset to the nearest medoid. The final goal is to obtain a set of clusters where the average or the sum distances of objects belonging to the cluster and the medoid is minimized.
+This method is based on finding $k$ representative objects, called medoids, among the elements in the dataset. Objects are considered representative if they model various aspects of the structure of the data. Medoids are defined as the objects of the cluster for which the average dissimilarity to all the objects of the cluster is minimal. Subsequently the $k$ clusters are constructed by assigning each element of the dataset to the nearest medoid. The final goal is to obtain a set of clusters where the average or the sum of the distances between the elements in the cluster and the medoid is minimized.
 
 The data given in input to PAM can assume two possible configurations:
 \begin{description}
-    \item[measurement values matrix] where the rows represent objects and the columns correspond to variables hte represent coordinates (all contained in a certain interval),
-    \item[dissimilarity matrix] where the cells of the matrix indicate the distance between the objects specified in the corresponding row and column.
+    \item[measurement values matrix] where the rows represent objects and the columns correspond to their respective coordinates (all contained in a certain interval),
+    \item[dissimilarity matrix] where the cells of the matrix indicate the distance between the pair of elements specified in the corresponding row and column.
 \end{description}
-In our study we have opted for the second approach, since it is easy to express the distance between objects as a function of their similarity obtained though integration of the data. Specifically, for $S$ being the similarity matrix of the objects, the $D$ distance matrix is the result of applying the following function :
+In our study we have opted for the second approach, since it is easy to express the distance between objects as a function of their similarity. As seen in Section~\ref{methods_dataInt} we already derived affinity matrix for the data by applying integration methods. Specifically, for $S$ being the similarity matrix of the objects, the $D$ distance matrix is the result of applying the following mapping:
 \begin{equation*}
     S_{i,j} \mapsto 1 - \text{\textsl{min\_max\_norm}}(S_{i,j})
 \end{equation*} 
@@ -125,33 +125,31 @@ where $i,j$ are indices of the matrix $S$.
 
 The function \textsl{min\_max\_norm} refers to the normalization of the elements in the affinity matrix $S$ in the range $\left[0, 1\right]$, using min-max normalization. In other words: 
 \begin{equation*}
-    \text{\textsl{min\_max\_norm}}(S_{i,j}) = \frac{S_{i,j}-\text{min}\{S_{i,j}|\forall i,j\}}{\text{min}\{S_{i,j}|\forall i,j\}-\text{max}\{S_{i,j}|\forall i,j\}}
+    \text{\textsl{min\_max\_norm}}(S_{i,j}) = \frac{S_{i,j}-\text{min}\{S_{i,j}|\forall i,j\}}{\text{max}\{S_{i,j}|\forall i,j\}-\text{min}\{S_{i,j}|\forall i,j\}}
 \end{equation*}
 \newline
 
-Now we outline an abstract description of the PAM algorithm.\newline 
-For clarity's sake we define $O$ as the set of all objects in the dataset, and $S$ as the set of objects that are tentatively defined as medoids. The derived set $U = O - S$ is the set of unselected objects.
+Now we outline an abstract description of the PAM algorithm. For clarity's sake we define $O$ as the set of all objects in the dataset, and $S$ as the set of objects that are tentatively defined as medoids. The derived set $U = O - S$ is the set of unselected objects.
 
 The algorithm has two phases:
 
 \subsubsection*{BUILD phase}
-An initial clustering is obtained by the successive selection of the representative objects, until $k$ objects populate the set of selected objects $S$. The first chosen medoid is the object for which the sum of the dissimilarities to all other objects is as small as possible. In other words, it is the object that is most centrally located in $O$. Subsequently, the other $k-1$ representative objects are those that decrease the objective function as much as possible. In particular, a point $i \in U$ is chosen as a representative objects if it has a high number of unselected objects $j\in U\setminus \{i\}$ that are closer to $i$ than to already selected representatives belonging to $S$.
+We choose $k$ objects to populate $S$ by selecting representative objects successively. The first chosen medoid is the element for which the sum of the dissimilarities to all other objects is as small as possible. In other words, it is the object that is most centrally located in $O$. Subsequently, the other $k-1$ representative objects are those that decrease the objective function as much as possible. In particular, a point $i \in U$ is chosen as a representative object if it has a high number of unselected objects $j\in U\setminus \{i\}$ that are closer to $i$ than to already selected representatives belonging to $S$.
 
 \subsubsection*{SWAP phase}
 This phase is intended to improve the set of selected representatives in $S$.
 
-For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-representative, we execute the following procedure.
+For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-representative, we execute the following procedure to determine whether to swap the two objects.
 \begin{enumerate}
-    \item Swap $i$ and $h$, as that $h$ is a representative and $i$ is not.\label{item:1}
-    \item Compute the contribution $C_{jih}$ of each object $j \in U\setminus \{h\}$ to the swap of $i$ and $h$. With $E_j$ being the dissimilarity between $j$ and the second most similar representative object in $S$, and $D_{max,j} = \max_{k\in S}{d(j,k)}$, $C_{jih}$ si defined as follows:
+    \item Compute the contribution $C_{jih}$ of each object $j \in U\setminus \{h\}$ to the swap of $i$ and $h$. With $E_j$ being the dissimilarity between $j$ and the second most similar representative object in $S$, and $D_{max,j} = \max_{k\in S\setminus\{i\}}{d(j,k)}$, $C_{jih}$ si defined as follows:
     \begin{equation*}
         C_{jih}=
         \begin{dcases}
             0 & \text{if } d(j,i)> D_{max,j}\land d(j,h)> D_{max,j}\\
-            d(j,h)-d(j,i) & \text{if } d(j,h)<E_j  \\
-            E_j-d(j,i) & \text{if } d(j,h)\geq E_j \\
+            d(j,h)-d(j,i) & \text{if } d(j,i)\leq D_{max,j}\land d(j,h)<E_j  \\
+            E_j-d(j,i) & \text{if } d(j,i)\leq D_{max,j}\land d(j,h)\geq E_j \\
         \end{dcases}
-    \end{equation*}  
+    \end{equation*}  \label{item:1}
     \item Calculate the total result of a swap between $i$ and $h$ by adding all contributions $C_{jih}$
     \begin{equation*}
         T_{ih}=\sum_j{C_{jih}}
@@ -166,12 +164,12 @@ For each pair $(i,h)$, where $i \in S$ is representative and $h \in U$ is non-re
         \item[If \boldmath$T_{ih}\geq 0$] the algorithm terminates because the objective function cannot be decreased by carrying out a swap.
     \end{description}
 \end{enumerate}
-Seen that all valid swaps are evaluated, the results of the algorithm do not depend on the order in which the objects are taken into account.
+Seen that all valid swaps are evaluated, the result of the algorithm does not depend on the order in which the objects are selected.
 
 \subsection{Spectral clustering}\label{clustering_spectral}
-For this approach we look at the similarity graph where the objects of the matrix correspond to the nodes of the graph. In our case the input of the algorithm is a similarity matrix, that acts as the weight matrix for the graph. The clustering problem in this case is reformulated using the similarity graph. We want to find a partition of the graph such that the edges between different groups have low weights and edges within the subgraph have high weights. In other words, the objects in a cluster that correspond to nodes in the same group are similar, while the points in different clusters are dissimilar from each other.
+For this approach we look at the similarity graph, in which the nodes of the graph represent the objects, and the edges are weighted with a similarity score between the endpoints. In our case the input of the algorithm is a similarity matrix, that acts as the weight matrix for the graph. For this approach the clustering problem is reformulated using the similarity graph. We want to find a partition of the graph such that the edges between different groups have low weights and edges within the subgraph have high weights. In other words, the objects in a cluster that correspond to nodes in the same group are similar, while the points in different clusters are dissimilar from each other.
 
-We present in Algorithm~\ref{alg: spectral_clustering} one version of spectral clustering~\cite{Ng2002spectralClustering}, in particular the one applied to our multi-omics dataset objects. The main trick is to change the representation of the abstract data points $x_i$, for which the similarity is expressed in the affinity matrix given as input, into points $y_i\in\mathbb{R}^k$. This change of representation is useful thanks to the properties of the graph Laplacians. In particular, it enhances the cluster-properties in the data, so that the cluster can be trivially detected in the new representation.
+We present in Algorithm~\ref{alg: spectral_clustering} the version of spectral clustering applied to our multi-omics dataset objects~\cite{Ng2002spectralClustering}. The main trick is to change the representation of the abstract data points $x_i$, for which the similarity is expressed in the affinity matrix given as input, into points $y_i\in\mathbb{R}^k$. This change of representation is useful thanks to the properties of the graph Laplacians. In particular, it enhances the cluster-properties in the data, so that the cluster can be trivially detected in the new representation.
 \begin{algorithm}
     \caption{Spectral clustering}
     \label{alg: spectral_clustering}
@@ -191,7 +189,7 @@ We present in Algorithm~\ref{alg: spectral_clustering} one version of spectral c
         \Output
         \Statex Clusters $A_1,\dots,A_k: A_i=\{j|y_j\in C_i\}$
         \EndOutput
-    \end{algorithmic}
+    \end{algorithmic}    
 \end{algorithm}
 \subsubsection*{Normalized graph Laplacian}
 The unnormalized graph Laplacian is defined as
@@ -220,12 +218,13 @@ The unnormalized graph Laplacian and its eigenvalues and eigenvectors can be use
     (We refer to~\cite{von2007SP} for the proof of the proposition.)
 \end{proof}
 
-Proposition~\ref{prop:Lprop} and Proposition~\ref{prop:LnumberConnectedComponents} allow us to conclude, logically, that there exists at least one connected component in the similarity graph taken into consideration, seen that at least one of the eigenvalues of $L$ is 0. Looking at Algorithm~\ref{alg: spectral_clustering}, in line~\ref{alg: spectral_clustering: line3} we compute the graph Laplacian for the similarity graph extracted from the input matrix $S$, and in the following step (line~\ref{alg: spectral_clustering: line4}) we extract the eigenvectors for $L$. It is important to note that only the first $k$ eigenvectors that correspond to the $k$ smallest eigenvalues are looked at. Supposing that all of the $k$ eigenvalues of $L$ where to be 0, the eigenvalues $u_1,\dots,u_k$ extracted in line~\ref{alg: spectral_clustering: line4} are the indicator vectors of $k$ connected components in the similarity graph, as stated in Proposition~\ref{prop:LnumberConnectedComponents}. Seen that the connected components are at least $k$, the matrix $U$, defined in line~\ref{alg: spectral_clustering: line5}, has exactly the same rows for the corresponding nodes in a given component. As a consequence, if we consider the row vectors $\{y_i\}_{i\in\{1,\dots,n\}}$ of $U$ (see line~\ref{alg: spectral_clustering: line6}), it is sufficient to cluster them by grouping the equivalent vectors (line~\ref{alg: spectral_clustering: line7}). Seen that the problem is already solved thanks to the properties of the graph Laplacian we can use a simple clustering algorithm; in this case the authors have chosen the simple $k$-means algorithm~\cite{Hastie2009ElementsStatisticalLearning}.
+Proposition~\ref{prop:Lprop} and Proposition~\ref{prop:LnumberConnectedComponents} allow us to conclude that there exists at least one connected component in the similarity graph taken into consideration, seen that at least one of the eigenvalues of $L$ is 0. Looking at Algorithm~\ref{alg: spectral_clustering}, in line~\ref{alg: spectral_clustering: line3} we compute the graph Laplacian for the similarity graph extracted from the input matrix $S$, and in the following step (line~\ref{alg: spectral_clustering: line4}) we extract the eigenvectors for $L$. It is important to note that only the first $k$ eigenvectors that correspond to the $k$ smallest eigenvalues are looked at. Supposing that all of the $k$ eigenvalues of $L$ where to be 0, the eigenvectors $u_1,\dots,u_k$ extracted in line~\ref{alg: spectral_clustering: line4} are the indicator vectors of $k$ connected components in the similarity graph, as stated in Proposition~\ref{prop:LnumberConnectedComponents}. Seen that the connected components are at least $k$, the matrix $U$, defined in line~\ref{alg: spectral_clustering: line5}, has exactly the same values in the rows that correspond to nodes in a given component. As a consequence, if we consider the row vectors $\{y_i\}_{i\in\{1,\dots,n\}}$ of $U$ (see line~\ref{alg: spectral_clustering: line6}), it is sufficient to cluster them by grouping the equivalent vectors (line~\ref{alg: spectral_clustering: line7}). Seen that the problem is already solved thanks to the properties of the graph Laplacian we can use a simple clustering algorithm; in this case the authors have chosen the $k$-means algorithm~\cite{Hastie2009ElementsStatisticalLearning}.
 
-For fixed $k$ desired amount of clusters, we have three cases depending on the number of connected components in the similarity graph $c$:
+Given $k$ the desired amount of clusters, we have three cases depending on the number of connected components $c$ in the similarity graph:
 \begin{description}
     \item[if \boldmath$k=c$] the resulting clusters $C_1,\dots,C_k$ each contain exactly the nodes of a distinct connected component,
-    \item[if \boldmath$k<c$] some connected components collapse into the same cluster
-    \item[if \boldmath$k>c$] all the objects in a cluster belong to the same component in the similarity graph, but the nodes of at least one of the connected components will be spread across distinct clusters according to other similar traits that emerge among the nodes in the component. These characteristics depend on the the eigenvectors of $L$ for which the corresponding eigenvalues are strictly positive (eigenvalues are non-negative for Proposition~\ref{prop:Lprop}).
+    \item[if \boldmath$k<c$] some connected components collapse into the same cluster,
+    \item[if \boldmath$k>c$] some nodes of the same connected component will be spread across distinct clusters according to other similar traits that emerge in the similarity graph. These characteristics depend on the eigenvectors of $L$ for which the corresponding eigenvalues are strictly positive (eigenvalues are non-negative for Proposition~\ref{prop:Lprop}).
 \end{description}
-In the similarity graph we could have pseudo connected components, for which the edges connecting a subset of nodes to the rest of the graph have weights near to 0. In this case, though such group of nodes is technically not a connected component, one of the eigenvectors will have an aspect similar to an indicator vector for such nodes because the eigenvalue will be close to 0. We may generalize such reasoning to pseudo connected components in which the bridging edges have weights that are noticeably smaller that the weights connecting the nodes in the group. Seen that such nodes will be clustered together by the spectral clustering algorithm, we arrive at an acceptable solution of the graph partitioning problem, presented at the beginning of Section~\ref{alg: spectral_clustering}.
+
+In the similarity graph we could have pseudo connected components, a subset of nodes for which the edges connecting it to the rest of the graph have weights near to 0. In this case, though such group of nodes is technically not a connected component, one of the eigenvectors of the weight matrix will have an aspect similar to an indicator vector because the eigenvalue will be close to 0. We may generalize such reasoning to pseudo connected components in which the bridging edges have weights that are noticeably smaller that the weights connecting the nodes among the group. Seen that such near nodes will be clustered together by the spectral clustering algorithm, we arrive at an acceptable solution of the graph partitioning problem, presented at the beginning of Section~\ref{alg: spectral_clustering}.
