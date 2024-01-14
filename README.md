@@ -1,7 +1,3 @@
----
-bibliography: references.bib 
----
-
 # Disease subtype discovery using multi-omics data integration
 This project has the aim of clustering  samples regarding Pancreatic adenocarcinoma coming from a dataset of The Cancer Genome Atlas. In particular we want to partition the samples into disease subtypes, and compare the solutions with the one proposed in [@abeshouse2015molecularPRAD].
 The main document is a report that goes into detail about:
