@@ -1,5 +1,5 @@
 # Disease subtype discovery using multi-omics data integration
-This project has the aim of clustering  samples regarding Pancreatic adenocarcinoma coming from a dataset of The Cancer Genome Atlas. In particular we want to partition the samples into disease subtypes, and compare the solutions with the one proposed in[^1].
+This project has the aim of clustering  samples regarding Pancreatic adenocarcinoma coming from a dataset of The Cancer Genome Atlas. In particular we want to partition the samples into disease subtypes, and compare the solutions with the one proposed in [1].
 The main document is a report that goes into detail about:
 * data pre-processing
 * used data integration methods for the multi-omics data
@@ -14,6 +14,7 @@ This repository also contains the R code used for all the computation needed in 
 
 For the rendering of the R notebook in `html` and the pdf version of the report, refer to release.
 
-[^1]Adam Abeshouse, Jaeil Ahn, Rehan Akbani, Adrian Ally, Samirkumar Amin, Christopher D
+## References
+[1] Adam Abeshouse, Jaeil Ahn, Rehan Akbani, Adrian Ally, Samirkumar Amin, Christopher D
 Andry, Matti Annala, Armen Aprikian, Joshua Armenia, Arshi Arora, et al. _The molecular
 taxonomy of primary prostate cancer_. Cell, 163(4):1011–1025, 2015
