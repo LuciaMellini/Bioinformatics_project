@@ -12,7 +12,7 @@ This repository also contains the R code used for all the computation needed in 
 * `project.Rmd` is the R notebook that contains the code and step-by-step description of the 
 * `report.tex` contains the $\LaTeX$ source code
 
-For the rendering of the R notebook in `html` and the pdf version of the report, refer to release.
+For the rendering of the R notebook in html and the pdf version of the report, refer to release.
 
 ## References
 [1] Adam Abeshouse, Jaeil Ahn, Rehan Akbani, Adrian Ally, Samirkumar Amin, Christopher D

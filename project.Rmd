@@ -1,18 +1,19 @@
 ---
-title: "Disease subtype discovery using
-multi-omics data integration"
-subtitle: "Bioinformatics project"
+title: "Disease subtype discovery using multi-omics data integration"
 author: "Lucia Anna Mellini - 28597A"
 date: "Academic year 2023/2024"
+output:
+  html_notebook:
+    toc: true
+    number_sections: true
+    toc_float: true
+    theme: cerulean
+  html_document:
+    toc: true
+    df_print: paged
 csl: ieee.csl
 bibliography: references.bib
-output: 
-    html_notebook:
-        toc: true
-        number_sections: true
-        toc_float: true
-        theme: cerulean
-        fig_caption: true
+subtitle: Bioinformatics project
 ---
 
 Install and load used packages.
@@ -30,8 +31,7 @@ install.packages("caret")
 install.packages("cluster")
 install.packages("mclustcomp")
 install.packages("filehash") #tikzDevice dependence
-install.packages( "tikzDevice")
-install.packages("siber")
+install.packages("tikzDevice")
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -47,11 +47,12 @@ library("mclustcomp")
 library("tikzDevice")
 ```
 # Prostate adenocarcinoma multi-omics dataset
-In this project we will be using multi-omics data from a dataset from The Cancer Genome Atlas (TCGA) regarding Prostate adenocarcinoma (disease code "PRAD").
-Using the *curatedTCGAData* package it is possibile to download different views of the TCGA dataset
+In this project we will be using multi-omics data from a dataset from The Cancer Genome Atlas (TCGA) regarding Prostate adenocarcinoma (disease code "*PRAD*").
+Using the *curatedTCGAData* package it is possibile to download different views of the TCGA datasets.
 In particular we will be looking at:
+
 * miRNA data      (*miRNASeqGene* - gene-level miRNA normalized expression values)
-* mRNA data       (*RNASeq2Gene* - gene expressione values)
+* mRNA data       (*RNASeq2Gene* - gene expression values)
 * protein data    (*RPPAArray* - Reverse Phase Protein Array normalized protein expression values)
 ```{r}
 assays <- c("miRNASeqGene", "RNASeq2Gene", "RPPAArray") 
@@ -64,23 +65,23 @@ A summary of the imported data stored in a MultiArrayExperiment object:
 mo
 ```
 # Data pre-processing
-We choose to consider only primary solid tumors. The information about the type of sample analyzed (i.e. primary, metastatic, solid, blood derived, etc.) is specified in the barcode of the sample by 2 numeric characters in the 13th and 14th position (for more information about TCGA [barcodes](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_Barcode/)). Primary solid tumors are identified by "01".
-For the dataset in question the length of the barcodes is one character shorter for the data view _PRAD_RPPAArray_, in fact the specification of analyte information for the samples is missing in the 20th position of the barcode. Seen that in the evaluation phase we consider only the first 12 characters of the barcode, concerning a specific individual (fields Project, Tissue Source Site(TSS) and Participant), this difference is irrelevant for this project.
+We choose to consider only primary solid tumors. The information about the type of sample analyzed (i.e. primary, metastatic, solid, blood derived, etc.) is specified in the barcode of the sample by 2 numeric characters in the 13th and 14th position (for more information about TCGA [barcodes](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_Barcode/)). Primary solid tumors are identified by `01`.
+For the dataset in question the length of the barcodes is one character shorter for the data view *RPPAArray*, since the analyte information for the samples is missing in the 20th position of the barcode. Seen that in the evaluation phase we consider only the first 12 characters of the barcode, concerning a specific individual (fields Project, Tissue Source Site(TSS) and Participant), this difference is irrelevant for this project.
 ```{r message=FALSE, warning=FALSE}
 primary <- TCGAutils::TCGAsampleSelect(colnames(mo), c("01")) 
 mo <- mo[,primary,]
 ```
-We do not want to avoid working with replicates for the same sample, so we check that the first 12 characters in the barcode, indicating the identifier for the sample, are unique in the multi-omics dataset. It emerges that indeed there are no replicated samples.
+We want to avoid working with replicates for the same sample, so we check the barcodes are unique in the multi-omics dataset. It emerges that indeed there are no replicated samples.
 ```{r}
 check_rep <- anyReplicated(mo) 
 print(check_rep)
 ```
-Also, we want to take into account only samples that have been preserved by freezing. seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
+Also, we want to take into account only samples that have been preserved by freezing, seen that formalin-fixed, paraffin-embedded (FFPE) biopsies are preserved worse.
 ```{r}
 no_ffpe <- which(as.data.frame(colData(mo))$patient.samples.sample.is_ffpe == "no") 
 mo <- mo[, no_ffpe, ] 
 ```
-Obviously we want to look at the samples from three points of view, so we keep only those that are present in all three data views in the multi-omics dataset.
+Obviously we want to look at the samples from three points of view, so we keep only those that are present in all of the chosemn data views in the multi-omics dataset(mRNA, miRNA and protein expression).
 ```{r}
 complete <- intersectColumns(mo) 
 ```
@@ -92,7 +93,7 @@ To help computation we also transpose all matrices, obtaining tables with a row 
 ```{r}
 complete <- lapply(complete,FUN=t)
 ```
-It would also be ideal to not have to deal with missing values. It turns out that there are *NA*s only in the protein expression data view.
+It would also be ideal to not have to deal with missing values. It turns out that there are *NA*s only in the protein expression data view. We print the number of missing values removes from each data view.
 ```{r}
 for (i in 1:length(complete)){
   dim_prev <- length(complete[[i]][1,])
@@ -101,7 +102,7 @@ for (i in 1:length(complete)){
   print(dim_prev-dim_curr)
 }
 ```
-Subsequently we select features having the most variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance.
+Subsequently we select features having the most variance across samples. The idea is that such data brings more information, and so is more relevant. In this case we consider only the first 100 features with highest variance. We specify the number of features discarded for each data view as a result.
 ```{r}
 nf <- 100 
 for(i in 1:length(complete)){
@@ -134,41 +135,42 @@ zscore <- function(data){
 
 complete <- lapply(complete, zscore) 
 ```
-Lastly, we clean the TCGA barcodes, retaining only the first 12 characters that specify the sample's Project, TSS and Participant.
+Lastly, we clean the TCGA barcodes, retaining only the first 12 characters that specify the sample's Project, TSS and Participant, in other words we memorizing only information regarding the patient.
 ```{r}
 for(v in 1:length(complete)){
     rownames(complete[[v]]) <- substr(rownames(complete[[v]]), 1, 12) 
 }
 ```
+
 # Download disease subtypes
 ```{r}
 subtypes <- as.data.frame(TCGAbiolinks::PanCancerAtlas_subtypes())
 
 subtypes <- subtypes[subtypes$cancer.type == "PRAD", ]
 ```
-Like for the multi-omics dataset we retain only primary solid tumors and keep the exclusively the first part of the TCGA barcode of the sample.
+Like for the multi-omics dataset we retain only primary solid tumors and keep exclusively the first part of the TCGA barcode of the sample.
 ```{r}
 subtypes <- subtypes[TCGAutils::TCGAsampleSelect(subtypes$pan.samplesID, "01"), ] 
 
 sub_select <- substr(subtypes$pan.samplesID,1,12) %in% samples
 subtypes <- subtypes[sub_select, ] 
 ```
-We consider only samples that are present both in the multi-omics and the subtype data. Seen that the subtype samples are a subset of those in the multi-omics data, it is sufficient to keep only that subset of rows in `complete`.
+We consider only samples that are present both in the multi-omics and the subtype data. Seen that the subtype samples are a subset of those in the multi-omics data, it is sufficient to keep only that subset of rows in `complete`. To have in mind the amount of data we are working with we return the number of samples for each subtype.
 ```{r}
 rownames(subtypes) <- substr(subtypes$pan.samplesID, 1, 12) 
 for (i in 1:length(complete))
   complete[[i]] <- complete[[i]][rownames(subtypes),]
-# Print number of samples for each subtype:
+
 table(subtypes$Subtype_Integrative) 
 ```
-To help with later evaluations we assure that the samples are in the same order in both the multi-omics and the subtype datasets that we are working with.
+To help with later evaluations we assure that the samples are in the same order in both the multi-omics and the subtype datasets that we are working with. We conclude by printing the number of samples in different positions that they were in the same order in the first place.
 ```{r}
 samples <- rownames(complete[[1]])
 print(sum(rownames(subtypes) != samples))
 ```
 # Multi-omics data integration
-The objective is to fuse the different types data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
-For each integration method we present a a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). The 2D plots are obtained by using Multidimensional Scaling on the distance matrices.
+The objective is to fuse the different types of data from the multi-omics data into a unique object on which it is possible to evaluate the distance between the samples.
+For each integration method we present a representation of the scaled distance matrix obtained from the similarity matrix given by integration (look at next step). 
 We start by finding the similarity matrix for each data source using exponential Euclidian distance, also called an affinity matrix.
 ```{r}
 W_list <- list()
@@ -177,18 +179,20 @@ for(i in 1:length(complete)){
     W_list[[i]] <- affinityMatrix(Dist)
 }
 ```
+## Integration through mean
+Integration through averaging the matrices.
+```{r}
+W_int_mean <- Reduce('+', W_list)/length(W_list)
+```
 ## Integration through SNF
 Integration of the matrices using Similarity Network Fusion @wang2014similarity.
+
 * *t* number of iterations
 * *K* number of neighbours to consider to compute local similarity matrix
 ```{r}
 W_int_SNF <- SNF(W_list, K=20, t=20)
 ```
-## Integration through average
-Integration through averaging the matrices.
-```{r}
-W_int_mean <- Reduce('+', W_list)/length(W_list)
-```
+
 # Disease subtype discovery with clustering
 First of all we need the number of clusters to identify, which corresponds to the number of iCluster @shen2009integrative molecular subtypes (in column *Subtype_Integrative*).
 ```{r}
@@ -197,7 +201,7 @@ k <- length(unique(subtypes$Subtype_Integrative))
 We apply each clustering algorithm on individual and integrated views of the data represented as distance matrices. In all cases the distance matrices are derived from the respective normalized similarity matrices. We normalize the affinity matrices in the range $\left[0, 1\right]$ using min-max normalization.
 
 ## PAM algorithm
-We find a possible clustering through the Partitioning Around Medoids(PAM) algorithm @PAM.
+We find a possible clustering through the Partitioning Around Medoids (PAM) algorithm @PAM.
 
 ### Each data source
 ```{r}
@@ -225,8 +229,9 @@ D_SNF <- as.dist(dist_SNF)
 
 pam.SNF.res <- pam(D_SNF, k=k) 
 ```
+
 ## Spectral clustering
-Below we apply spectral clustering @von2007SP to study disease subtypes.
+Below we apply spectral clustering @von2007SP to study the partition of samples into disease subtypes.
 
 ### Each data source
 ```{r}
@@ -246,36 +251,99 @@ sc.SNF.res <- setNames(sc.SNF.res, samples)
 sc.mean.res <- SNFtool::spectralClustering(W_int_mean, K=k)
 sc.mean.res <- setNames(sc.mean.res, samples)
 ```
+
 # Comparing obtained clusterings with molecular disease subtypes
-For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidian space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. 
+For each type of integration method follows a quality evaluation of the possible clusterings in subtypes. A visual idea is given by the plots. The points represent the samples as rendered in Euclidean space; they are extracted with Multidimensional Scaling from the distance matrices given by the used integration method. In this notebook we only create the described plots, that can be consulted in the report of this porject.
 More formally, the clusterings are compared to subtypes assigned by iCluster through multiple indices. The chosen indices to measure cluster quality are the following (subdivided by type):
+
 *Counting pairs*
-  * Jaccard index
+
   * Adjusted Rand index
   * Rand index
+  * Jaccard index
+  
 *Set overlaps/matching*
+
   * F-measure
+  
 *Information theory*
+
   * Joint entropy
   * Normalized Mutual Information (by Strehl & Ghosh)
 
-Here we prepare the labels for the chosen indeces.
-```{r}
-types <- c("rand","adjrand", "jaccard",  "f", "jent",  "nmi1")
-```
-After we convert disease subtypes into numeric vectors.
+## iCluster
+First of all we create the plots of the baseline clustering applied to the non-integrated data in the three data views, and on the objects obtained with both integrative methods. This visual representation is useful to understand how our data is classified according to the subtypes obtained in @abeshouse2015molecularPRAD
+
+We convert the disease subtypes in a numeric vector.
 ```{r}
 labels <- as.numeric(factor(subtypes$Subtype_Integrative, levels=unique(subtypes$Subtype_Integrative)))
+labels <- setNames(labels, samples)
+```
+### Non-integrated data
+```{r}
+for (i in 1:length(complete)){
+  mds <- cmdscale(D[[i]], k = 2)
+  x <- mds[,1]
+  y <- mds[,2]
+  
+  samples_label <- list()
+  points_label <- list()
+  eh <- list()
+  for(j in unique(labels)){
+    samples_label[[j]] <- samples[labels[samples]==j]
+    points_label[[j]] <- mds[rownames(mds) %in% samples_label[[j]], ]
+    eh[[j]] <- ellipsoidhull(points_label[[j]])
+  }
+  plot(x,y, xlab="Component 1", ylab="Component 2", col=labels)
+  for(j in unique(sc.res[[i]]))
+    lines(predict(eh[[j]]),col="grey")
+}
+```
+### Data integrated through mean
+```{r}
+mds <- cmdscale(D_mean, k = 2)
+x <- mds[,1]
+y <- mds[,2]
+
+samples_label <- list()
+points_label <- list()
+eh <- list()
+for(j in unique(labels)){
+  samples_label[[j]] <- samples[labels[samples]==j]
+  points_label[[j]] <- mds[rownames(mds) %in% samples_label[[j]], ]
+  eh[[j]] <- ellipsoidhull(points_label[[j]])
+}
+plot(x,y, xlab="Component 1", ylab="Component 2", col=labels)
+for(j in unique(sc.res[[i]]))
+  lines(predict(eh[[j]]),col="grey")
+```
+### Data integrated through SNF
+```{r}
+mds <- cmdscale(D_SNF, k = 2)
+x <- mds[,1]
+y <- mds[,2]
+
+samples_label <- list()
+points_label <- list()
+eh <- list()
+for(j in unique(labels)){
+  samples_label[[j]] <- samples[labels[samples]==j]
+  points_label[[j]] <- mds[rownames(mds) %in% samples_label[[j]], ]
+  eh[[j]] <- ellipsoidhull(points_label[[j]])
+}
+plot(x,y, xlab="Component 1", ylab="Component 2", col=labels)
+for(j in unique(sc.res[[i]]))
+  lines(predict(eh[[j]]),col="grey")
+```
+Here we prepare the labels for the chosen indices.
+```{r}
+types <- c("rand","adjrand", "jaccard",  "f", "jent",  "nmi1")
 ```
 ## Clustering with PAM
 ### Non-integrated data
 ```{r}
-for (i in 1:length(complete)){
-  str <- paste0("plots/pam_",i,".tex")
-  tikz(str)
+for (i in 1:length(complete))
   clusplot(pam.res[[i]], main ="", sub=NULL, cex=0.9, col.p=pam.res[[i]]$cluster, plotchar=FALSE, col.clus="grey")
-  dev.off()
-}
   
 ```
 ```{r}
@@ -284,38 +352,33 @@ for (i in 1:length(complete)){
   print(as.data.frame(metrics.pam))
 }
 ```
-### Data integrated through SNF
-```{r}
-tikz("plots/pam_SNF.tex")
-clusplot(pam.SNF.res, main ="", sub=NULL, cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE, col.clus="grey")
-dev.off()
-```
-```{r}
-metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types)
-
-as.data.frame(metrics.pam)
-```
 ### Data integrated though mean
 ```{r}
-tikz("plots/pam_mean.tex")
 clusplot(pam.mean.res, main="", sub=NULL, cex=0.9, col.p=pam.mean.res$cluster, plotchar=FALSE, col.clus="grey")
-dev.off()
 ```
 ```{r}
 metrics.pam <- mclustcomp(pam.mean.res$clustering, labels, types=types)
 
 as.data.frame(metrics.pam)
 ```
+### Data integrated through SNF
+```{r}
+clusplot(pam.SNF.res, main ="", sub=NULL, cex=0.9, col.p=pam.SNF.res$cluster, plotchar=FALSE, col.clus="grey")
+```
+```{r}
+metrics.pam <- mclustcomp(pam.SNF.res$clustering, labels, types=types)
+
+as.data.frame(metrics.pam)
+```
 ## Spectral clustering
 In this case the code to obtain the desired plots is a bit more elaborate, seen that the object returned by `SNFtool::spectralClustering` is less expressive than the one outputted by `pam`. As a result, the function `clusplot` is available only for the latter. So, in this code block we have to deduce and draw the ellipsoid hull explicitly for each cluster.
+
 ### Non-integrated data
 ```{r}
 for (i in 1:length(complete)){
   mds <- cmdscale(D[[i]], k = 2)
   x <- mds[,1]
   y <- mds[,2]
-  str <- paste0("plots/sc_",i,".tex")
-  tikz(str)
   
   samples_label <- list()
   points_label <- list()
@@ -328,8 +391,6 @@ for (i in 1:length(complete)){
   plot(x,y, xlab="Component 1", ylab="Component 2", col=sc.res[[i]])
   for(j in unique(sc.res[[i]]))
     lines(predict(eh[[j]]),col="grey")
-  
-  dev.off()
 }
 ```
 ```{r}
@@ -338,39 +399,11 @@ for (i in 1:length(complete)){
   print(as.data.frame(metrics.sc))
 }
 ```
-### Data integrated through SNF
-```{r}
-mds <- cmdscale(D_SNF, k = 2)
-x <- mds[,1]
-y <- mds[,2]
-
-tikz("plots/sc_SNF.tex")
-
-samples_label <- list()
-points_label <- list()
-eh <- list()
-for(i in unique(sc.SNF.res)){
-  samples_label[[i]] <- samples[sc.SNF.res[samples]==i]
-  points_label[[i]] <- mds[rownames(mds) %in% samples_label[[i]], ]
-  eh[[i]] <- ellipsoidhull(points_label[[i]])
-}
-plot(x,y, xlab="Component 1", ylab="Component 2", col=sc.SNF.res)
-for(i in unique(sc.SNF.res))
-  lines(predict(eh[[i]]), col="grey")
-
-dev.off()
-```
-```{r}
-metrics.sc <- mclustcomp(sc.SNF.res, labels, types=types)
-  print(as.data.frame(metrics.sc))
-```
 ### Data integrated through mean
 ```{r}
 mds <- cmdscale(D_mean, k = 2)
 x <- mds[,1]
 y <- mds[,2]
-
-tikz("plots/sc_mean.tex")
 
 samples_label <- list()
 points_label <- list()
@@ -383,15 +416,36 @@ for(i in unique(sc.mean.res)){
 plot(x,y, xlab="Component 1", ylab="Component 2", col=sc.mean.res)
 for(i in unique(sc.mean.res))
   lines(predict(eh[[i]]), col="grey")
-
-dev.off()
 ```
 ```{r}
 metrics.sc <- mclustcomp(sc.mean.res, labels, types=types)
   print(as.data.frame(metrics.sc))
 ```
+### Data integrated through SNF
+```{r}
+mds <- cmdscale(D_SNF, k = 2)
+x <- mds[,1]
+y <- mds[,2]
 
+samples_label <- list()
+points_label <- list()
+eh <- list()
+for(i in unique(sc.SNF.res)){
+  samples_label[[i]] <- samples[sc.SNF.res[samples]==i]
+  points_label[[i]] <- mds[rownames(mds) %in% samples_label[[i]], ]
+  eh[[i]] <- ellipsoidhull(points_label[[i]])
+}
+plot(x,y, xlab="Component 1", ylab="Component 2", col=sc.SNF.res)
+for(i in unique(sc.SNF.res))
+  lines(predict(eh[[i]]), col="grey")
+```
+```{r}
+metrics.sc <- mclustcomp(sc.SNF.res, labels, types=types)
+as.data.frame(metrics.sc)
+```
+# Session information
 ```{r}
 sessionInfo()
 ```
-
+# References
+<div id="refs"></div>
