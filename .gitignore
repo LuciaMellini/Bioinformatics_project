@@ -1,5 +1,6 @@
 *.pdf
-*.html
+*.csl
+
 
 # History files
 .Rhistory
@@ -20,3 +21,4 @@
 *.toc
 
 *.json
+*.html
